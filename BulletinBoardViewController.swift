@@ -24,6 +24,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     
     var items = [BBS_PostData1]()
     
+    
     let refreshControl = UIRefreshControl()
     
     var segmentCount = 0
@@ -34,7 +35,11 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     
     var check:Bool = false
     
-   
+   var count = 30
+    
+    var t_check = false
+    
+    
     @IBOutlet var segmentButton: UISegmentedControl!
     
     
@@ -109,11 +114,16 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         
-        
+       
         
         if (UserDefaults.standard.object(forKey: "ng_UserArayy")) != nil{
             ng_UserArayy = UserDefaults.standard.object(forKey: "ng_UserArayy") as! [String]
@@ -127,7 +137,9 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             image_Select = false
         }else{
             loadAllData(segmentCount: segmentCount)
+        
         }
+        
         
     }
     
@@ -140,6 +152,8 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
     }
+    
+    
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -404,7 +418,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             segmentButton.isEnabled = false
             self.tableView.isUserInteractionEnabled = false //タッチ無効
             let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "0")
-            firebase.queryLimited(toLast: 10).observe(.value) { (snapshot,error) in
+            firebase.queryLimited(toLast: UInt(Int(count))).observe(.value) { (snapshot,error) in
                 for item in(snapshot.children){//children　データの子供
                     let child = item as! FIRDataSnapshot
                     let postData = BBS_PostData1(snapshot: child, myId: "")
@@ -543,22 +557,52 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         print("スクロールスタート")
         reloadButton.isEnabled = false
         reloadButton.alpha = 0.3
+    tableView.allowsSelection = false
     }
+    
+    
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         reloadButton.isEnabled = false
         reloadButton.alpha = 0.3
+        tableView.allowsSelection = false
         print("スクロール中")
         
         //最下部にスクロールしても、print("スクロール中")が表示されるため⇩
         
-        if tableView.contentOffset.y == (self.tableView.contentSize.height - self.tableView.frame.size.height ) || tableView.contentOffset.y == (self.tableView.contentInset.top ) {
+        if   tableView.contentOffset.y == (self.tableView.contentInset.top ) {
             print("スクロール解除")
             reloadButton.isEnabled = true
             reloadButton.alpha = 1.0
-            
+            tableView.allowsSelection = true
         }
+  
+        if tableView.contentOffset.y == (self.tableView.contentSize.height - self.tableView.frame.size.height ){
+            
+           
+            
+            if t_check == false{
+            t_check = true
+               
+                
+//               tabBarItem.isEnabled = false
+            print("aaaaaaaaaaaaaaaaaaaaaaaaa")
+            
+                //いふ分でcount == 1 . 2 .3
+            //50 50 100 100 200 200
+            count += 50
+            
+           tableView.allowsSelection = false
+                reloadButton.isEnabled = false
+            if (check == false){
+                check = true
+                loadAllData(segmentCount:0)
+                count -= 50
+                }
+                }
+        }
+    
     }
     
     
@@ -566,13 +610,17 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         print("スクロールで指が離れたところ")
         reloadButton.isEnabled = true
         reloadButton.alpha = 1.0
-    }
+    tableView.allowsSelection = true
     
+        }
     
     func time(){
         //top == 実機で右のスクロールが動いてない時
         
+        if t_check == false{
         self.tableView.setContentOffset(CGPoint(x: 0, y: self.tableView.contentInset.top ), animated: false)
+        
+        }
         
         self.segmentButton.isEnabled = true
         SVProgressHUD.dismiss()
@@ -583,8 +631,10 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             
             reloadButton.isEnabled = true
         }
-    }
     
+        t_check = false
+    print("bbbbbbbbbbbbb")
+    }
     
     
     
@@ -594,30 +644,34 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         switch sender.selectedSegmentIndex {
         case 0:
             segmentCount = 0
+            count = 30 ///////////////////////////////////////////////////////編集中
             loadAllData(segmentCount:0)
             categoryLabel.text = "雑談"
             contributionLabel.placeholder = "雑談に投稿"
             tableView.reloadData()
             break
         case 1:
-            loadAllData(segmentCount:1)
             segmentCount = 1
+            count = 30
+            loadAllData(segmentCount:1)
             categoryLabel.text = "マルチ募集"
             contributionLabel.placeholder = "マルチ募集に投稿"
             tableView.reloadData()
             
             break
         case 2:
-            loadAllData(segmentCount:2)
             segmentCount = 2
+            count = 30
+            loadAllData(segmentCount:2)
             categoryLabel.text = "フレンド募集"
             contributionLabel.placeholder = "フレンド募集に投稿"
             tableView.reloadData()
             
             break
         case 3:
-            loadAllData(segmentCount:3)
             segmentCount = 3
+            count = 30
+            loadAllData(segmentCount:3)
             categoryLabel.text = "チーム募集"
             contributionLabel.placeholder = "チーム募集に投稿"
             tableView.reloadData()
@@ -656,12 +710,17 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         
         switch segmentCount {
         case 0:
+            
             items = [BBS_PostData1]()
+            t_check = false
             reloadButton.isEnabled = false
             if (check == false){
                 check = true
                 loadAllData(segmentCount:0)
-                
+                if t_check == false{
+                    tableView.reloadData()
+                }
+
             }
             break
         case 1:
@@ -836,7 +895,8 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         ok_UserArayy.append(okUser)
         UserDefaults.standard.set(ok_UserArayy, forKey: "ok_UserArayy")
         
-        SVProgressHUD.showError(withStatus: "お気に入りに\n登録しました")
+        SVProgressHUD.showSuccess(withStatus: "お気に入りに\n登録しました")
+
         
         print("ok_UserArayy  --> \(ok_UserArayy)")
         

@@ -64,7 +64,7 @@ class BulletinBoardTableViewCell2: UITableViewCell {
     
     
     func setPostData(BBS_PostData1:BBS_PostData1){
-        
+     
         
     }
 

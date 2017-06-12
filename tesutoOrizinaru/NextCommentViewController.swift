@@ -230,6 +230,22 @@ class NextCommentViewController: UIViewController,UIImagePickerControllerDelegat
 
 	func postAll(){
 
+        var stop = 0
+        
+        for i in commentTextView.text.characters {
+            if String(i) == "\n"{
+                
+                stop += 1
+                
+                if stop > 50{
+                    SVProgressHUD.showError(withStatus: "改行が多すぎます")
+                    return
+                }
+                
+            }
+        }
+
+        
 		let databaseRef = FIRDatabase.database().reference()
 
         //ユーザーID

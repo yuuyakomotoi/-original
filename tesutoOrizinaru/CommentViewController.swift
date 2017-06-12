@@ -292,6 +292,7 @@ class CommentViewController: UIViewController,UITableViewDelegate,UITableViewDat
         
         self.commentArray = []
         SVProgressHUD.show()
+        self.tableView.isUserInteractionEnabled = false //タッチ無効
         let data = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: postData.id)
         data.observe(.value) { (snapshot,error) in
             for item in(snapshot.children){
@@ -317,7 +318,7 @@ class CommentViewController: UIViewController,UITableViewDelegate,UITableViewDat
                     self.commentArray.append(postData)
                 }
             }
-            self.tableView.isHidden = true
+            
             self.tableView.reloadData() //reloadData()1回
             
             if self.timerCount == 1{
@@ -325,7 +326,7 @@ class CommentViewController: UIViewController,UITableViewDelegate,UITableViewDat
                 
             }
             else{
-                self.tableView.isHidden = false
+                self.tableView.isUserInteractionEnabled = true
                 SVProgressHUD.dismiss()
                 self.timerCount = 1
                 
@@ -381,7 +382,7 @@ class CommentViewController: UIViewController,UITableViewDelegate,UITableViewDat
         SVProgressHUD.dismiss()
         self.timer.invalidate()
         check = false
-        self.tableView.isHidden = false
+        self.tableView.isUserInteractionEnabled = true
         
         if (reloadButton.isEnabled == false){
             

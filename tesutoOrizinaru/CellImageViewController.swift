@@ -24,13 +24,7 @@ class CellImageViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if UserDefaults.standard.object(forKey: "userCheck") == nil{
-        let userCheck = "userCheck"
-    UserDefaults.standard.set(userCheck, forKey: "userCheck")
-    //ユーザーをチェックするたびにloadAllData()を呼ばないため
-        }
-        }
-    
+    }
     
     @IBAction func cancel(_ sender: Any) {
         dismiss(animated: true, completion: nil

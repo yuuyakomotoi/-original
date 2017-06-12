@@ -56,7 +56,15 @@ class FavoriteUserViewController: UIViewController,UITableViewDelegate,UITableVi
         tableView.delegate = self
         tableView.dataSource = self
         
+        let nib = UINib(nibName: "BulletinBoardTableViewCell", bundle: nil)
+        tableView.register(nib, forCellReuseIdentifier: "Cell")
+        tableView.rowHeight = UITableViewAutomaticDimension
         
+        
+        let nib2 = UINib(nibName: "BulletinBoardTableViewCell2", bundle: nil)
+        tableView.register(nib2, forCellReuseIdentifier: "Cell2")
+        tableView.rowHeight = UITableViewAutomaticDimension
+
         
         self.tableView.estimatedRowHeight = 298
         self.tableView.rowHeight = UITableViewAutomaticDimension
@@ -87,26 +95,27 @@ class FavoriteUserViewController: UIViewController,UITableViewDelegate,UITableVi
         case 0:
             items = [BBS_PostData1]()
             loadAllData(segmentCount:0)
-            SVProgressHUD.dismiss()
+           
             break
         case 1:
             items = [BBS_PostData1]()
             loadAllData(segmentCount:1)
-            SVProgressHUD.dismiss()
+           
             break
         case 2:
             items = [BBS_PostData1]()
             loadAllData(segmentCount:2)
-            SVProgressHUD.dismiss()
+            
             break
         case 3:
             items = [BBS_PostData1]()
             loadAllData(segmentCount:3)
-            SVProgressHUD.dismiss()
+            
             break
         default:
             break
         }
+        SVProgressHUD.dismiss()
         refreshControl.endRefreshing()
         
     }
@@ -114,14 +123,6 @@ class FavoriteUserViewController: UIViewController,UITableViewDelegate,UITableVi
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        let nib = UINib(nibName: "BulletinBoardTableViewCell", bundle: nil)
-        tableView.register(nib, forCellReuseIdentifier: "Cell")
-        tableView.rowHeight = UITableViewAutomaticDimension
-        
-        
-        let nib2 = UINib(nibName: "BulletinBoardTableViewCell2", bundle: nil)
-        tableView.register(nib2, forCellReuseIdentifier: "Cell2")
-        tableView.rowHeight = UITableViewAutomaticDimension
         
         if (UserDefaults.standard.object(forKey: "ok_UserArayy")) != nil{
             ok_UserArayy = UserDefaults.standard.object(forKey: "ok_UserArayy") as! [String]
@@ -398,9 +399,9 @@ class FavoriteUserViewController: UIViewController,UITableViewDelegate,UITableVi
         if ( segmentCount == 0 ) {
             SVProgressHUD.show()
             segmentButton.isEnabled = false
-            tableView.isHidden = true
+            self.tableView.isUserInteractionEnabled = false //タッチ無効
             let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "0")
-            firebase.queryLimited(toLast: 10).observe(.value) { (snapshot,error) in
+            firebase.queryLimited(toLast: 100).observe(.value) { (snapshot,error) in
                 for item in(snapshot.children){//children　データの子供
                     let child = item as! FIRDataSnapshot
                     let postData = BBS_PostData1(snapshot: child, myId: "")
@@ -433,9 +434,9 @@ class FavoriteUserViewController: UIViewController,UITableViewDelegate,UITableVi
         else if ( segmentCount == 1 ) {
             SVProgressHUD.show()
             segmentButton.isEnabled = false
-            tableView.isHidden = true
+            self.tableView.isUserInteractionEnabled = false //タッチ無効
             let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "1")
-            firebase.queryLimited(toLast: 10).observe(.value) { (snapshot,error) in
+            firebase.queryLimited(toLast: 100).observe(.value) { (snapshot,error) in
                 for item in(snapshot.children){
                     let child = item as! FIRDataSnapshot
                     let postData = BBS_PostData1(snapshot: child, myId: "")
@@ -467,9 +468,9 @@ class FavoriteUserViewController: UIViewController,UITableViewDelegate,UITableVi
         }else if ( segmentCount == 2 ) {
             SVProgressHUD.show()
             segmentButton.isEnabled = false
-            tableView.isHidden = true
+            self.tableView.isUserInteractionEnabled = false //タッチ無効
             let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "2")
-            firebase.queryLimited(toLast: 10).observe(.value) { (snapshot,error) in
+            firebase.queryLimited(toLast: 100).observe(.value) { (snapshot,error) in
                 for item in(snapshot.children){
                     let child = item as! FIRDataSnapshot
                     let postData = BBS_PostData1(snapshot: child, myId: "")
@@ -500,9 +501,9 @@ class FavoriteUserViewController: UIViewController,UITableViewDelegate,UITableVi
         }else if ( segmentCount == 3 ) {
             SVProgressHUD.show()
             segmentButton.isEnabled = false
-            tableView.isHidden = true
+            self.tableView.isUserInteractionEnabled = false //タッチ無効
             let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "3")
-            firebase.queryLimited(toLast: 10).observe(.value) { (snapshot,error) in
+            firebase.queryLimited(toLast: 100).observe(.value) { (snapshot,error) in
                 for item in(snapshot.children){
                     let child = item as! FIRDataSnapshot
                     let postData = BBS_PostData1(snapshot: child, myId: "")
@@ -610,7 +611,7 @@ class FavoriteUserViewController: UIViewController,UITableViewDelegate,UITableVi
         SVProgressHUD.dismiss()
         self.timer.invalidate()
         check = false
-        self.tableView.isHidden = false
+        self.tableView.isUserInteractionEnabled = true
         
         if (reloadButton.isEnabled == false){
             

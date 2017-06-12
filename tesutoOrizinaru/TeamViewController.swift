@@ -72,7 +72,10 @@ class TeamViewController: UIViewController,UIImagePickerControllerDelegate,UINav
             
             
         }
-        }
+       
+    
+    
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -97,7 +100,8 @@ class TeamViewController: UIViewController,UIImagePickerControllerDelegate,UINav
             categoryTextField.text = ""
             
         }
-
+postStop()
+    
     }
     
     func textViewDidChange(_ textView: UITextView) {
@@ -112,7 +116,7 @@ class TeamViewController: UIViewController,UIImagePickerControllerDelegate,UINav
         commentTextView.text = ""
         categoryTextField.text = ""
         textViewLabel.text = " 本文を入力してください"
-    
+    postStop()
     }
     
     
@@ -235,6 +239,22 @@ class TeamViewController: UIViewController,UIImagePickerControllerDelegate,UINav
     
     func postAll(){
         
+        var stop = 0
+        
+        for i in commentTextView.text.characters {
+            if String(i) == "\n"{
+                
+                stop += 1
+                
+                if stop > 50{
+                    SVProgressHUD.showError(withStatus: "改行が多すぎます")
+                    return
+                }
+                
+            }
+        }
+
+        
         let databaseRef = FIRDatabase.database().reference()
         
         //ユーザーID
@@ -294,10 +314,14 @@ class TeamViewController: UIViewController,UIImagePickerControllerDelegate,UINav
             
             commentTextView.resignFirstResponder()
             
+            postStop()
+            
         }
         if(categoryTextField.isFirstResponder){
             
             categoryTextField.resignFirstResponder()
+            
+            postStop()
             
         }
 
@@ -318,53 +342,65 @@ class TeamViewController: UIViewController,UIImagePickerControllerDelegate,UINav
         }
     }
     
-//    func aaa(){
-//        
-//        if (commentTextView.text.isEmpty) || (categoryTextField.text?.isEmpty)!{
-//            postButton.alpha = 0.8
-//            postButton.isEnabled = false
-//        }
-//        
-//        var count = 0
-//        var count2 = 0
-//        
-//        for i in commentTextView.text.characters {
-//            if String(i) == " " || String(i) == "\n"{
-//                count += 1
-//                count2 += 1
-//                print("count　-----> \(count)")
-//                print("count2　-----> \(count2)")
-//            }else{
-//                count2 -= 1
-//                print("count2　-----> \(count2)")
-//            }
-//        }
-//        
-//        for i in (categoryTextField.text?.characters)! {
-//            if String(i) == " " || String(i) == "\n"{
-//                count += 1
-//                count2 += 1
-//                print("count　-----> \(count)")
-//                print("count2　-----> \(count2)")
-//            }else{
-//                count2 -= 1
-//                print("count2　-----> \(count2)")
-//            }
-//        }
-//        
-//        if count == count2  {
-//            postButton.alpha = 0.8
-//            postButton.isEnabled = false
-//            
-//        }else{
-//            postButton.alpha = 1.0
-//            postButton.isEnabled = true
-//            
-//            print("categoryTextField ----->  \(commentTextView.text!)")
-//            print("categoryTextField ----->  \(commentTextView.text!)")
-//
-//        }
-//    }
+
+    func postStop(){
+        
+        if (commentTextView.text.isEmpty) || (categoryTextField.text?.isEmpty)!{
+            if (image_Select == false){
+                postButton.alpha = 0.8
+                postButton.isEnabled = false
+            }else{
+                
+            }
+        }
+        
+        var count = 0
+        var count2 = 0
+        
+        for i in commentTextView.text.characters{
+            if String(i) == " " || String(i) == "\n"{
+                count += 1
+                count2 += 1
+                print("count　-----> \(count)")
+                print("count2　-----> \(count2)")
+            }else{
+                count2 -= 1
+                print("count2　-----> \(count2)")
+            }
+        }
+        
+        for i in (categoryTextField.text?.characters)! {
+                        if String(i) == " " || String(i) == "\n"{
+                            count += 1
+                            count2 += 1
+                            print("count　-----> \(count)")
+                            print("count2　-----> \(count2)")
+                        }else{
+                            count2 -= 1
+                            print("count2　-----> \(count2)")
+                        }
+                    }
+
+        
+        if count == count2  {
+            if (image_Select == false){
+                
+                postButton.alpha = 0.8
+                postButton.isEnabled = false
+            }else{
+                postButton.alpha = 1.0
+                postButton.isEnabled = true
+            }
+        }else{
+            postButton.alpha = 1.0
+            postButton.isEnabled = true
+            
+            print("commentTextView ----->  \(commentTextView.text!)")
+            
+        }
+    }
+
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
