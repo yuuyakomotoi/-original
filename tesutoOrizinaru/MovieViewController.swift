@@ -62,7 +62,9 @@ class MovieViewController: UIViewController,UITableViewDataSource,UITableViewDel
         
         
         
-        
+        if totalBox == []{
+            SVProgressHUD.show()
+        }
         
         
         //引っ張って更新
@@ -98,11 +100,15 @@ class MovieViewController: UIViewController,UITableViewDataSource,UITableViewDel
             parser.parse()
             tableView.reloadData()//テーブルビュー更新
         }
+    
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        SVProgressHUD.dismiss()
+        
+        if totalBox != []{
+            SVProgressHUD.dismiss()
+        }
         
         if UserDefaults.standard.object(forKey: "movieTitleArray") != nil{
             

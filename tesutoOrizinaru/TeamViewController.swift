@@ -40,7 +40,11 @@ class TeamViewController: UIViewController,UIImagePickerControllerDelegate,UINav
     
     @IBOutlet var imageViewLabel: UILabel!
     
-      @IBOutlet var postButton: UIButton!
+    @IBOutlet var postButton: UIButton!
+
+    
+    var post_Check = false
+
     
     
     override func viewDidLoad() {
@@ -253,6 +257,11 @@ postStop()
                 
             }
         }
+        
+        self.post_Check = true
+        
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.post_Check = self.post_Check
 
         
         let databaseRef = FIRDatabase.database().reference()

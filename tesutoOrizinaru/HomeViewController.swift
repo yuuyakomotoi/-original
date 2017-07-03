@@ -9,6 +9,8 @@
 import UIKit
 import Social
 import MessageUI
+import SVProgressHUD
+
 
 class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,MFMailComposeViewControllerDelegate {
     
@@ -48,6 +50,9 @@ class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        SVProgressHUD.dismiss()
+        
         userImage.layer.cornerRadius = 8.0
         userImage.clipsToBounds = true
         

@@ -41,6 +41,7 @@ class EditViewController: UIViewController,UIImagePickerControllerDelegate,UINav
     
     @IBOutlet var postButton: UIButton!
     
+    var post_Check = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -252,6 +253,11 @@ class EditViewController: UIViewController,UIImagePickerControllerDelegate,UINav
             }
         }
 
+        self.post_Check = true
+        
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.post_Check = self.post_Check
+
         
         let databaseRef = FIRDatabase.database().reference()
         
@@ -295,8 +301,10 @@ class EditViewController: UIViewController,UIImagePickerControllerDelegate,UINav
         
         UserDefaults.standard.removeObject(forKey: "textComment1")
         
+        
         //戻る
         dismiss(animated: true, completion: nil)
+        
         
         
     }

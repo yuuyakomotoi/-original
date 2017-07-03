@@ -41,6 +41,10 @@ class MultiViewController: UIViewController,UIImagePickerControllerDelegate,UINa
     @IBOutlet var imageViewLabel: UILabel!
     
     @IBOutlet var postButton: UIButton!
+
+    
+    var post_Check = false
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -248,6 +252,10 @@ class MultiViewController: UIViewController,UIImagePickerControllerDelegate,UINa
         }
         
         
+        self.post_Check = true
+        
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.post_Check = self.post_Check
 
         
         
