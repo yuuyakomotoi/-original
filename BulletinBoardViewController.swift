@@ -42,11 +42,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     
     var count = 50
     
-    var count2 = 0
-    
-    var count3 = 50
-    
-    var count4 = 100
+    var check_Count = 0
     
     
     var post_Check = false
@@ -369,6 +365,18 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 cell.postedImage_height.constant = self.view.frame.size.height / 5
                 cell.likeButton_height.constant = self.view.frame.size.height / 5
             }
+//            
+//            let userID = dict.userId
+//            var ccc = 0
+//            for user in self.ng_UserArayy {
+//                
+//                if (userID == user ) {
+//                    cell.userNameLabel.text = "NG登録したユーザーです"
+//                    cell.commentLabel.text = ""
+//              cell.userNameLabel.numberOfLines = 1
+//                                }
+
+            
             
             
             
@@ -567,6 +575,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 for item in(snapshot.children){
                     let child = item as! FIRDataSnapshot
                     let postData = BBS_PostData1(snapshot: child, myId: "")
+                    
                     var ng_flg = false
                     
                     for user in self.ng_UserArayy {
@@ -574,7 +583,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         print("c --> \(self.ng_UserArayy)")
                         if ( postData.userId == user ) {
                             ng_flg = true
-                            self.count2 += 1
+                            self.check_Count += 1
                             print("      --> NG \(ng_flg)")
                         }
                         else {
@@ -587,41 +596,50 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     }
                 }
                 
-                //修正中、スクロールも NGユーザー関連
+                
                 if self.items.count < 26{
-                    self.count = 100
-                    self.count3 = 100
-                    self.count4 = 200
+                    if self.count == 50{
+                        self.count = 100
                     
-                    print("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
                     if (self.check == false){
                         self.check = true
                      self.auto_Reload_Check = false
+                        self.check_Count = 0
                         self.loadAllData(segmentCount:segmentCount)
-                    return
+                        
+                        return
                     }
+                }
                     }
                 
-                
-                if self.items.count + self.count2 != self.count{
-                    if self.items.count + self.count2 != self.count4{
-                        //if self.segmentCount != 0{
+                    
+            
+                if self.items.count + self.check_Count != self.count{
+                    
+                    if self.count == 50{
+                        self.count = 50
+                    
+                    }else if self.count == 100{
                         self.count = 100
-                        self.auto_Reload_Check = false
+                    
+                    }else if self.count == 200{
+                        self.count = 200
+                   
+                    }
+                    
+                    
+                    self.auto_Reload_Check = false
                         if (self.check == false){
                             self.check = true
-                            self.count2 = 0
+                            self.check_Count = 0
                             self.loadAllData(segmentCount:segmentCount)
                             
                             print("リターン------")
                             return
                             
                         }
-                        
-                        
-                        
-                    }
-                }
+                        }
+                
                 
                 self.items.reverse()
                 self.tableView.reloadData()
@@ -966,20 +984,28 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         //self.tableView.setContentOffset(CGPoint(x: 0, y: self.tableView.contentInset.top ), animated: false)
         
         //}
-        if self.items.count + self.count2 != self.count{
-            if self.items.count + self.count2 != self.count4{
-                //if self.segmentCount != 0{
+        if self.items.count + self.check_Count != self.count{
+            
+            if self.count == 50{
+                self.count = 50
+                        }else if self.count == 100{
                 self.count = 100
-                self.auto_Reload_Check = false
-                if (self.check == false){
-                    self.check = true
-                    self.count2 = 0
-                    self.loadAllData(segmentCount:segmentCount)
-                    
-                    print("リターン------")
-                    return
-                    
-                }
+            
+            }else if self.count == 200{
+                self.count = 200
+           
+            }
+            
+            
+            self.auto_Reload_Check = false
+            if (self.check == false){
+                self.check = true
+               self.check_Count = 0
+                self.loadAllData(segmentCount:segmentCount)
+                
+                print("リターン------")
+                return
+                
             }
         }
         
@@ -1017,7 +1043,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         case 0:
             
             tableView.contentOffset.y = (self.tableView.contentInset.top )
-            count = 50
+            
             segmentCount = 0
             auto_Reload_Check = false
             loadAllData(segmentCount:0)

@@ -141,17 +141,11 @@ class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
                 break
             case 1:
                 
-                if UserDefaults.standard.object(forKey: "check") == nil{
-                   let support = self.storyboard?.instantiateViewController(withIdentifier: "support")
-               present(support!, animated: true, completion: nil)
-                    let check = "check"
-                    UserDefaults.standard.set(check, forKey: "check")
-                   
-                    }else{
+                
                 
                 let favoriteViewController = self.storyboard?.instantiateViewController(withIdentifier: "favorite") as! FavoriteViewController
                 present(favoriteViewController, animated: true, completion: nil)
-                }
+                
                 break
             case 2:
                 if UserDefaults.standard.object(forKey: "check") == nil{

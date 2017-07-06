@@ -14,12 +14,15 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     var segmentCount = 0
     
-    // ニュース
-    var TitleArray:[String] = []
-    var LinkArray:[String] = []
-    var DateArray:[String] = []
-    var UrlArray:[String] = []
+    var alert_Check = false
     
+    // ニュース
+    var newsTitleArray:[String] = []
+    var newsLinkArray:[String] = []
+    var newsDateArray:[String] = []
+    var newsUrlArray:[String] = []
+    var newsLink_NameArray:[String] = []
+
     //動画
     var m_TitleArray:[String] = []
     var m_LinkArray:[String] = []
@@ -38,7 +41,10 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
         tableView.dataSource = self
         
         
+        
     }
+        
+
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -48,13 +54,16 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
             
             
             
-            TitleArray = UserDefaults.standard.object(forKey: "newsTitleArray") as! [String]
+            newsTitleArray = UserDefaults.standard.object(forKey: "newsTitleArray") as! [String]
             
-            LinkArray = UserDefaults.standard.object(forKey: "newsLinkArray") as! [String]
+            newsLinkArray = UserDefaults.standard.object(forKey: "newsLinkArray") as! [String]
             
-            DateArray = UserDefaults.standard.object(forKey: "newsDateArray") as! [String]
+            newsDateArray = UserDefaults.standard.object(forKey: "newsDateArray") as! [String]
             
-            UrlArray = UserDefaults.standard.object(forKey: "newsUrlArray") as! [String]
+            newsUrlArray = UserDefaults.standard.object(forKey: "newsUrlArray") as! [String]
+                
+        newsLink_NameArray = UserDefaults.standard.object(forKey: "newsLink_NameArray") as! [String]
+   
             
                 
         }
@@ -79,6 +88,49 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
        SVProgressHUD.dismiss()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if UserDefaults.standard.object(forKey: "check") == nil{
+            
+            
+            
+            if (alert_Check == false){
+            
+                alert_Check = true
+                
+            let alertViewControler = UIAlertController(title: "お気に入りの利用方法を確認しますか？", message: "", preferredStyle:.alert)
+            let okAction = UIAlertAction(title: "確認する", style: .default, handler:{
+                (action:UIAlertAction!) -> Void in
+                
+                let support = self.storyboard?.instantiateViewController(withIdentifier: "support")
+                self.present(support!, animated: true, completion: nil)
+                
+            })
+            
+            let checkAction = UIAlertAction(title: "今後このアラートを表示しない", style: .default, handler:{
+                (action:UIAlertAction!) -> Void in
+                
+                let check = "check"
+                UserDefaults.standard.set(check, forKey: "check")
+                
+                
+                
+            })
+            
+            let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
+            
+            
+            alertViewControler.addAction(okAction)
+            alertViewControler.addAction(cancelAction)
+            alertViewControler.addAction(checkAction)
+            
+            
+            present(alertViewControler, animated: true, completion: nil)
+            
+        }
+        }
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1 //セクションの数
     }
@@ -86,7 +138,7 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (segmentCount == 0){
-        return TitleArray.count
+        return newsTitleArray.count
         }else {
         return m_TitleArray.count
         }
@@ -100,27 +152,34 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
         
         let titleLabel = cell.viewWithTag(1) as! UILabel
         
-        titleLabel.text = TitleArray.reversed()[indexPath.row]
+        titleLabel.text = newsTitleArray.reversed()[indexPath.row]
         
         let linkLabel = cell.viewWithTag(2) as! UILabel
         
-        linkLabel.text = LinkArray.reversed()[indexPath.row]
+        linkLabel.text = newsLink_NameArray.reversed()[indexPath.row]
 
 
         
         let dateLabel = cell.viewWithTag(3) as! UILabel
-        dateLabel.text = DateArray.reversed()[indexPath.row]
-        
-        let thumbnailImage = cell.viewWithTag(4) as! UIImageView!
-        
-        let urlstr = UrlArray.reversed()[indexPath.row]
+        dateLabel.text = newsDateArray.reversed()[indexPath.row]
         
         
-        let url:URL = URL(string: urlstr)!
+            let thumbnailImage = cell.viewWithTag(4) as! UIImageView!
         
-            thumbnailImage?.sd_setImage(with:url,placeholderImage:UIImage(named: ""))
-       
-        let deleteButton = cell.viewWithTag(5) as! UIButton
+
+            if UserDefaults.standard.object(forKey: "newsLink_NameArray") != nil {
+                let urlstr = newsUrlArray.reversed()[indexPath.row]
+                let encodedString = urlstr.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+                let url:URL = URL(string: encodedString!)!
+                thumbnailImage?.sd_setImage(with:url,placeholderImage:UIImage(named: "No Image.png"))
+            }
+            else {
+                thumbnailImage?.image = UIImage(named: "No Image.png")
+            }
+
+            
+        
+            let deleteButton = cell.viewWithTag(5) as! UIButton
             deleteButton.backgroundColor = UIColor.clear
             deleteButton.addTarget(self, action:#selector(deleteButton(sender:event:)), for: UIControlEvents.touchUpInside)
             
@@ -199,14 +258,14 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
         }
     }
    
-    func showAlert(t:Int,l:Int,d:Int,u:Int,m_t:Int,m_l:Int,m_d:Int,m_u:Int,m_n:Int,segmentCount:Int) {
+    func showAlert(t:Int,l:Int,d:Int,u:Int,n:Int,m_t:Int,m_l:Int,m_d:Int,m_u:Int,m_n:Int,segmentCount:Int) {
         
         if (segmentCount == 0){
         
             let alertViewControler = UIAlertController(title: "この記事をお気に入り\nから削除しますか？", message: "", preferredStyle:.actionSheet)
         let okAction = UIAlertAction(title: "削除", style: .default, handler:{
             (action:UIAlertAction!) -> Void in
-            self.addFavorite(t:t,l:l,d:d,u:u,m_t:m_t,m_l:m_l,m_d:m_d,m_u:m_u,m_n:m_n)
+            self.addFavorite(t:t,l:l,d:d,u:u,n:n,m_t:m_t,m_l:m_l,m_d:m_d,m_u:m_u,m_n:m_n)
         })
         let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
         
@@ -219,7 +278,8 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
             let alertViewControler = UIAlertController(title: "この動画をお気に入り\nから削除しますか？", message: "", preferredStyle:.actionSheet)
             let okAction = UIAlertAction(title: "削除", style: .default, handler:{
                 (action:UIAlertAction!) -> Void in
-                self.addFavorite(t:t,l:l,d:d,u:u,m_t:m_t,m_l:m_l,m_d:m_d,m_u:m_u,m_n:m_n)
+                self.addFavorite(t:t,l:l,d:d,u:u,n:n,m_t:m_t,m_l:m_l,m_d:m_d,m_u:m_u,m_n:m_n)
+
             })
             let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
             
@@ -231,22 +291,26 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
     }
 
     
-    func addFavorite(t:Int,l:Int,d:Int,u:Int,m_t:Int,m_l:Int,m_d:Int,m_u:Int,m_n:Int) {
+    func addFavorite(t:Int,l:Int,d:Int,u:Int,n:Int,m_t:Int,m_l:Int,m_d:Int,m_u:Int,m_n:Int) {
        
            if segmentCount == 0{
            
-            TitleArray.remove(at:t)
+            newsTitleArray.remove(at:t)
             
-            LinkArray.remove(at:l)
+            newsLinkArray.remove(at:l)
             
-            DateArray.remove(at:d)
+            newsDateArray.remove(at:d)
             
-            UrlArray.remove(at:u)
+            newsUrlArray.remove(at:u)
             
-            UserDefaults.standard.set(TitleArray, forKey: "newsTitleArray")
-            UserDefaults.standard.set(LinkArray, forKey: "newsLinkArray")
-            UserDefaults.standard.set(DateArray, forKey: "newsDateArray")
-            UserDefaults.standard.set(UrlArray, forKey: "newsUrlArray")
+            newsLink_NameArray.remove(at: n)
+            
+            UserDefaults.standard.set(newsTitleArray, forKey: "newsTitleArray")
+            UserDefaults.standard.set(newsLinkArray, forKey: "newsLinkArray")
+            UserDefaults.standard.set(newsDateArray, forKey: "newsDateArray")
+            UserDefaults.standard.set(newsUrlArray, forKey: "newsUrlArray")
+            UserDefaults.standard.set(newsLink_NameArray, forKey: "newsLink_NameArray")
+
             
             
             
@@ -284,15 +348,20 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
         let indexPath = tableView.indexPathForRow(at: point)
        
             
-            let t = (TitleArray.count - (indexPath?.row)! - 1)
+            let t = (newsTitleArray.count - (indexPath?.row)! - 1)
             
-            let l = (LinkArray.count - (indexPath?.row)! - 1)
+            let l = (newsLinkArray.count - (indexPath?.row)! - 1)
             
-            let d = (DateArray.count - (indexPath?.row)! - 1)
+            let d = (newsDateArray.count - (indexPath?.row)! - 1)
             
-            let u = (UrlArray.count - (indexPath?.row)! - 1)
+            let u = (newsUrlArray.count - (indexPath?.row)! - 1)
         
-            
+            let n = (newsLink_NameArray.count - (indexPath?.row)! - 1)
+
+        
+        
+        
+        
             let m_t = (m_TitleArray.count - (indexPath?.row)! - 1)
             
             let m_l = (m_LinkArray.count - (indexPath?.row)! - 1)
@@ -305,7 +374,7 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
 
        
         
-        showAlert(t:t,l:l,d:d,u:u,m_t:m_t,m_l:m_l,m_d:m_d,m_u:m_u,m_n:m_n,segmentCount:segmentCount)
+        showAlert(t:t,l:l,d:d,u:u,n:n,m_t:m_t,m_l:m_l,m_d:m_d,m_u:m_u,m_n:m_n,segmentCount:segmentCount)
 
         
     }

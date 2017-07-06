@@ -65,10 +65,12 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     var newsLinkArray:[String] = []
     var newsDateArray:[String] = []
     var newsUrlArray:[String] = []
+    var newsLink_NameArray:[String] = []
     
     var userId:String = ""
     
     var items:[BBS_PostData1] = []
+    var items2:[BBS_PostData1] = []
     
     @IBOutlet var tableView: UITableView!
     
@@ -143,7 +145,6 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         refreshControl.addTarget(self, action:#selector(delay), for:UIControlEvents.valueChanged)
         tableView.addSubview(refreshControl)
         
-        tableView.addSubview(refreshControl)
         
         
         
@@ -185,20 +186,20 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             newsUrlArray = UserDefaults.standard.object(forKey: "newsUrlArray") as! [String]
             
+            newsLink_NameArray = UserDefaults.standard.object(forKey: "newsLink_NameArray") as! [String]
+            
             
         }
-//       DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
-//        print("totalBox----------->\(self.totalBox.debugDescription)")
-//        self.tableView.reloadData()
-//        }
         
         
         
     }
     
     
+    
     func reload_Timer2(){
        reload_Time.invalidate()
+        
         self.refresh_Chack = false
         tableView.reloadData()
     }
@@ -221,7 +222,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             refreshControl.endRefreshing()
             
-            reload_Time = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(reload_Timer2), userInfo: nil, repeats: true)
+            reload_Time = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(reload_Timer2), userInfo: nil, repeats: false)
 
         }else{
             refreshControl.endRefreshing()
@@ -235,7 +236,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return totalBox.count //セルの数 totalBoxが取得した数
+        return dataArray.count //セルの数 totalBoxが取得した数
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -251,15 +252,21 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         let favoriteButton = cell.viewWithTag(5) as! UIButton
         favoriteButton.backgroundColor = UIColor.clear
         
-        titleLabel.text = (totalBox[indexPath.row] as AnyObject).value(forKey: "title") as? String
         
-        linkLabel.text = (totalBox[indexPath.row] as AnyObject).value(forKey: "link_Name") as? String
+        if (( (dataArray[indexPath.row] as AnyObject).value(forKey: "title") ) != nil) {
+        titleLabel.text = (dataArray[indexPath.row] as AnyObject).value(forKey: "title") as? String
+        }
         
-        dateLabel.text = (totalBox[indexPath.row] as AnyObject).value(forKey: "pubDate") as? String
+        if (( (dataArray[indexPath.row] as AnyObject).value(forKey: "link_Name") ) != nil) {
+        linkLabel.text = (dataArray[indexPath.row] as AnyObject).value(forKey: "link_Name") as? String
+        }
+       
+        if (( (dataArray[indexPath.row] as AnyObject).value(forKey: "pubDate") ) != nil) {
+        dateLabel.text = (dataArray[indexPath.row] as AnyObject).value(forKey: "pubDate") as? String
+        }
         
-        
-        if (( (totalBox[indexPath.row] as AnyObject).value(forKey: "image") ) != nil) {
-            let urlstr = (totalBox[indexPath.row] as AnyObject).value(forKey: "image") as! String
+        if (( (dataArray[indexPath.row] as AnyObject).value(forKey: "image") ) != nil) {
+            let urlstr = (dataArray[indexPath.row] as AnyObject).value(forKey: "image") as! String
             let encodedString = urlstr.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
             let url:URL = URL(string: encodedString!)!
             thumbnailImage.sd_setImage(with:url,placeholderImage:UIImage(named: "No Image.png"))
@@ -298,7 +305,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         let newsModalViewController = self.storyboard?.instantiateViewController(withIdentifier: "news") as! NewsModalViewController
         
-        let linkURL = (totalBox[indexPath.row] as AnyObject).value(forKey: "link") as? String
+        let linkURL = (dataArray[indexPath.row] as AnyObject).value(forKey: "link") as? String
         newsModalViewController.str = linkURL!
         
         //navigationControllerをstoryboardでセットしてから使う
@@ -611,7 +618,70 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 elements.setObject(linkString, forKey: "link" as NSCopying)
             }
             if dateString != ""{
-                print("date---------->\(dateString)")
+               
+                if (self.convery_count == 1)||(self.convery_count == 0){
+
+                var date = ""
+                
+//                var date1 = ""
+                var date2 = ""
+                var date3 = ""
+                var date4 = ""
+                var date5 = ""
+                var date_Set = ""
+                
+                date = String(dateString).pregReplace(pattern: "\\s|,", with: "")
+                
+                
+//     サンプル     Mon03Jul201701:00:38+0000
+               
+                
+//                date1 = String(date).pregReplace(pattern: "[a-z|A-Z]{3}\\d\\d[a-z|A-Z]{3}|.........0000", with: "")
+                //2017
+                
+                
+                    date2 = String(date).pregReplace(pattern: "[a-zA-Z]{3}|\\d{4}\\d\\d:\\d\\d:\\d\\d\\+0000", with: "")
+                //日　03
+               
+                date3 = String(date).pregReplace(pattern: "[a-z|A-Z]{3}\\d\\d[a-z|A-Z]{3}\\d\\d\\d\\d|:\\d\\d\\+0000", with: "")
+                //日時　09:10
+                
+                date4 = String(date).pregReplace(pattern: "\\d{4}\\d\\d:\\d\\d:\\d\\d\\+0000", with: "")
+                date5 = date4.pregReplace(pattern: "[a-zA-Z]{3}\\d\\d", with: "")
+                //月
+                
+                switch date5 {
+                case "Jan":
+                    date5 = "01"
+                case "Feb":
+                    date5 = "02"
+                case "Mar":
+                    date5 = "03"
+                case "Apr":
+                    date5 = "04"
+                case "May":
+                    date5 = "05"
+                case "Jun":
+                    date5 = "06"
+                case "Jul":
+                    date5 = "07"
+                case "Aug":
+                    date5 = "08"
+                case "Sep":
+                    date5 = "09"
+                case "Oct":
+                    date5 = "10"
+                case "Nov":
+                    date5 = "11"
+                case "Dec":
+                    date5 = "12"
+                default:
+                    break
+                }
+                
+                date_Set = "\(date5)-\(date2) \(date3)"
+                
+                    print("date---------->\(date_Set)")
                 
                 //                let formatter = DateFormatter()
                 //                formatter.dateFormat = "yyyy/MM/dd HH:mm:ss" //表示形式を設定
@@ -625,8 +695,13 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 //                //文字列から日付を取得
                 //               let dateFromString = formatter.date(from: "2005/12/12 9:24:21")! //"Dec 12, 2005, 9:24 AM"
                 
-                elements.setObject(dateString, forKey: "pubDate" as NSCopying)
-                
+                elements.setObject(date_Set, forKey: "pubDate" as NSCopying)
+                }
+                else{
+                    elements.setObject(dateString, forKey: "pubDate" as NSCopying)
+
+                }
+            
             }
             if imageString != ""{
                 print("image---------->\(imageString)")
@@ -639,7 +714,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             if titleString != "RSS_END"{
                 totalBox.add(elements)
-
+sortAndReloadData()
             }else{
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                     self.tableView.reloadData()
@@ -652,27 +727,20 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
            
         }
         
-        
-        //        print("elements----------->\(elements)")
-        //        
-        //        
-        //
-        //        print("totalBox----------->\(totalBox)")
-        //        print(totalBox)
-
+       
     }
     
-//    func sortAndReloadData() {
-//        let dateDiscripter:NSSortDescriptor = NSSortDescriptor.init(key: "pubDate", ascending: false)
-//        let sortDescriptors:NSArray = [dateDiscripter]
-//        
-//        let data:NSArray = totalBox as NSArray
-//        
-//        dataArray = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
-//        
-//        print(dataArray.description)
-//        tableView.reloadData()
-//    }
+    func sortAndReloadData() {
+        let dateDiscripter:NSSortDescriptor = NSSortDescriptor.init(key: "pubDate", ascending: false)
+        let sortDescriptors:NSArray = [dateDiscripter]
+        
+        let data:NSArray = totalBox as NSArray
+        
+        dataArray = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
+        
+        print("dataArray------->\(dataArray.description)")
+        
+    }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         
@@ -688,11 +756,11 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     
     
-    func showAlert(newsTitle:String,newsLink:String,newsDate:String,newsUrl:String) {
+    func showAlert(newsTitle:String,newsLink:String,newsDate:String,newsUrl:String,newsLink_Name:String) {
         let alertViewControler = UIAlertController(title: "この記事をお気に入り登録しますか？", message: "「ホーム」→「お気に入り」\nより閲覧が可能となります", preferredStyle:.actionSheet)
         let okAction = UIAlertAction(title: "お気に入りに追加", style: .default, handler:{
             (action:UIAlertAction!) -> Void in
-            self.addFavorite(newsTitle:newsTitle,newsLink:newsLink,newsDate:newsDate,newsUrl:newsUrl)
+            self.addFavorite(newsTitle:newsTitle,newsLink:newsLink,newsDate:newsDate,newsUrl:newsUrl,newsLink_Name: newsLink_Name)
         })
         let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
         
@@ -702,7 +770,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
     }
     
-    func addFavorite(newsTitle:String,newsLink:String,newsDate:String,newsUrl:String) {
+    func addFavorite(newsTitle:String,newsLink:String,newsDate:String,newsUrl:String,newsLink_Name:String) {
         
         
         newsTitleArray.append(newsTitle)
@@ -717,6 +785,10 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         newsUrlArray.append(newsUrl)
         UserDefaults.standard.set(newsUrlArray, forKey: "newsUrlArray")
         
+        newsLink_NameArray.append(newsLink_Name)
+        UserDefaults.standard.set(newsLink_NameArray, forKey: "newsLink_NameArray")
+
+        
         SVProgressHUD.showSuccess(withStatus: "お気に入りに\n追加しました")
     }
     
@@ -727,10 +799,13 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         let point = touch!.location(in: tableView)
         let indexPath = tableView.indexPathForRow(at: point)
         
-        let newsTitle = (totalBox[(indexPath?.row)!] as AnyObject).value(forKey: "title") as? String
-        let newsLink = (totalBox[(indexPath?.row)!] as AnyObject).value(forKey: "link") as? String
-        let newsDate = (totalBox[(indexPath?.row)!] as AnyObject).value(forKey: "pubDate") as? String
-        let newsUrl = (totalBox[(indexPath?.row)!] as AnyObject).value(forKey: "image") as? String
+        let newsTitle = (dataArray[(indexPath?.row)!] as AnyObject).value(forKey: "title") as? String
+        let newsLink = (dataArray[(indexPath?.row)!] as AnyObject).value(forKey: "link") as? String
+        let newsDate = (dataArray[(indexPath?.row)!] as AnyObject).value(forKey: "pubDate") as? String
+        let newsUrl = (dataArray[(indexPath?.row)!] as AnyObject).value(forKey: "image") as? String
+        let newsLink_Name = (dataArray[(indexPath?.row)!] as AnyObject).value(forKey: "link_Name") as? String
+
+       
         
         
         for i in newsLinkArray {
@@ -740,7 +815,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             }
         }
         
-        showAlert(newsTitle:newsTitle!,newsLink:newsLink!,newsDate:newsDate!,newsUrl:newsUrl!)
+        showAlert(newsTitle:newsTitle!,newsLink:newsLink!,newsDate:newsDate!,newsUrl:newsUrl!,newsLink_Name: newsLink_Name!)
     }
     
     //    override func prepare(for segue:UIStoryboardSegue, sender:Any?){
@@ -756,7 +831,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
             let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "0")
-            firebase.queryLimited(toLast: 50).observe(.value) { (snapshot,error) in
+            firebase.queryLimited(toLast: 200).observe(.value) { (snapshot,error) in
                 
                 if self.auto_Reload_Check == true{
                     
@@ -780,6 +855,29 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
          appDelegate.items = self.items
         
+        
+        let firebase2 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "1")
+        firebase2.queryLimited(toLast:200).observe(.value) { (snapshot,error) in
+            
+            if self.auto_Reload_Check == true{
+                
+                return
+            }
+            
+            self.auto_Reload_Check = true
+            
+            
+            
+            for item in(snapshot.children){
+                let child = item as! FIRDataSnapshot
+                let postData = BBS_PostData1(snapshot: child, myId: "")
+                self.items2.append(postData)
+            }
+            
+            self.items2.reverse()
+            
+        }
+
         
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }

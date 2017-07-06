@@ -13,6 +13,7 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
     
     var str = String()
     
+    var check = false
     
     @IBOutlet var webView: UIWebView!
     
@@ -45,9 +46,11 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
     
     
     
+    
     func webViewDidStartLoad(_ webView: UIWebView) {
+        if (check == false){
         SVProgressHUD.show()
-        
+        }
     }
     
     func webViewDidFinishLoad(_ webView: UIWebView) {
@@ -56,7 +59,7 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
         
         
         SVProgressHUD.dismiss()
-        
+        check = true
     }
     
     
