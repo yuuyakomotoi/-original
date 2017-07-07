@@ -25,6 +25,8 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     
     var items = [BBS_PostData1]()
     
+
+    
     
     let refreshControl = UIRefreshControl()
     
@@ -41,6 +43,9 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     var next_100_check = false
     
     var count = 50
+    var count2 = 50
+    var count3 = 50
+    var count4 = 50
     
     var check_Count = 0
     
@@ -75,6 +80,13 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         
         let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
         self.items = appDelegate.items
+        self.items = appDelegate.items2
+        self.items = appDelegate.items3
+        self.items = appDelegate.items4
+        
+        
+        
+        
         print("items----------------\(items)")
         
         
@@ -185,6 +197,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         
         let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
         self.post_Check = appDelegate.post_Check
+        
         
         if self.post_Check == true{
             tableView.contentOffset.y = (self.tableView.contentInset.top )
@@ -622,9 +635,6 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     }else if self.count == 100{
                         self.count = 100
                     
-                    }else if self.count == 200{
-                        self.count = 200
-                   
                     }
                     
                     
@@ -658,7 +668,8 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             self.comment_BlurView.isHidden = false
             
             let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "1")
-            firebase.queryLimited(toLast: UInt(Int(count))).observe(.value) { (snapshot,error) in
+            firebase.queryLimited(toLast: UInt(Int(count2))).observe(.value) { (snapshot,error) in
+                
                 
                 if self.auto_Reload_Check == true{
                     SVProgressHUD.dismiss()
@@ -669,7 +680,9 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     return
                 }
                 
+                
                 self.auto_Reload_Check = true
+                
                 
                 if self.segmentCount != 1{
                     SVProgressHUD.dismiss()
@@ -680,10 +693,10 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     return
                 }
                 
-                
                 for item in(snapshot.children){
                     let child = item as! FIRDataSnapshot
                     let postData = BBS_PostData1(snapshot: child, myId: "")
+                    
                     var ng_flg = false
                     
                     for user in self.ng_UserArayy {
@@ -691,6 +704,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         print("c --> \(self.ng_UserArayy)")
                         if ( postData.userId == user ) {
                             ng_flg = true
+                            self.check_Count += 1
                             print("      --> NG \(ng_flg)")
                         }
                         else {
@@ -702,20 +716,43 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         self.items.append(postData)
                     }
                 }
-                if self.items.count != 50{
-                    if self.items.count != 150{
-                        //if self.segmentCount != 0{
-                        self.count = 50
-                        self.auto_Reload_Check = false
+                
+                
+                if self.items.count < 26{
+                    if self.count2 == 50{
+                        self.count2 = 100
+                        
                         if (self.check == false){
                             self.check = true
+                            self.auto_Reload_Check = false
+                            self.check_Count = 0
                             self.loadAllData(segmentCount:segmentCount)
-                            print("リターン------")
-                            return
                             
+                            return
                         }
+                    }
+                }
+                
+                
+                
+                if self.items.count + self.check_Count != self.count2{
+                    
+                    if self.count2 == 50{
+                        self.count2 = 50
                         
+                    }else if self.count2 == 100{
+                        self.count2 = 100
                         
+                    }
+                
+                    self.auto_Reload_Check = false
+                    if (self.check == false){
+                        self.check = true
+                        self.check_Count = 0
+                        self.loadAllData(segmentCount:segmentCount)
+                        
+                        print("リターン------")
+                        return
                         
                     }
                 }
@@ -723,10 +760,10 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 
                 self.items.reverse()
                 self.tableView.reloadData()
-                
                 let CGPoint2 = self.tableView.contentOffset
                 
                 self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+                print(self.count2)
                 self.timer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
             }
@@ -737,7 +774,8 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             self.comment_BlurView.isHidden = false
             
             let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "2")
-            firebase.queryLimited(toLast: UInt(Int(count))).observe(.value) { (snapshot,error) in
+            firebase.queryLimited(toLast: UInt(Int(count3))).observe(.value) { (snapshot,error) in
+                
                 
                 if self.auto_Reload_Check == true{
                     SVProgressHUD.dismiss()
@@ -748,7 +786,9 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     return
                 }
                 
+                
                 self.auto_Reload_Check = true
+                
                 
                 if self.segmentCount != 2{
                     SVProgressHUD.dismiss()
@@ -759,10 +799,10 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     return
                 }
                 
-                
                 for item in(snapshot.children){
                     let child = item as! FIRDataSnapshot
                     let postData = BBS_PostData1(snapshot: child, myId: "")
+                    
                     var ng_flg = false
                     
                     for user in self.ng_UserArayy {
@@ -770,6 +810,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         print("c --> \(self.ng_UserArayy)")
                         if ( postData.userId == user ) {
                             ng_flg = true
+                            self.check_Count += 1
                             print("      --> NG \(ng_flg)")
                         }
                         else {
@@ -781,20 +822,43 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         self.items.append(postData)
                     }
                 }
-                if self.items.count != 50{
-                    if self.items.count != 150{
-                        //if self.segmentCount != 0{
-                        self.count = 50
-                        self.auto_Reload_Check = false
+                
+                
+                if self.items.count < 26{
+                    if self.count3 == 50{
+                        self.count3 = 100
+                        
                         if (self.check == false){
                             self.check = true
+                            self.auto_Reload_Check = false
+                            self.check_Count = 0
                             self.loadAllData(segmentCount:segmentCount)
-                            print("リターン------")
-                            return
                             
+                            return
                         }
+                    }
+                }
+                
+                
+                
+                if self.items.count + self.check_Count != self.count3{
+                    
+                    if self.count3 == 50{
+                        self.count3 = 50
                         
+                    }else if self.count3 == 100{
+                        self.count3 = 100
                         
+                    }
+                    
+                    self.auto_Reload_Check = false
+                    if (self.check == false){
+                        self.check = true
+                        self.check_Count = 0
+                        self.loadAllData(segmentCount:segmentCount)
+                        
+                        print("リターン------")
+                        return
                         
                     }
                 }
@@ -802,10 +866,10 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 
                 self.items.reverse()
                 self.tableView.reloadData()
-                
                 let CGPoint2 = self.tableView.contentOffset
                 
                 self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+                print(self.count3)
                 self.timer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
             }
@@ -816,7 +880,8 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             self.comment_BlurView.isHidden = false
             
             let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "3")
-            firebase.queryLimited(toLast: UInt(Int(count))).observe(.value) { (snapshot,error) in
+            firebase.queryLimited(toLast: UInt(Int(count4))).observe(.value) { (snapshot,error) in
+                
                 
                 if self.auto_Reload_Check == true{
                     SVProgressHUD.dismiss()
@@ -827,7 +892,9 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     return
                 }
                 
+                
                 self.auto_Reload_Check = true
+                
                 
                 if self.segmentCount != 3{
                     SVProgressHUD.dismiss()
@@ -838,10 +905,10 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     return
                 }
                 
-                
                 for item in(snapshot.children){
                     let child = item as! FIRDataSnapshot
                     let postData = BBS_PostData1(snapshot: child, myId: "")
+                    
                     var ng_flg = false
                     
                     for user in self.ng_UserArayy {
@@ -849,6 +916,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         print("c --> \(self.ng_UserArayy)")
                         if ( postData.userId == user ) {
                             ng_flg = true
+                            self.check_Count += 1
                             print("      --> NG \(ng_flg)")
                         }
                         else {
@@ -860,20 +928,43 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         self.items.append(postData)
                     }
                 }
-                if self.items.count != 50{
-                    if self.items.count != 150{
-                        //if self.segmentCount != 0{
-                        self.count = 50
-                        self.auto_Reload_Check = false
+                
+                
+                if self.items.count < 26{
+                    if self.count4 == 50{
+                        self.count4 = 100
+                        
                         if (self.check == false){
                             self.check = true
+                            self.auto_Reload_Check = false
+                            self.check_Count = 0
                             self.loadAllData(segmentCount:segmentCount)
-                            print("リターン------")
-                            return
                             
+                            return
                         }
+                    }
+                }
+                
+                
+                
+                if self.items.count + self.check_Count != self.count4{
+                    
+                    if self.count4 == 50{
+                        self.count4 = 50
                         
+                    }else if self.count4 == 100{
+                        self.count4 = 100
                         
+                    }
+                    
+                    self.auto_Reload_Check = false
+                    if (self.check == false){
+                        self.check = true
+                        self.check_Count = 0
+                        self.loadAllData(segmentCount:segmentCount)
+                        
+                        print("リターン------")
+                        return
                         
                     }
                 }
@@ -881,10 +972,10 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 
                 self.items.reverse()
                 self.tableView.reloadData()
-                
                 let CGPoint2 = self.tableView.contentOffset
                 
                 self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+                print(self.count4)
                 self.timer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
             }
@@ -984,23 +1075,22 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         //self.tableView.setContentOffset(CGPoint(x: 0, y: self.tableView.contentInset.top ), animated: false)
         
         //}
+        if (segmentCount == 0){
         if self.items.count + self.check_Count != self.count{
             
             if self.count == 50{
                 self.count = 50
-                        }else if self.count == 100{
+                
+            }else if self.count == 100{
                 self.count = 100
-            
-            }else if self.count == 200{
-                self.count = 200
-           
+                
             }
             
             
             self.auto_Reload_Check = false
             if (self.check == false){
                 self.check = true
-               self.check_Count = 0
+                self.check_Count = 0
                 self.loadAllData(segmentCount:segmentCount)
                 
                 print("リターン------")
@@ -1008,7 +1098,77 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 
             }
         }
-        
+        }else if (segmentCount == 1){
+            if self.items.count + self.check_Count != self.count2{
+                
+                if self.count2 == 50{
+                    self.count2 = 50
+                    
+                }else if self.count2 == 100{
+                    self.count2 = 100
+                    
+                }
+                
+                
+                self.auto_Reload_Check = false
+                if (self.check == false){
+                    self.check = true
+                    self.check_Count = 0
+                    self.loadAllData(segmentCount:segmentCount)
+                    
+                    print("リターン------")
+                    return
+                    
+                }
+            }
+
+        }else if (segmentCount == 2){
+            if self.items.count + self.check_Count != self.count2{
+                
+                if self.count3 == 50{
+                    self.count3 = 50
+                    
+                }else if self.count3 == 100{
+                    self.count3 = 100
+                    
+                }
+                
+                
+                self.auto_Reload_Check = false
+                if (self.check == false){
+                    self.check = true
+                    self.check_Count = 0
+                    self.loadAllData(segmentCount:segmentCount)
+                    
+                    print("リターン------")
+                    return
+                    
+                }
+            }
+        }else if (segmentCount == 3){
+            if self.items.count + self.check_Count != self.count2{
+                
+                if self.count4 == 50{
+                    self.count4 = 50
+                    
+                }else if self.count4 == 100{
+                    self.count4 = 100
+                    
+                }
+                
+                
+                self.auto_Reload_Check = false
+                if (self.check == false){
+                    self.check = true
+                    self.check_Count = 0
+                    self.loadAllData(segmentCount:segmentCount)
+                    
+                    print("リターン------")
+                    return
+                    
+                }
+            }
+        }
         self.segmentButton.isEnabled = true
         tableView.allowsSelection = true
         self.view.isUserInteractionEnabled = true

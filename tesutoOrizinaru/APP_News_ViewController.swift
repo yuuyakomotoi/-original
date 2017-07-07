@@ -1,8 +1,8 @@
 //
-//  ViewController.swift
+//  APP_News_ViewController.swift
 //  tesutoOrizinaru
 //
-//  Created by 小本裕也 on 2017/03/26.
+//  Created by 小本裕也 on 2017/07/07.
 //  Copyright © 2017年 小本裕也. All rights reserved.
 //
 
@@ -10,14 +10,11 @@ import UIKit
 import SVProgressHUD
 import SDWebImage
 
-import Firebase   // 先頭でFirebaseをimportしておく
-import FirebaseAuth
 
 
-class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate,XMLParserDelegate,URLSessionDownloadDelegate{
-    
-    
-    var auto_Reload_Check = false
+class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableViewDelegate,XMLParserDelegate,URLSessionDownloadDelegate{
+   
+   
     
     let refreshControl = UIRefreshControl()
     
@@ -55,10 +52,11 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     var imageString = NSMutableString()
     
     
-     let urlArray = ["http://shironekotennisms.net/feed","http://shironekotennis-kouryaku.xyz/feed",""]//URLリスト
+    let urlArray = ["http://gamebiz.jp/?feed=rss","http://www.4gamer.net/rss/smartphone/smartphone_index.xml",""]//URLリスト
     
     
     var dataArray = NSArray()
+    
     
     //お気に入りに登録用の配列
     var newsTitleArray:[String] = []
@@ -68,78 +66,21 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     var newsLink_NameArray:[String] = []
     
     
-    //Firebase関連
-    var userId:String = ""
-    
-    var items:[BBS_PostData1] = []
-    var items2:[BBS_PostData1] = []
-    var items3:[BBS_PostData1] = []
-    var items4:[BBS_PostData1] = []
     
     @IBOutlet var tableView: UITableView!
     
     
     
     
-    
-    //ストリング型でもいい
-    
-    
-    //バージョン管理
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        UITabBar.appearance().tintColor = UIColor(red: 1, green: 0.6, blue: 0, alpha: 1)
+        
         
         if totalBox == []{
             SVProgressHUD.show()
         }
-        
-        
-        if UserDefaults.standard.object(forKey: "userId") == nil{
-            let databaseRef = FIRDatabase.database().reference()
-            
-            //時間
-            let date = NSDate()
-            
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd HH:mm"
-            
-            let dateString:String = formatter.string(from:date  as Date)
-            
-            let user:NSDictionary = ["date":dateString]
-            
-            //            databaseRef.child(Const.PostPath2).childByAutoId().setValue(user)
-            
-            
-            // Firebaseが生成したIDを取得
-            let userID = databaseRef.child(Const.PostPath2).childByAutoId()
-            
-            userID.setValue(user)
-            
-            //userID.setValue()
-            
-            UserDefaults.standard.set(String(describing: userID), forKey:"userId" )
-            
-            
-        }else{
-            
-        }
-        
-        
-        
     
-        
-        
-        loadAllData()
-      
-        
-        
-        
-        //引っ張って更新
-      
         
         refreshControl.attributedTitle = NSAttributedString(string: "引っ張って更新")
         refreshControl.addTarget(self, action:#selector(delay), for:UIControlEvents.valueChanged)
@@ -161,7 +102,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         }
         
         
-       
+        
         
         
     }
@@ -170,14 +111,8 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         super.viewWillAppear(animated)
         
         if totalBox != []{
-        SVProgressHUD.dismiss()
+            SVProgressHUD.dismiss()
         }
-        
-        
-        userId = UserDefaults.standard.object(forKey: "userId") as! String
-        print("---------------->>>\(userId)")
-        
-        
         
         if UserDefaults.standard.object(forKey: "newsTitleArray") != nil{
             
@@ -201,7 +136,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     }
     
     
-
+    
     
     //引っ張って更新メソッド
     //引っ張って更新メソッドの時にもパースしたものを更新したいので上のコードをメソッドの中に入れる
@@ -210,19 +145,19 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     func delay(){
         
         if refresh_Chack == false{
-        refresh_Chack = true
-        convery_count = urlArray.count
-        
-        for url_string in urlArray{
-            download_rss(url_str: url_string)
+            refresh_Chack = true
+            convery_count = urlArray.count
             
+            for url_string in urlArray{
+                download_rss(url_str: url_string)
+                
             }
             
-            }else{
+        }else{
             
-
+            
         }
-            }
+    }
     
     
     
@@ -245,21 +180,21 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         let titleLabel = cell.viewWithTag(1) as! UILabel
         let linkLabel = cell.viewWithTag(2) as! UILabel
         let dateLabel = cell.viewWithTag(3) as! UILabel
-       let thumbnailImage = cell.viewWithTag(4) as! UIImageView
+        let thumbnailImage = cell.viewWithTag(4) as! UIImageView
         let favoriteButton = cell.viewWithTag(5) as! UIButton
         favoriteButton.backgroundColor = UIColor.clear
         
         
         if (( (dataArray[indexPath.row] as AnyObject).value(forKey: "title") ) != nil) {
-        titleLabel.text = (dataArray[indexPath.row] as AnyObject).value(forKey: "title") as? String
+            titleLabel.text = (dataArray[indexPath.row] as AnyObject).value(forKey: "title") as? String
         }
         
         if (( (dataArray[indexPath.row] as AnyObject).value(forKey: "link_Name") ) != nil) {
-        linkLabel.text = (dataArray[indexPath.row] as AnyObject).value(forKey: "link_Name") as? String
+            linkLabel.text = (dataArray[indexPath.row] as AnyObject).value(forKey: "link_Name") as? String
         }
-       
+        
         if (( (dataArray[indexPath.row] as AnyObject).value(forKey: "pubDate") ) != nil) {
-        dateLabel.text = (dataArray[indexPath.row] as AnyObject).value(forKey: "pubDate") as? String
+            dateLabel.text = (dataArray[indexPath.row] as AnyObject).value(forKey: "pubDate") as? String
         }
         
         if (( (dataArray[indexPath.row] as AnyObject).value(forKey: "image") ) != nil) {
@@ -271,7 +206,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         else {
             thumbnailImage.image = UIImage(named: "No Image.png")
         }
-
+        
         
         
         favoriteButton.addTarget(self, action:#selector(favoriteButton(sender:event:)), for:  UIControlEvents.touchUpInside)
@@ -304,10 +239,10 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         let linkURL = (dataArray[indexPath.row] as AnyObject).value(forKey: "link") as? String
         newsModalViewController.str = linkURL!
+    
+        present(newsModalViewController, animated: true, completion: nil)
         
-        //navigationControllerをstoryboardでセットしてから使う
         
-        self.navigationController?.pushViewController(newsModalViewController, animated: true)
         
         
     }
@@ -334,6 +269,8 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         
         
+        //ここにブレイクポイントを打ったが呼ばれない
+        
         print("finish download")
         
         var data: NSData!
@@ -357,7 +294,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     func convertRSS(rss:String){
         
-      
+        
         
         
         // 正規表現に置き換える
@@ -421,11 +358,11 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             
             
-//            print(result5.debugDescription)
+            //            print(result5.debugDescription)
             
             
             
-            rss_data += result6
+            rss_data += result
         }else if convery_count == 0{
             print(convery_count)
             //
@@ -446,8 +383,8 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             result6 = result5.pregReplace(pattern: "\n\t\t", with: "")
             
-            result7 = result6.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_END<\\/title><\\/item><\\/ rss>")
-
+            result2 = result.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_END<\\/title><\\/item><\\/ rss>")
+            
             
             
             
@@ -462,26 +399,15 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             
             
-            rss_data2 += result7
+            rss_data2 += result2
             
-//            print(result7.debugDescription)
+            //            print(result7.debugDescription)
             
             self.data = self.rss_data.data(using: String.Encoding.utf8)! as NSData
             self.data2 = self.rss_data2.data(using: String.Encoding.utf8)! as NSData
             
             
-            //            let formatter = DateFormatter()
-            //            formatter.dateFormat = "yyyy/MM/dd HH:mm:ss" //表示形式を設定
-            //
-            //            //現在時刻
-            //            let now = Date(timeIntervalSinceNow: 0) //"Dec 13, 2016, 4:10 PM"
-            //
-            //            //現在時刻を文字列で取得                   nouにデートストリング入れる
-            //            let nowString = formatter.string(from: now) //"2016/12/13 16:10:31"
-            //
-            //            //文字列から日付を取得
-            //            let dateFromString = formatter.date(from: "2005/12/12 9:24:21")! //"Dec 12, 2005, 9:24 AM"
-            
+        
             
             //print(self.rss_data2)
             //print(rss_data.debugDescription)
@@ -524,9 +450,9 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             
         }
-    
+        
     }
-
+    
     
     //タグを見つけた時
     //parserのデリゲートメソッド
@@ -586,7 +512,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             imageString.append(string)
         }
-
+        
     }
     
     //タグの終了を見つけた時
@@ -599,13 +525,13 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 
                 print("title---------->\(titleString)")
                 elements.setObject(titleString, forKey: "title" as NSCopying)
-            
+                
                 if (self.convery_count == 1){
                     link_Name = "白猫テニス攻略まとめ！ダグラス速報"
-                elements.setObject(link_Name, forKey: "link_Name" as NSCopying)
+                    elements.setObject(link_Name, forKey: "link_Name" as NSCopying)
                 }else if (self.convery_count == 0){
                     link_Name = "白猫テニスまとめ速報"
-                elements.setObject(link_Name, forKey: "link_Name" as NSCopying)
+                    elements.setObject(link_Name, forKey: "link_Name" as NSCopying)
                 }
                 
             }
@@ -615,90 +541,90 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 elements.setObject(linkString, forKey: "link" as NSCopying)
             }
             if dateString != ""{
-               
+                
                 if (self.convery_count == 1)||(self.convery_count == 0){
-
-                var date = ""
-                
-//                var date1 = ""
-                var date2 = ""
-                var date3 = ""
-                var date4 = ""
-                var date5 = ""
-                var date_Set = ""
-                
-                date = String(dateString).pregReplace(pattern: "\\s|,", with: "")
-                
-                
-//     サンプル     Mon03Jul201701:00:38+0000
-               
-                
-//                date1 = String(date).pregReplace(pattern: "[a-z|A-Z]{3}\\d\\d[a-z|A-Z]{3}|.........0000", with: "")
-                //2017
-                
-                
+                    
+                    var date = ""
+                    
+                    //                var date1 = ""
+                    var date2 = ""
+                    var date3 = ""
+                    var date4 = ""
+                    var date5 = ""
+                    var date_Set = ""
+                    
+                    date = String(dateString).pregReplace(pattern: "\\s|,", with: "")
+                    
+                    
+                    //     サンプル     Mon03Jul201701:00:38+0000
+                    
+                    
+                    //                date1 = String(date).pregReplace(pattern: "[a-z|A-Z]{3}\\d\\d[a-z|A-Z]{3}|.........0000", with: "")
+                    //2017
+                    
+                    
                     date2 = date.pregReplace(pattern: "[a-zA-Z]{3}|\\d{4}\\d\\d:\\d\\d:\\d\\d\\+0000", with: "")
-                //日　03
-               
-                date3 = date.pregReplace(pattern: "[a-z|A-Z]{3}\\d\\d[a-z|A-Z]{3}\\d\\d\\d\\d|:\\d\\d\\+0000", with: "")
-                //日時　09:10
-                
-                date4 = date.pregReplace(pattern: "\\d{4}\\d\\d:\\d\\d:\\d\\d\\+0000", with: "")
-                date5 = date4.pregReplace(pattern: "[a-zA-Z]{3}\\d\\d", with: "")
-                //月
-                
-                switch date5 {
-                case "Jan":
-                    date5 = "01"
-                case "Feb":
-                    date5 = "02"
-                case "Mar":
-                    date5 = "03"
-                case "Apr":
-                    date5 = "04"
-                case "May":
-                    date5 = "05"
-                case "Jun":
-                    date5 = "06"
-                case "Jul":
-                    date5 = "07"
-                case "Aug":
-                    date5 = "08"
-                case "Sep":
-                    date5 = "09"
-                case "Oct":
-                    date5 = "10"
-                case "Nov":
-                    date5 = "11"
-                case "Dec":
-                    date5 = "12"
-                default:
-                    break
-                }
-                
-                date_Set = "\(date5)-\(date2) \(date3)"
-                
+                    //日　03
+                    
+                    date3 = date.pregReplace(pattern: "[a-z|A-Z]{3}\\d\\d[a-z|A-Z]{3}\\d\\d\\d\\d|:\\d\\d\\+0000", with: "")
+                    //日時　09:10
+                    
+                    date4 = date.pregReplace(pattern: "\\d{4}\\d\\d:\\d\\d:\\d\\d\\+0000", with: "")
+                    date5 = date4.pregReplace(pattern: "[a-zA-Z]{3}\\d\\d", with: "")
+                    //月
+                    
+                    switch date5 {
+                    case "Jan":
+                        date5 = "01"
+                    case "Feb":
+                        date5 = "02"
+                    case "Mar":
+                        date5 = "03"
+                    case "Apr":
+                        date5 = "04"
+                    case "May":
+                        date5 = "05"
+                    case "Jun":
+                        date5 = "06"
+                    case "Jul":
+                        date5 = "07"
+                    case "Aug":
+                        date5 = "08"
+                    case "Sep":
+                        date5 = "09"
+                    case "Oct":
+                        date5 = "10"
+                    case "Nov":
+                        date5 = "11"
+                    case "Dec":
+                        date5 = "12"
+                    default:
+                        break
+                    }
+                    
+                    date_Set = "\(date5)-\(date2) \(date3)"
+                    
                     print("date---------->\(date_Set)")
-                
-                //                let formatter = DateFormatter()
-                //                formatter.dateFormat = "yyyy/MM/dd HH:mm:ss" //表示形式を設定
-                //
-                //                //現在時刻
-                //                let now = Date(timeIntervalSinceNow: 0) //"Dec 13, 2016, 4:10 PM"
-                //
-                //                //現在時刻を文字列で取得
-                //                let nowString = formatter.string(from: now) //"2016/12/13 16:10:31"
-                //
-                //                //文字列から日付を取得
-                //               let dateFromString = formatter.date(from: "2005/12/12 9:24:21")! //"Dec 12, 2005, 9:24 AM"
-                
-                elements.setObject(date_Set, forKey: "pubDate" as NSCopying)
+                    
+                    //                let formatter = DateFormatter()
+                    //                formatter.dateFormat = "yyyy/MM/dd HH:mm:ss" //表示形式を設定
+                    //
+                    //                //現在時刻
+                    //                let now = Date(timeIntervalSinceNow: 0) //"Dec 13, 2016, 4:10 PM"
+                    //
+                    //                //現在時刻を文字列で取得
+                    //                let nowString = formatter.string(from: now) //"2016/12/13 16:10:31"
+                    //
+                    //                //文字列から日付を取得
+                    //               let dateFromString = formatter.date(from: "2005/12/12 9:24:21")! //"Dec 12, 2005, 9:24 AM"
+                    
+                    elements.setObject(date_Set, forKey: "pubDate" as NSCopying)
                 }
                 else{
                     elements.setObject(dateString, forKey: "pubDate" as NSCopying)
-
+                    
                 }
-            
+                
             }
             if imageString != ""{
                 print("image---------->\(imageString)")
@@ -708,25 +634,25 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             }
             
             if titleString != "RSS_Check"{
-            
-            if titleString != "RSS_END"{
-                totalBox.add(elements)
-sortAndReloadData()
-            }else{
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                   self.refreshControl.endRefreshing()
-                    self.tableView.reloadData()
-                    self.refresh_Chack = false
-                    SVProgressHUD.dismiss()
-                print(self.totalBox.debugDescription)
+                
+                if titleString != "RSS_END"{
+                    totalBox.add(elements)
+                    sortAndReloadData()
+                }else{
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        self.refreshControl.endRefreshing()
+                        self.tableView.reloadData()
+                        self.refresh_Chack = false
+                        SVProgressHUD.dismiss()
+                        print(self.totalBox.debugDescription)
+                    }
+                    
                 }
-
-                            }
             }
-           
+            
         }
         
-       
+        
     }
     
     func sortAndReloadData() {
@@ -752,7 +678,7 @@ sortAndReloadData()
         }
         
     }
-
+    
     
     
     
@@ -787,7 +713,7 @@ sortAndReloadData()
         
         newsLink_NameArray.append(newsLink_Name)
         UserDefaults.standard.set(newsLink_NameArray, forKey: "newsLink_NameArray")
-
+        
         
         SVProgressHUD.showSuccess(withStatus: "お気に入りに\n追加しました")
     }
@@ -804,8 +730,8 @@ sortAndReloadData()
         let newsDate = (dataArray[(indexPath?.row)!] as AnyObject).value(forKey: "pubDate") as? String
         let newsUrl = (dataArray[(indexPath?.row)!] as AnyObject).value(forKey: "image") as? String
         let newsLink_Name = (dataArray[(indexPath?.row)!] as AnyObject).value(forKey: "link_Name") as? String
-
-       
+        
+        
         
         
         for i in newsLinkArray {
@@ -818,128 +744,22 @@ sortAndReloadData()
         showAlert(newsTitle:newsTitle!,newsLink:newsLink!,newsDate:newsDate!,newsUrl:newsUrl!,newsLink_Name: newsLink_Name!)
     }
     
-    //    override func prepare(for segue:UIStoryboardSegue, sender:Any?){
-    //        let newsModalViewController:NewsModalViewController = segue.destination as! NewsModalViewController
-    //        NewsModalViewController.url =  ""
+    
+    
+    @IBAction func back(_ sender: Any) {
+    dismiss(animated: true, completion: nil)
+    }
     
     
     
     
-    func loadAllData(){
-        
-        
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        
-            let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "0")
-            firebase.queryLimited(toLast: 50).observe(.value) { (snapshot,error) in
-                
-                if self.auto_Reload_Check == true{
-                    
-                    return
-                }
-                
-                self.auto_Reload_Check = true
-                
-                
-                
-                for item in(snapshot.children){
-                    let child = item as! FIRDataSnapshot
-                    let postData = BBS_PostData1(snapshot: child, myId: "")
-                    self.items.append(postData)
-                    }
-                
-                self.items.reverse()
     
-}
-        
-        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-         appDelegate.items = self.items
-        
-        
-        let firebase2 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "1")
-        firebase2.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
-            
-            if self.auto_Reload_Check == true{
-                
-                return
-            }
-            
-            self.auto_Reload_Check = true
-            
-            
-            
-            for item in(snapshot.children){
-                let child = item as! FIRDataSnapshot
-                let postData = BBS_PostData1(snapshot: child, myId: "")
-                self.items2.append(postData)
-            }
-            
-            self.items2.reverse()
-            
-        }
-        
-        let appDelegate2:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate2.items2 = self.items2
-
-        
-        let firebase3 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "2")
-        firebase3.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
-            
-            if self.auto_Reload_Check == true{
-                
-                return
-            }
-            
-            self.auto_Reload_Check = true
-            
-            
-            
-            for item in(snapshot.children){
-                let child = item as! FIRDataSnapshot
-                let postData = BBS_PostData1(snapshot: child, myId: "")
-                self.items3.append(postData)
-            }
-            
-            self.items3.reverse()
-            
-        }
-        
-        let appDelegate3:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate3.items3 = self.items3
-
-        
-        let firebase4 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "3")
-        firebase4.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
-            
-            if self.auto_Reload_Check == true{
-                
-                return
-            }
-            
-            self.auto_Reload_Check = true
-            
-            
-            
-            for item in(snapshot.children){
-                let child = item as! FIRDataSnapshot
-                let postData = BBS_PostData1(snapshot: child, myId: "")
-                self.items4.append(postData)
-            }
-            
-            self.items4.reverse()
-            
-        }
-        
-        let appDelegate4:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate4.items4 = self.items4
-
-        
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-        }
+    @IBAction func supportButton(_ sender: Any) {
+        let support = self.storyboard?.instantiateViewController(withIdentifier: "support")
+        present(support!, animated: true, completion: nil)
+    }
     
 
-    
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -948,64 +768,6 @@ sortAndReloadData()
     
 }
 
-extension String {
-    //絵文字など(2文字分)も含めた文字数を返します
-    var count:Int{
-        let string_NS = self as NSString
-        return string_NS.length
-    }
-    
-    //正規表現の検索をします
-    func pregMatche(pattern: String, options: NSRegularExpression.Options = []) -> Bool {
-        let regex = try! NSRegularExpression(pattern: pattern, options: options)
-        let matches = regex.matches(in: self, options: [], range: NSMakeRange(0, self.count))
-        return matches.count > 0
-    }
-    
-    //正規表現の検索結果を利用できます
-    func pregMatche(pattern: String, options: NSRegularExpression.Options = [], matches: inout [String]) -> Bool {
-        guard let regex = try? NSRegularExpression(pattern: pattern, options: options) else {
-            return false
-        }
-        let targetStringRange = NSRange(location: 0, length: self.count)
-        let results = regex.matches(in: self, options: [], range: targetStringRange)
-        for i in 0 ..< results.count{
-            for j in 0 ..< results[i].numberOfRanges{
-                let range = results[i].rangeAt(j)
-                matches.append((self as NSString).substring(with: range))
-            }
-        }
-        return results.count > 0
-    }
-    
-    //正規表現の置換をします
-    func pregReplace(pattern: String, with: String, options: NSRegularExpression.Options = []) -> String {
-        let regex = try! NSRegularExpression(pattern: pattern, options: options)
-        return regex.stringByReplacingMatches(in: self, options: [], range: NSMakeRange(0, self.count), withTemplate: with)
-
-}
-
-    
-    func toDate(dateFormat:String) -> Date?{
-        let formatter = DateFormatter()
-        formatter.dateFormat = dateFormat
-        
-        return formatter.date(from: self)
-    }
-    
-}
-
-extension Date{
-    
-    func toString(dateFormat:String) -> String? {
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = dateFormat
-        
-        return formatter.string(from: self)
-    }
-
-}
 
 //var alphabet = "title=ABCDE&body=FGHIJ"
 //

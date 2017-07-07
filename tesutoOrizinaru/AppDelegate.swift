@@ -15,8 +15,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     var items:[BBS_PostData1] = []
-
+    var items2:[BBS_PostData1] = []
+    var items3:[BBS_PostData1] = []
+    var items4:[BBS_PostData1] = []
+    
     var post_Check = false
+    
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
