@@ -19,7 +19,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var items3:[BBS_PostData1] = []
     var items4:[BBS_PostData1] = []
     
+    var id:[BBS_PostData1] = []
+    
     var post_Check = false
+    
+    
+    var movie_dataArray:NSArray? = []
+    
+    var dataArray:NSArray? = []
     
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {

@@ -78,6 +78,28 @@ class MovieViewController: UIViewController,UITableViewDataSource,UITableViewDel
         
         
         
+        
+        totalBox = []
+        dataArray = []
+
+        for urlAll in urlArray{
+            
+            let url = urlAll  //ここにサイトのURLを入れる
+            
+            let urlToSend:URL = URL(string:url)!
+            
+            
+            
+            
+            parser = XMLParser(contentsOf: urlToSend)!
+            parser.delegate = self
+            parser.parse()
+            tableView.reloadData()//テーブルビュー更新
+        }
+
+        
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -107,26 +129,6 @@ class MovieViewController: UIViewController,UITableViewDataSource,UITableViewDel
     }
     
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        //xmlを解析する(パース)
-        totalBox = []
-        for urlAll in urlArray{
-            
-            let url = urlAll  //ここにサイトのURLを入れる
-            
-            let urlToSend:URL = URL(string:url)!
-            
-            
-            
-            
-            parser = XMLParser(contentsOf: urlToSend)!
-            parser.delegate = self
-            parser.parse()
-            tableView.reloadData()//テーブルビュー更新
-        }
-
-    }
     
     //引っ張って更新メソッド
     //引っ張って更新メソッドの時にもパースしたものを更新したいので上のコードをメソッドの中に入れる

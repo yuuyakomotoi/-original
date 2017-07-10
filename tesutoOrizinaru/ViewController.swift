@@ -76,6 +76,9 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     var items3:[BBS_PostData1] = []
     var items4:[BBS_PostData1] = []
     
+    
+    var id:[BBS_PostData1] = []
+    
     @IBOutlet var tableView: UITableView!
     
     
@@ -92,6 +95,8 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         super.viewDidLoad()
         
         UITabBar.appearance().tintColor = UIColor(red: 1, green: 0.6, blue: 0, alpha: 1)
+        
+        
         
         if totalBox == []{
             SVProgressHUD.show()
@@ -217,9 +222,9 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             download_rss(url_str: url_string)
             
             }
-            
+            tableView.reloadData()
             }else{
-            
+            tableView.reloadData()
 
         }
             }
@@ -492,6 +497,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                     if self.parser != nil {
                         
                         self.totalBox = []
+                        self.dataArray = []
                         
                         convery_count = 1
                         
@@ -845,6 +851,24 @@ sortAndReloadData()
                 for item in(snapshot.children){
                     let child = item as! FIRDataSnapshot
                     let postData = BBS_PostData1(snapshot: child, myId: "")
+                    
+                    let data = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: postData.id)
+                    data.observe(.value) { (snapshot,error) in
+                        
+                        for item in(snapshot.children){
+                            let child = item as! FIRDataSnapshot
+                            let postData = BBS_PostData1(snapshot: child, myId: "")
+                            self.id.append(postData)
+                    
+                            let appDelegate_id:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+                            appDelegate_id.id = self.id
+                        }
+                        
+                        
+                    }
+
+                    
+                    
                     self.items.append(postData)
                     }
                 

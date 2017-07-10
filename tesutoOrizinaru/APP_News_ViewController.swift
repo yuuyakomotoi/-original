@@ -52,10 +52,10 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     var imageString = NSMutableString()
     
     
-    let urlArray = ["http://gamebiz.jp/?feed=rss","http://www.4gamer.net/rss/smartphone/smartphone_index.xml",""]//URLリスト
+    let urlArray = ["http://gamebiz.jp/?feed=rss","http://www.4gamer.net/rss/smartphone/smartphone_index.xml"]//URLリスト
     
     
-    var dataArray = NSArray()
+    var dataArray:NSArray = []
     
     
     //お気に入りに登録用の配列
@@ -92,17 +92,28 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         tableView.delegate = self
         tableView.dataSource = self
         
+        print(dataArray)
         
+        if (self.dataArray == []){
+            print(dataArray)
+            let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+            self.dataArray = appDelegate.dataArray!
+            
+            
+            print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         
-        convery_count = urlArray.count
-        
-        for url_string in urlArray{
-            download_rss(url_str: url_string)
+            
+            convery_count = urlArray.count
+            
+            for url_string in urlArray{
+                download_rss(url_str: url_string)
+                
+            }
             
         }
+
         
-        
-        
+        //refuresuつけずに
         
         
     }
@@ -136,6 +147,11 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     }
     
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+      
+            }
     
     
     //引っ張って更新メソッド
@@ -252,43 +268,62 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         // 通信のコンフィグを用意.
         let config: URLSessionConfiguration = URLSessionConfiguration.background(withIdentifier: "backgroundSession")
         // Sessionを作成する.
-        let session: URLSession = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        //        let session: URLSession = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        let session: URLSession = URLSession.shared
         
         // ダウンロード先のURLからリクエストを生成.
         let url:NSURL = NSURL(string: url_str)!
         let request: URLRequest =  URLRequest(url: url as URL)
         
         // ダウンロードタスクを生成.
-        let myTask: URLSessionDownloadTask = session.downloadTask(with: request)
+        //        let myTask: URLSessionDownloadTask = session.downloadTask(with: request)
+        
+        let myTask = session.downloadTask(with: request) { (url, response, error) in
+            
+            print("finish download")
+            
+            var data: NSData!
+            
+            do {
+                data = try NSData(contentsOf: url!, options: NSData.ReadingOptions.alwaysMapped)
+            } catch {
+                print(error)
+            }
+            
+            let rss = String(data: data as Data, encoding: .utf8)!
+            
+            
+            self.convertRSS(rss:rss)
+            
+        
+        }
         
         // タスクを実行.
         myTask.resume()
-        
     }
-    
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         
         
-        //ここにブレイクポイントを打ったが呼ばれない
-        
-        print("finish download")
-        
-        var data: NSData!
-        
-        do {
-            data = try NSData(contentsOf: location, options: NSData.ReadingOptions.alwaysMapped)
-        } catch {
-            print(error)
-        }
-        
-        let rss = String(data: data as Data, encoding: .utf8)!
-        
-        
-        ///rss入れた
-        //メソッド作る
-        
-        
-        convertRSS(rss:rss)
+//        //ここにブレイクポイントを打ったが呼ばれない
+//        
+//        print("finish download")
+//        
+//        var data: NSData!
+//        
+//        do {
+//            data = try NSData(contentsOf: location, options: NSData.ReadingOptions.alwaysMapped)
+//        } catch {
+//            print(error)
+//        }
+//        
+//        let rss = String(data: data as Data, encoding: .utf8)!
+//        
+//        
+//        ///rss入れた
+//        //メソッド作る
+//        
+//        
+//        convertRSS(rss:rss)
         
     }
     
@@ -314,94 +349,70 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         
         if convery_count == 1{
             print(convery_count)
-            //     ///////
-            //            ///
-            //            ////
-            //            ///
-            //            ///
-            //           result = rss
-            //
-            ////            result = rss.pregReplace(pattern: "<\\?xml.+\\s\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+|<rdf.+|<dc:language>.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+|<\\/rdf:Seq>\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+(\\s|.).+|<description><\\/description>|<description>\\s.+\\s<\\/description>|</rdf:Seq>\\s.+\\s.+\\s\\s.+\\s.+\\s.+\\s.+\\s.+|</image>|<description>\\s\\s.+", with: "")
-            ////
-            ////            result2 = rss.pregReplace(pattern: "<item.+", with: "<item>")
-            ////
-            //           result3 = result.pregReplace(pattern: "dc:date", with: "pubDate")
-            ////
-            ////            result4 = result3.pregReplace(pattern: "<\\/rdf:RDF>", with: "")
-            ////
-            //            result5 = result3.pregReplace(pattern: "\\t|\\n|\\[ 　]", with: "")
-            //
-            //
-            //
-            //
-            //result = rss
-            //        rss_data += result
-            //
-            result = rss
+        result = rss
             
+ 
+            result2 = result.pregReplace(pattern: "<item.+rdf.+>", with: "<item>")
             
+            result3 = result2.pregReplace(pattern: "<dc:date>", with: "<pubDate>")
+           
             
+            result4 = result3.pregReplace(pattern: "</dc:date>", with: "<\\/pubDate>")
             
-            
-            
-            
-            result2 = result.pregReplace(pattern: "<description>.+src=.", with: "\\\t<image>")
-            
-            result3 = result2.pregReplace(pattern: "jpeg\\n\\t", with: "jpeg")
-            
-            result4 = result3.pregReplace(pattern: "jpeg\" class=\"", with: "jpeg<\\/image><description><\\!\\[CDATA\\[")
-            
-            
-            result5 = result4.pregReplace(pattern: "\n\t\t", with: "")
-            
-            result6 = result5.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_Check<\\/title><\\/item><\\/ rss>")
-            
+
+            result5 = result4.pregReplace(pattern: "<\\/rdf:RDF>", with: "\\\t<item>\\\t<title>RSS_Check<\\/title><\\/item><\\/rdf:RDF>")
+//            print(result5.debugDescription)
+            result6 = result5.pregReplace(pattern: "\\n", with: "")
+
             
             
             //            print(result5.debugDescription)
             
             
             
-            rss_data += result
+            rss_data += result6
+        
         }else if convery_count == 0{
-            print(convery_count)
-            //
-            //            result = rss.pregReplace(pattern: "<\\/script>", with: "")
-            //
-            //            result2 = result.pregReplace(pattern: "\\<\\?xml[.\\s]*.+[\\s]+[.\\s]+xmlns:content=.+\\s+.+.+\\s+.+.+\\s+.+.+\\s+.+.+\\s+.+m.+\\s.+|<channel>[.\\s]*.+\\s*.+[.\\s]*.+\\s*.+\\s.+\\s.+\\s.+\\s.+\\s.+tor>|<image>[.\\s]*.+\\s*.+[.\\s]*.+[.\\s]*.+[.\\s]*.+[.\\s]*.+[.\\s]*.+site>|<comments>.+[comments>.]|<h6.+|<p><strong>.+<\\/p>|<span.+|\\].+content:encoded>|<wfw:commentRss>.+[wfw:commentRss>.]|<slash:comments>.+[slash:comments>.]|<post-id.+id>|<\\/channel>|<\\/rss>.*|<category>.+[category>.]|<dc:creator>.+[creator>.]|<ins.+\\s+.+\\s+.+\\s+.+<\\/ins>|resize.+<\\/p>|<p>[^<].+<\\/p>|<guid.+[guid>.]|<description>.+[description>.]|<content:encoded>.+image-\\d{0,6}\"|<p>\\<.+<\\/p>|<!--.+-->|<\\/blockquote>|<blockquote.+|<strong>|<p>|<script.+|.adsbygoogle.+", with: "")
-            //
+            
             result = rss
             
+            result2 = result.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_END<\\/title><\\/item><\\/rss>")
+
+            result3 = result2.pregReplace(pattern: "\\\n\\\t\\\t\\\t\\\t\\\t\\\t\\\t\\\t|\\\n\\\t\\\t\\\t\\\t", with: "")
             
-            result2 = result.pregReplace(pattern: "<content:encoded>.+class.{30,50}src..", with: "\\\t<image>")
-            
-            result3 = result2.pregReplace(pattern: "resize.+|<p><img.+", with: "")
-            
-            result4 = result3.pregReplace(pattern: "jpg\\?", with: "jpg\\?</image><content:encoded><!\\[CDATA\\[")
-            
-            result5 = result4.pregReplace(pattern: "jpeg\\?", with: "jpeg\\?</image><content:encoded><!\\[CDATA\\[")
-            
-            result6 = result5.pregReplace(pattern: "\n\t\t", with: "")
-            
-            result2 = result.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_END<\\/title><\\/item><\\/ rss>")
+
+//                result3 = result2.pregReplace(pattern: "<description>\\\n.+\\\n.+\\\n.+src=\\\"", with: "<image>")
             
             
             
+//            result4 = result3.pregReplace(pattern: "jpg\\\"", with: "jpg<\\/image>\\\t<description>")
+            
+            result5 = result4.pregReplace(pattern: "png\\\"", with: "png<\\/image>\\\t<description>")
+            
+            result4 = result3.pregReplace(pattern: "<\\?xml.+\\\n.+\\\n.+\\\n.+\\\n.+\\\n.+\\\n.+\\\n.+\\\n.+<item>", with: "\\\t<item>")
+
             
             
-            /*<content:encoded><!\\[CDATA\\[などの[CDATA\\[に問題があった。
-             //[CDATA\\[の中にイメージがあったため取り出すことができなかった。
-             <content:encoded>を<image>に変えて</image>で閉じた後に<content:encoded><!\\[CDATA\\[をずらして書くことで、上手くいった。
-             */
+            //            result2 = result.pregReplace(pattern: "<description>\\\n.+\\\n.+\\\n\\\tsrc=\\\"", with: "<image>")
+//            
+//            result3 = result2.pregReplace(pattern: "jpg\\\"", with: "jpg<\\/image><description>")
+//            
+//        
+//            result4 = result3.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_END<\\/title><\\/item><\\/rss>")
+//            
+//            result5 = result4.pregReplace(pattern: "\\\n", with: "")
+//            
+//            
+//            print(result5.debugDescription)
             
             
             
             
+            rss_data2 += result4
             
+            print(result6.debugDescription)
             
-            rss_data2 += result2
-            
-            //            print(result7.debugDescription)
+           
             
             self.data = self.rss_data.data(using: String.Encoding.utf8)! as NSData
             self.data2 = self.rss_data2.data(using: String.Encoding.utf8)! as NSData
@@ -418,6 +429,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
                     if self.parser != nil {
                         
                         self.totalBox = []
+                        dataArray = []
                         
                         convery_count = 1
                         
@@ -465,7 +477,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         
         if element == "item"{
             
-            print("itemを見つけた")
+//            print("itemを見つけた")
             
             elements = NSMutableDictionary()
             elements = [:]
@@ -487,28 +499,31 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         
         if element == "title"{
             
-            print("titleを見つけた")
-            
+//            print("titleを見つけた")
+           
+
             titleString.append(string)
-            
+//            print("title---------->\(titleString)")
             
             
             
         }else if element == "link"{
             
-            print("linkを見つけた")
+//            print("linkを見つけた")
             
             linkString.append(string)
+//            print("link---------->\(linkString)")
+
         }
         else if element == "pubDate"{
             
-            print("pubDateを見つけた")
+//            print("pubDateを見つけた")
             
             dateString.append(string)
         }
         else if element == "image"{
             
-            print("imageを見つけた")
+//            print("imageを見つけた")
             
             imageString.append(string)
         }
@@ -523,7 +538,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
             
             if titleString != ""{
                 
-                print("title---------->\(titleString)")
+//                print("title---------->\(titleString)")
                 elements.setObject(titleString, forKey: "title" as NSCopying)
                 
                 if (self.convery_count == 1){
@@ -537,8 +552,16 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
             }
             if linkString != "" {
                 //elementsにキー値を付与しながらtitleString(linkStrung)をセットする
-                print("link---------->\(linkString)")
+//                print("link---------->\(linkString)")
                 elements.setObject(linkString, forKey: "link" as NSCopying)
+            
+                if (convery_count == 1){
+                   let imageString = String(linkString) + "TN/001.jpg"
+//                    print(imageString)
+                    
+                    elements.setObject(imageString, forKey: "image" as NSCopying)
+                }
+            
             }
             if dateString != ""{
                 
@@ -604,7 +627,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
                     
                     date_Set = "\(date5)-\(date2) \(date3)"
                     
-                    print("date---------->\(date_Set)")
+//                    print("date---------->\(date_Set)")
                     
                     //                let formatter = DateFormatter()
                     //                formatter.dateFormat = "yyyy/MM/dd HH:mm:ss" //表示形式を設定
@@ -626,25 +649,32 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
                 }
                 
             }
+            if (convery_count == 0) {
+                
+            
             if imageString != ""{
                 print("image---------->\(imageString)")
                 
                 elements.setObject(imageString, forKey: "image" as NSCopying)
                 
             }
-            
+            }
             if titleString != "RSS_Check"{
                 
                 if titleString != "RSS_END"{
                     totalBox.add(elements)
                     sortAndReloadData()
                 }else{
+                    
+                    let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+                    appDelegate.dataArray = self.dataArray
+                    
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                         self.refreshControl.endRefreshing()
                         self.tableView.reloadData()
                         self.refresh_Chack = false
                         SVProgressHUD.dismiss()
-                        print(self.totalBox.debugDescription)
+//                        print(self.totalBox.debugDescription)
                     }
                     
                 }
@@ -663,8 +693,8 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         
         dataArray = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
         
-        self.tableView.reloadData()
-        print("dataArray------->\(dataArray.description)")
+    
+//        print("dataArray------->\(dataArray.description)")
         
     }
     
@@ -747,7 +777,8 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
     
     @IBAction func back(_ sender: Any) {
-    dismiss(animated: true, completion: nil)
+    
+        dismiss(animated: true, completion: nil)
     }
     
     
