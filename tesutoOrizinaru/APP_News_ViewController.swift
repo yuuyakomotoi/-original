@@ -56,6 +56,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
     
     var dataArray:NSArray = []
+    var dataArray2:NSArray = []
     
     
     //お気に入りに登録用の配列
@@ -92,26 +93,20 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         tableView.delegate = self
         tableView.dataSource = self
         
-        print(dataArray)
         
-        if (self.dataArray == []){
+        
             print(dataArray)
-            let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-            self.dataArray = appDelegate.dataArray!
-            
-            
-            print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+//            let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+//            self.dataArray = appDelegate.dataArray!
         
-            
+        
             convery_count = urlArray.count
-            
+            print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
             for url_string in urlArray{
                 download_rss(url_str: url_string)
                 
             }
-            
-        }
-
+        
         
         //refuresuつけずに
         
@@ -170,7 +165,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
             }
             
         }else{
-            
+            refreshControl.endRefreshing()
             
         }
     }
@@ -214,6 +209,11 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         }
         
         if (( (dataArray[indexPath.row] as AnyObject).value(forKey: "image") ) != nil) {
+            //SDウェブ
+            //1024　の作る
+            //2X = 2倍
+            //概要
+            
             let urlstr = (dataArray[indexPath.row] as AnyObject).value(forKey: "image") as! String
             let encodedString = urlstr.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
             let url:URL = URL(string: encodedString!)!
@@ -666,8 +666,8 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
                     sortAndReloadData()
                 }else{
                     
-                    let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-                    appDelegate.dataArray = self.dataArray
+//                    let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+//                    appDelegate.dataArray = self.dataArray
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                         self.refreshControl.endRefreshing()

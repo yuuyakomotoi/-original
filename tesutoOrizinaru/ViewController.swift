@@ -629,6 +629,9 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
 //                var date1 = ""
                 var date2 = ""
                 var date3 = ""
+                var date3_2 = ""
+                var date3_3 = ""
+                var date3_4 = ""
                 var date4 = ""
                 var date5 = ""
                 var date_Set = ""
@@ -649,6 +652,68 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 date3 = date.pregReplace(pattern: "[a-z|A-Z]{3}\\d\\d[a-z|A-Z]{3}\\d\\d\\d\\d|:\\d\\d\\+0000", with: "")
                 //日時　09:10
                 
+                date3_2 = date3.pregReplace(pattern: ":..", with: "")
+                //　09
+                    
+                    switch date3_2 {
+                    case "00":
+                        date3_2 = "08"
+                    case "01":
+                        date3_2 = "09"
+                    case "02":
+                        date3_2 = "10"
+                    case "03":
+                        date3_2 = "11"
+                    case "04":
+                        date3_2 = "12"
+                    case "05":
+                        date3_2 = "13"
+                    case "06":
+                        date3_2 = "14"
+                    case "07":
+                        date3_2 = "15"
+                    case "08":
+                        date3_2 = "16"
+                    case "09":
+                        date3_2 = "17"
+                    case "10":
+                        date3_2 = "18"
+                    case "11":
+                        date3_2 = "19"
+                    case "12":
+                        date3_2 = "20"
+                    case "13":
+                        date3_2 = "21"
+                    case "14":
+                        date3_2 = "22"
+                    case "15":
+                        date3_2 = "23"
+                    case "16":
+                        date3_2 = "00"
+                    case "17":
+                        date3_2 = "01"
+                    case "18":
+                        date3_2 = "02"
+                    case "19":
+                        date3_2 = "03"
+                    case "20":
+                        date3_2 = "04"
+                    case "21":
+                        date3_2 = "05"
+                    case "22":
+                        date3_2 = "06"
+                    case "23":
+                        date3_2 = "07"
+                    default:
+                        break
+                    }
+               
+                    
+                    date3_3 = date3.pregReplace(pattern: "..:", with: ":")
+                    
+
+                //日時　:10
+                    
                 date4 = date.pregReplace(pattern: "\\d{4}\\d\\d:\\d\\d:\\d\\d\\+0000", with: "")
                 date5 = date4.pregReplace(pattern: "[a-zA-Z]{3}\\d\\d", with: "")
                 //月
@@ -682,7 +747,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                     break
                 }
                 
-                date_Set = "\(date5)-\(date2) \(date3)"
+                date_Set = "\(date5)-\(date2) \(date3_2)\(date3_3)"
                 
                     print("date---------->\(date_Set)")
                 

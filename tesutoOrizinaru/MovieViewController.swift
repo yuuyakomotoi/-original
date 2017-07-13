@@ -78,25 +78,33 @@ class MovieViewController: UIViewController,UITableViewDataSource,UITableViewDel
         
         
         
+        SVProgressHUD.show()
         
-        totalBox = []
-        dataArray = []
-
-        for urlAll in urlArray{
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+           
+            self.totalBox = []
+            self.dataArray = []
             
-            let url = urlAll  //ここにサイトのURLを入れる
-            
-            let urlToSend:URL = URL(string:url)!
-            
-            
-            
-            
-            parser = XMLParser(contentsOf: urlToSend)!
-            parser.delegate = self
-            parser.parse()
-            tableView.reloadData()//テーブルビュー更新
+            for urlAll in self.urlArray{
+                
+                let url = urlAll  //ここにサイトのURLを入れる
+                
+                let urlToSend:URL = URL(string:url)!
+                
+                
+                
+                
+                self.parser = XMLParser(contentsOf: urlToSend)!
+                self.parser.delegate = self
+                self.parser.parse()
+                self.tableView.reloadData()//テーブルビュー更新
+            SVProgressHUD.dismiss()
+            }
+ 
         }
-
+    
+    
+        
         
         
         

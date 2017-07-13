@@ -234,6 +234,7 @@ break
             switch indexPath.row{
             case 0:
                 let app_News_ViewController = self.storyboard?.instantiateViewController(withIdentifier: "app_News") as! APP_News_ViewController
+                
                 present(app_News_ViewController, animated: true, completion: nil)
                 break
                 
