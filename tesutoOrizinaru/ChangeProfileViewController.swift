@@ -41,7 +41,7 @@ class ChangeProfileViewController: UIViewController,UITextFieldDelegate,UIImageP
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		profileImageView.layer.cornerRadius = 8.0
+		profileImageView.layer.cornerRadius = self.profileImageView.frame.size.height/2
 		profileImageView.clipsToBounds = true
 		if profileImageView.image == UIImage(named: "No User.png"){
 		}else{
@@ -50,8 +50,15 @@ class ChangeProfileViewController: UIViewController,UITextFieldDelegate,UIImageP
 
 	}
 
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        //self.title = self.title! + "プロフィール設定"
+    //次回質問
+    }
 
-
+    
+    
 	@IBAction func changeProfile(_ sender: AnyObject) {
 		let alertViewControler = UIAlertController(title: "選択してください。", message: "", preferredStyle:.actionSheet)
 		let cameraAction = UIAlertAction(title: "カメラ", style: .default, handler:{
@@ -86,17 +93,28 @@ class ChangeProfileViewController: UIViewController,UITextFieldDelegate,UIImageP
 	@IBAction func back(_ sender: AnyObject) {
 
 
-		dismiss(animated: true, completion: nil)
-
+		self.navigationController?.popViewController(animated: true)
 	}
 
 
 	@IBAction func done(_ sender: AnyObject)
 	{
+       
+        
         if (usernameTextField.text?.characters.count)! > 22{
-           SVProgressHUD.showError(withStatus: "ユーザー名を22字以下にしてください")
+           SVProgressHUD.showError(withStatus: "ユーザー名を22文字以内にしてください")
             return
         }
+        
+        if UserDefaults.standard.object(forKey: "userName") == nil{
+            if usernameTextField.text == "No Name"{
+                SVProgressHUD.showError(withStatus: "この名前は利用できません")
+                return
+
+            }
+            
+        }
+        
         
         let alertViewControler = UIAlertController(title: "本アプリは不正防止のため、一度登録した名前は今後変更できせん", message: "この名前で登録しますか？\n尚、プロフィール画像は何度でも変更可能です", preferredStyle:.alert)
         let okAction = UIAlertAction(title: "この名前で登録する", style: .default, handler:{
@@ -202,7 +220,7 @@ class ChangeProfileViewController: UIViewController,UITextFieldDelegate,UIImageP
         UserDefaults.standard.set(userName,forKey:"userName")
         
         
-        dismiss(animated: true, completion: nil)
+        self.navigationController?.popViewController(animated: true)
 
     }
     

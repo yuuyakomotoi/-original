@@ -136,7 +136,16 @@ class MovieViewController: UIViewController,UITableViewDataSource,UITableViewDel
     
     }
     
-    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let navBarImage = UIImage(named: "navBarImage.png") as UIImage?
+        self.navigationController?.navigationBar.setBackgroundImage(navBarImage,for:.default)
+        self.navigationController?.navigationBar.backgroundColor = UIColor.white
+        
+        
+        
+    }
+
     
     //引っ張って更新メソッド
     //引っ張って更新メソッドの時にもパースしたものを更新したいので上のコードをメソッドの中に入れる
@@ -227,7 +236,7 @@ class MovieViewController: UIViewController,UITableViewDataSource,UITableViewDel
          let urlRequest = NSURLRequest(url:url)
          webView.loadRequest(urlRequest as URLRequest)
          */
-        
+        self.tabBarController?.tabBar.isHidden = true
         
         let newsModalViewController = self.storyboard?.instantiateViewController(withIdentifier: "news") as! NewsModalViewController
         

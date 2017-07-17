@@ -30,6 +30,8 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
     var m_UrlArray:[String] = []
     var m_nameArray:[String] = []
     
+    var support_Button = UIBarButtonItem()
+    
     
     @IBOutlet var tableView: UITableView!
     
@@ -40,7 +42,13 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
         tableView.delegate = self
         tableView.dataSource = self
         
+        let cansell = UIBarButtonItem(title: "ホーム", style: UIBarButtonItemStyle.plain, target: self, action:#selector(back))
         
+        
+        support_Button = UIBarButtonItem(title: "説明", style: UIBarButtonItemStyle.plain, target: self, action:#selector(support))
+    
+        self.navigationItem.leftBarButtonItem = cansell
+        self.navigationItem.rightBarButtonItem = support_Button
         
     }
         
@@ -91,6 +99,15 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if UserDefaults.standard.object(forKey: "check") == nil{
+            
+            
+            
+            let navBarImage = UIImage(named: "navBarImage.png") as UIImage?
+            self.navigationController?.navigationBar.setBackgroundImage(navBarImage,for:.default)
+            self.navigationController?.navigationBar.backgroundColor = UIColor.white
+            
+                
+                
             
             
             
@@ -219,8 +236,11 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        self.tabBarController?.tabBar.isHidden = true
+        
         let newsModalViewController = self.storyboard?.instantiateViewController(withIdentifier: "news") as! NewsModalViewController
         
+    
         if (segmentCount == 0){
         let linkURL = UserDefaults.standard.object(forKey: "newsLinkArray") as! [String]
             newsModalViewController.str = linkURL.reversed()[indexPath.row]
@@ -230,13 +250,10 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
         }
         //navigationControllerをstoryboardでセットしてから使う
         
-        present(newsModalViewController, animated: true, completion: nil)
+        self.navigationController?.pushViewController(newsModalViewController, animated: true)
         }
     
-    @IBAction func back(_ sender: Any) {
-        dismiss(animated: true, completion: nil)
-    }
-    
+
     @IBAction func segmentButton(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0:
@@ -379,12 +396,19 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
         
     }
     
+    func back(){
+       self.tabBarController?.tabBar.isHidden = false
+        
+        self.navigationController?.popViewController(animated: true)
+        
+    }
     
-    @IBAction func supportButton(_ sender: Any) {
+    
+     func support() {
         
         let support = self.storyboard?.instantiateViewController(withIdentifier: "support")
-        present(support!, animated: true, completion: nil)
-    }
+        self.navigationController?.pushViewController(support!, animated: true)
+           }
     
 
     override func didReceiveMemoryWarning() {

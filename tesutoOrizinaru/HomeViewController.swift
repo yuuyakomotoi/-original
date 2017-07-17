@@ -53,7 +53,7 @@ class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
         
         SVProgressHUD.dismiss()
         
-        userImage.layer.cornerRadius = 8.0
+        userImage.layer.cornerRadius = userImage.frame.size.height/2
         userImage.clipsToBounds = true
         
         
@@ -82,6 +82,17 @@ class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
         
         
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let navBarImage = UIImage(named: "navBarImage.png") as UIImage?
+        self.navigationController?.navigationBar.setBackgroundImage(navBarImage,for:.default)
+        self.navigationController?.navigationBar.backgroundColor = UIColor.white
+        
+        
+        
+    }
+
     
     func numberOfSections(in tableView: UITableView) -> Int { // sectionの数を決める
         return 2
@@ -138,13 +149,11 @@ class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
             switch indexPath.row{
             case 0:
                 performSegue(withIdentifier:"next",sender:nil)
+              
                 break
             case 1:
-                
-                
-                
-                let favoriteViewController = self.storyboard?.instantiateViewController(withIdentifier: "favorite") as! FavoriteViewController
-                present(favoriteViewController, animated: true, completion: nil)
+                self.tabBarController?.tabBar.isHidden = true
+                performSegue(withIdentifier:"favorite",sender:nil)
                 
                 break
             case 2:
@@ -192,7 +201,22 @@ class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
             
                 break
                 case 4:
-                let alertController = UIAlertController(title: "件名を選択してください", message: "", preferredStyle: .actionSheet)
+                
+                    if UserDefaults.standard.object(forKey: "userName") == nil{
+                        
+                        let alertViewControler = UIAlertController(title: "問い合わせにはプロフィール登録が必要です", message: "「プロフィールを変更」よりプロフィール登録を行ってください", preferredStyle:.alert)
+                        let okAction = UIAlertAction(title: "OK", style: .default, handler:{
+                            (action:UIAlertAction!) -> Void in
+                            return
+                        })
+                        
+                        alertViewControler.addAction(okAction)
+                        present(alertViewControler, animated: true, completion: nil)
+                        
+                    }else{
+                    
+                    
+                    let alertController = UIAlertController(title: "件名を選択してください", message: "", preferredStyle: .actionSheet)
                 
                 let cancelAction:UIAlertAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: {
                     (action:UIAlertAction!) -> Void in
@@ -226,9 +250,12 @@ class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
                 
                 present(alertController, animated: true, completion: nil)
 break
-            default:
+                }
+                        default:
                 break
             }
+            
+            
         }
         else if  indexPath.section == 1 {
             switch indexPath.row{
@@ -355,12 +382,15 @@ break
     
     override func prepare(for segue:UIStoryboardSegue,sender:Any?){
         
-        
+        if segue.identifier == "next"{
         
         let changeprofileviewcontroller:ChangeProfileViewController = segue.destination as! ChangeProfileViewController
         
         changeprofileviewcontroller.name = userName.text!
         changeprofileviewcontroller.img = userImage
+    
+        }
+       
     }
     
     

@@ -266,7 +266,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
     func download_rss(url_str:String){
         // 通信のコンフィグを用意.
-        let config: URLSessionConfiguration = URLSessionConfiguration.background(withIdentifier: "backgroundSession")
+//        let config: URLSessionConfiguration = URLSessionConfiguration.background(withIdentifier: "backgroundSession")
         // Sessionを作成する.
         //        let session: URLSession = URLSession(configuration: config, delegate: self, delegateQueue: nil)
         let session: URLSession = URLSession.shared

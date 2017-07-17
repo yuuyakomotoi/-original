@@ -1261,6 +1261,22 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     
     
     @IBAction func contributionButton(_ sender: Any) {
+        
+        if UserDefaults.standard.object(forKey: "userName") == nil{
+            
+            let alertViewControler = UIAlertController(title: "掲示板の書き込みには プロフィール登録が必要です", message: "「ホーム」 ➡︎　「プロフィールを変更」よりプロフィール登録を行ってください", preferredStyle:.alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler:{
+                (action:UIAlertAction!) -> Void in
+                return
+            })
+            
+            alertViewControler.addAction(okAction)
+           present(alertViewControler, animated: true, completion: nil)
+
+            
+        }
+
+        
         if segmentCount == 0{
             image_Select = true
             let CGPoint2 = tableView.contentOffset

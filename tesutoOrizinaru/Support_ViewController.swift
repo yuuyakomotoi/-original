@@ -12,12 +12,16 @@ class Support_ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-       
+        let cansell = UIBarButtonItem(title: "戻る", style: UIBarButtonItemStyle.plain, target: self, action:#selector(back))
+        
+        self.navigationItem.leftBarButtonItem = cansell
+        
+        
     }
 
-    @IBAction func back(_ sender: Any) {
-    dismiss(animated: true, completion: nil)
+    
+    func back() {
+    self.navigationController?.popViewController(animated: true)
     }
   
     

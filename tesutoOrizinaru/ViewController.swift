@@ -205,8 +205,19 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
     }
     
+    //navBarImage.png
+    //タブバーいずひぢゅん
     
-
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let navBarImage = UIImage(named: "navBarImage.png") as UIImage?
+        self.navigationController?.navigationBar.setBackgroundImage(navBarImage,for:.default)
+        self.navigationController?.navigationBar.backgroundColor = UIColor.white
+        
+        
+   
+    }
     
     //引っ張って更新メソッド
     //引っ張って更新メソッドの時にもパースしたものを更新したいので上のコードをメソッドの中に入れる
@@ -215,7 +226,9 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     func delay(){
         
         if refresh_Chack == false{
-        refresh_Chack = true
+//        totalBox = []
+//            dataArray = []
+            refresh_Chack = true
         convery_count = urlArray.count
         
         for url_string in urlArray{
@@ -224,7 +237,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             }
             tableView.reloadData()
             }else{
-            tableView.reloadData()
+            
 
         }
             }
@@ -304,6 +317,8 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        self.tabBarController?.tabBar.isHidden = true
         
         let newsModalViewController = self.storyboard?.instantiateViewController(withIdentifier: "news") as! NewsModalViewController
         
@@ -710,7 +725,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                
                     
                     date3_3 = date3.pregReplace(pattern: "..:", with: ":")
-                    
+                    print("date---------->\(date3_3)")
 
                 //日時　:10
                     
@@ -782,8 +797,9 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             if titleString != "RSS_END"{
                 totalBox.add(elements)
-sortAndReloadData()
+
             }else{
+                sortAndReloadData()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                    self.refreshControl.endRefreshing()
                     self.tableView.reloadData()

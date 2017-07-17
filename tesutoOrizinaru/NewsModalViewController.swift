@@ -15,6 +15,11 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
     
     var check = false
     
+    var go_Back = UIBarButtonItem()
+    
+    var go_Forward = UIBarButtonItem()
+
+    
     @IBOutlet var webView: UIWebView!
     
     
@@ -25,6 +30,16 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let cansell = UIBarButtonItem(title: "閉じる", style: UIBarButtonItemStyle.plain, target: self, action:#selector(back))
+    
+        
+         go_Back = UIBarButtonItem(title: "＜", style: UIBarButtonItemStyle.plain, target: self, action:#selector(goBack))
+        
+         go_Forward = UIBarButtonItem(title: "＞", style: UIBarButtonItemStyle.plain, target: self, action:#selector(goForward))
+        
+        self.navigationItem.leftBarButtonItem = cansell
+        
+        self.navigationItem.rightBarButtonItems = [go_Forward,go_Back]
         
         
         webView.delegate = self
@@ -43,8 +58,42 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        
+        
+        if (self.webView.canGoBack) {
+            go_Back.isEnabled = true
+        } else {
+            go_Back.isEnabled = false
+            
+            // canGoForward == false の処理
+        }
+        
+        if (self.webView.canGoForward) {
+            go_Forward.isEnabled = true
+        } else {
+            // canGoForward == false の処理
+            go_Forward.isEnabled = false
+        }
+
+        setupSwipeGestures()
+        
+        
+        
+    }
     
-    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let navBarImage = UIImage(named: "navBarImage.png") as UIImage?
+        self.navigationController?.navigationBar.setBackgroundImage(navBarImage,for:.default)
+        self.navigationController?.navigationBar.backgroundColor = UIColor.white
+        
+        
+        
+    }
+
     
     
     func webViewDidStartLoad(_ webView: UIWebView) {
@@ -54,9 +103,21 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
     }
     
     func webViewDidFinishLoad(_ webView: UIWebView) {
+        if (self.webView.canGoBack) {
+            go_Back.isEnabled = true
+        } else {
+            go_Back.isEnabled = false
+            
+            // canGoForward == false の処理
+        }
         
-        
-        
+        if (self.webView.canGoForward) {
+            go_Forward.isEnabled = true
+        } else {
+            // canGoForward == false の処理
+            go_Forward.isEnabled = false
+        }
+
         
         SVProgressHUD.dismiss()
         check = true
@@ -81,6 +142,7 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
         if (self.webView.canGoBack) {
             self.webView.goBack()
         } else {
+        
             // canGoForward == false の処理
         }
     }
@@ -95,8 +157,10 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
         }
     }
     
-    @IBAction func back(_ sender: Any) {
-    dismiss(animated: true, completion: nil)
+    
+    func back(){
+        self.tabBarController?.tabBar.isHidden = false
+        self.navigationController?.popViewController(animated: true)
     }
     
     
