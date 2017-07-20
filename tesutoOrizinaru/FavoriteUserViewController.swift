@@ -40,6 +40,8 @@ class FavoriteUserViewController: UIViewController,UITableViewDelegate,UITableVi
     var image_Select = false
     
     
+    
+    
     @IBOutlet var segmentButton: UISegmentedControl!
     
     

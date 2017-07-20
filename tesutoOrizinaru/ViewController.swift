@@ -215,6 +215,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         self.navigationController?.navigationBar.setBackgroundImage(navBarImage,for:.default)
         self.navigationController?.navigationBar.backgroundColor = UIColor.white
         
+        tableView.reloadData()
         
    
     }
@@ -823,10 +824,13 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         let data:NSArray = totalBox as NSArray
         
         dataArray = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
+      
         
+        /////////
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
         self.tableView.reloadData()
-        print("dataArray------->\(dataArray.description)")
-        
+        print("dataArray------->\(self.dataArray.description)")
+        }
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {

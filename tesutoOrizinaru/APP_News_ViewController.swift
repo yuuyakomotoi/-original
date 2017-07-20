@@ -66,7 +66,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     var newsUrlArray:[String] = []
     var newsLink_NameArray:[String] = []
     
-    
+    var support_Button = UIBarButtonItem()
     
     @IBOutlet var tableView: UITableView!
     
@@ -78,9 +78,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         
         
         
-        if totalBox == []{
-            SVProgressHUD.show()
-        }
+        
     
         
         refreshControl.attributedTitle = NSAttributedString(string: "引っ張って更新")
@@ -95,7 +93,15 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         
         
         
-            print(dataArray)
+        let cansell = UIBarButtonItem(title: "ホーム", style: UIBarButtonItemStyle.plain, target: self, action:#selector(back))
+        
+        
+        support_Button = UIBarButtonItem(title: "説明", style: UIBarButtonItemStyle.plain, target: self, action:#selector(support))
+        
+        self.navigationItem.leftBarButtonItem = cansell
+        self.navigationItem.rightBarButtonItem = support_Button
+        
+//            print(dataArray)
 //            let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
 //            self.dataArray = appDelegate.dataArray!
         
@@ -144,7 +150,9 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+        if totalBox == []{
+            SVProgressHUD.show()
+        }
       
             }
     
@@ -251,12 +259,15 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+                
         let newsModalViewController = self.storyboard?.instantiateViewController(withIdentifier: "news") as! NewsModalViewController
         
         let linkURL = (dataArray[indexPath.row] as AnyObject).value(forKey: "link") as? String
         newsModalViewController.str = linkURL!
+        newsModalViewController.app_News_Check = true
     
-        present(newsModalViewController, animated: true, completion: nil)
+        self.navigationController?.pushViewController(newsModalViewController, animated: true)
+        
         
         
         
@@ -340,7 +351,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         var result4:String = ""
         var result5:String = ""
         var result6:String = ""
-        var result7:String = ""
+        
         
         
         
@@ -381,36 +392,13 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
             result3 = result2.pregReplace(pattern: "\\\n\\\t\\\t\\\t\\\t\\\t\\\t\\\t\\\t|\\\n\\\t\\\t\\\t\\\t", with: "")
             
 
-//                result3 = result2.pregReplace(pattern: "<description>\\\n.+\\\n.+\\\n.+src=\\\"", with: "<image>")
-            
-            
-            
-//            result4 = result3.pregReplace(pattern: "jpg\\\"", with: "jpg<\\/image>\\\t<description>")
-            
-            result5 = result4.pregReplace(pattern: "png\\\"", with: "png<\\/image>\\\t<description>")
-            
-            result4 = result3.pregReplace(pattern: "<\\?xml.+\\\n.+\\\n.+\\\n.+\\\n.+\\\n.+\\\n.+\\\n.+\\\n.+<item>", with: "\\\t<item>")
 
+        
             
             
-            //            result2 = result.pregReplace(pattern: "<description>\\\n.+\\\n.+\\\n\\\tsrc=\\\"", with: "<image>")
-//            
-//            result3 = result2.pregReplace(pattern: "jpg\\\"", with: "jpg<\\/image><description>")
-//            
-//        
-//            result4 = result3.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_END<\\/title><\\/item><\\/rss>")
-//            
-//            result5 = result4.pregReplace(pattern: "\\\n", with: "")
-//            
-//            
-//            print(result5.debugDescription)
+            rss_data2 += result3
             
-            
-            
-            
-            rss_data2 += result4
-            
-            print(result6.debugDescription)
+            print(result3.debugDescription)
             
            
             
@@ -521,13 +509,24 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
             
             dateString.append(string)
         }
-        else if element == "image"{
-            
-//            print("imageを見つけた")
-            
-            imageString.append(string)
+        
+        if (convery_count == 1){
+//            if element == "image"{
+//                
+//                //            print("imageを見つけた")
+//                
+//                imageString.append(string)
+//            }
+    
+        }else if (convery_count == 0){
+            if element == "description"{
+        
+                imageString.append(string)
+            }
+
         }
         
+       
     }
     
     //タグの終了を見つけた時
@@ -542,10 +541,10 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
                 elements.setObject(titleString, forKey: "title" as NSCopying)
                 
                 if (self.convery_count == 1){
-                    link_Name = "白猫テニス攻略まとめ！ダグラス速報"
+                    link_Name = "4Gamer.net"
                     elements.setObject(link_Name, forKey: "link_Name" as NSCopying)
                 }else if (self.convery_count == 0){
-                    link_Name = "白猫テニスまとめ速報"
+                    link_Name = "Social Game Info"
                     elements.setObject(link_Name, forKey: "link_Name" as NSCopying)
                 }
                 
@@ -565,69 +564,109 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
             }
             if dateString != ""{
                 
-                if (self.convery_count == 1)||(self.convery_count == 0){
+                // １     2017-07-20T10:00:00+09:00
+                // ０     Thu, 20 Jul 2017 10:36:00 +0900
+
+                
+                if (self.convery_count == 1){
                     
                     var date = ""
+                    var date2 = ""
+                    var date3 = ""
                     
-                    //                var date1 = ""
+                    
+                    
+                    
+                    date = String(dateString).pregReplace(pattern: "20\\d\\d-", with: "")
+//07-20T10:00:00+09:00
+                    
+                    
+                    date2 = date.pregReplace(pattern: ":\\d\\d\\+\\d\\d:\\d\\d", with: "")
+ //07-20T10:00
+                  
+                    
+                    date3 = date2.pregReplace(pattern: "T", with: " ")
+ //07-20 10:00
+                
+                    
+                    elements.setObject(date3, forKey: "pubDate" as NSCopying)
+                
+                
+                }
+                else if (self.convery_count == 0){
+                    var date = ""
                     var date2 = ""
                     var date3 = ""
                     var date4 = ""
                     var date5 = ""
+                    var date6 = ""
                     var date_Set = ""
                     
-                    date = String(dateString).pregReplace(pattern: "\\s|,", with: "")
+                    
+                    // ０     Thu, 20 Jul 2017 10:36:00 +0900
+                    
+                    date = String(dateString).pregReplace(pattern: "20\\d\\d", with: "")
+                    //      Thu, 20 Jul  10:36:00 +0900
+                    
+                    date2 = date.pregReplace(pattern: "\\s", with: "")
+                    //Thu,20Jul10:36:00+0900
                     
                     
-                    //     サンプル     Mon03Jul201701:00:38+0000
+                    date3 = date2.pregReplace(pattern: "Thu,|:\\d\\d\\+\\d\\d\\d\\d", with: "")
+                    //20Jul10:36
+                    
+
+                   
+                    date4 = date3.pregReplace(pattern: "\\d|:", with: "")
+                    //Jul
+                    
+
                     
                     
-                    //                date1 = String(date).pregReplace(pattern: "[a-z|A-Z]{3}\\d\\d[a-z|A-Z]{3}|.........0000", with: "")
-                    //2017
                     
-                    
-                    date2 = date.pregReplace(pattern: "[a-zA-Z]{3}|\\d{4}\\d\\d:\\d\\d:\\d\\d\\+0000", with: "")
-                    //日　03
-                    
-                    date3 = date.pregReplace(pattern: "[a-z|A-Z]{3}\\d\\d[a-z|A-Z]{3}\\d\\d\\d\\d|:\\d\\d\\+0000", with: "")
-                    //日時　09:10
-                    
-                    date4 = date.pregReplace(pattern: "\\d{4}\\d\\d:\\d\\d:\\d\\d\\+0000", with: "")
-                    date5 = date4.pregReplace(pattern: "[a-zA-Z]{3}\\d\\d", with: "")
-                    //月
-                    
-                    switch date5 {
+                    switch date4 {
                     case "Jan":
-                        date5 = "01"
+                        date4 = "01"
                     case "Feb":
-                        date5 = "02"
+                        date4 = "02"
                     case "Mar":
-                        date5 = "03"
+                        date4 = "03"
                     case "Apr":
-                        date5 = "04"
+                        date4 = "04"
                     case "May":
-                        date5 = "05"
+                        date4 = "05"
                     case "Jun":
-                        date5 = "06"
+                        date4 = "06"
                     case "Jul":
-                        date5 = "07"
+                        date4 = "07"
                     case "Aug":
-                        date5 = "08"
+                        date4 = "08"
                     case "Sep":
-                        date5 = "09"
+                        date4 = "09"
                     case "Oct":
-                        date5 = "10"
+                        date4 = "10"
                     case "Nov":
-                        date5 = "11"
+                        date4 = "11"
                     case "Dec":
-                        date5 = "12"
+                        date4 = "12"
                     default:
                         break
                     }
                     
-                    date_Set = "\(date5)-\(date2) \(date3)"
                     
-//                    print("date---------->\(date_Set)")
+                    
+                    date5 = date3.pregReplace(pattern: "...\\d\\d:\\d\\d", with: "")
+                    //20
+                    
+                    date6 = date3.pregReplace(pattern: "\\d\\d[[a-z]|[A-Z]]{3}", with: "")
+                    //20Jul10:36
+                    
+                    
+                    
+                    date_Set = "\(date4)-\(date5) \(date6)"
+                    
+                    
+                    //                    print("date---------->\(date_Set)")
                     
                     //                let formatter = DateFormatter()
                     //                formatter.dateFormat = "yyyy/MM/dd HH:mm:ss" //表示形式を設定
@@ -642,10 +681,11 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
                     //               let dateFromString = formatter.date(from: "2005/12/12 9:24:21")! //"Dec 12, 2005, 9:24 AM"
                     
                     elements.setObject(date_Set, forKey: "pubDate" as NSCopying)
-                }
-                else{
-                    elements.setObject(dateString, forKey: "pubDate" as NSCopying)
                     
+                    
+                }else{
+                    elements.setObject(dateString, forKey: "pubDate" as NSCopying)
+
                 }
                 
             }
@@ -653,21 +693,42 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
                 
             
             if imageString != ""{
+                
+                
+                var result:String = ""
+                var result2:String = ""
+                var result3:String = ""
+                var result4:String = ""
+                var result5:String = ""
+
+                
+                result = String(imageString).pregReplace(pattern: "\\s", with: "")
+                result2 = result.pregReplace(pattern: "<imgsrc..", with: "")
+                result3 = result2.pregReplace(pattern: ".jpg.alt.+<\\/p>", with: ".jpg")
+                result4 = result3.pregReplace(pattern: ".png.alt.+<\\/p>", with: ".png")
+                result5 = result4.pregReplace(pattern: ".jpeg.alt.+<\\/p>", with: ".jpeg")
+                
+//                imageString = (result3 as? NSMutableString)!
+
                 print("image---------->\(imageString)")
                 
-                elements.setObject(imageString, forKey: "image" as NSCopying)
+                elements.setObject(result5, forKey: "image" as NSCopying)
                 
             }
             }
             if titleString != "RSS_Check"{
                 
                 if titleString != "RSS_END"{
+                    
+//                   if ( !checkMovie(elements: elements) ) {
                     totalBox.add(elements)
-                    sortAndReloadData()
-                }else{
+                    
+//                    }
+                    }else{
                     
 //                    let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
 //                    appDelegate.dataArray = self.dataArray
+                    sortAndReloadData()
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                         self.refreshControl.endRefreshing()
@@ -684,6 +745,28 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         
         
     }
+    
+   
+    //elements.value(forKey: "title")の中を選別をする
+   
+    let ok_words = ["事前登録","iOS版","Android版","配信開始","βテスト","配信スタート","新作アプリ","サービスイン","PV","提供開始","リリース","DLを突破"]
+    
+    
+    func checkMovie(elements:NSMutableDictionary) -> Bool {
+        let title:String = elements.value(forKey: "title") as! String
+        
+        var ok = true
+        
+        for word in ok_words {
+            if ( title.contains(word) ) {
+                ok = false
+            }
+        }
+        return ok
+    }
+
+   
+    
     
     func sortAndReloadData() {
         let dateDiscripter:NSSortDescriptor = NSSortDescriptor.init(key: "pubDate", ascending: false)
@@ -776,20 +859,22 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
     
     
-    @IBAction func back(_ sender: Any) {
-    
-        dismiss(animated: true, completion: nil)
+    func back(){
+        self.tabBarController?.tabBar.isHidden = false
+        
+        self.navigationController?.popViewController(animated: true)
+        
     }
     
     
-    
-    
-    
-    @IBAction func supportButton(_ sender: Any) {
-        let support = self.storyboard?.instantiateViewController(withIdentifier: "support")
-        present(support!, animated: true, completion: nil)
+    func support() {
+        
+        
+        
+        let support_ViewController = self.storyboard?.instantiateViewController(withIdentifier: "support") as! Support_ViewController
+        self.navigationController?.pushViewController(support_ViewController, animated: true)
     }
-    
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

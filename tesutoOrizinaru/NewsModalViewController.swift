@@ -15,6 +15,8 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
     
     var check = false
     
+    var app_News_Check = false
+    
     var go_Back = UIBarButtonItem()
     
     var go_Forward = UIBarButtonItem()
@@ -159,7 +161,11 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
     
     
     func back(){
+        
+        if app_News_Check == false{
         self.tabBarController?.tabBar.isHidden = false
+        }
+        
         self.navigationController?.popViewController(animated: true)
     }
     

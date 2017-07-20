@@ -12,9 +12,9 @@ class Support_ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let cansell = UIBarButtonItem(title: "戻る", style: UIBarButtonItemStyle.plain, target: self, action:#selector(back))
-        
-        self.navigationItem.leftBarButtonItem = cansell
+//        let cansell = UIBarButtonItem(title: "戻る", style: UIBarButtonItemStyle.plain, target: self, action:#selector(back))
+//        
+//        self.navigationItem.leftBarButtonItem = cansell
         
         
     }

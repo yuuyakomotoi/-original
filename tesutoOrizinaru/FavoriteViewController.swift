@@ -120,8 +120,8 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
                 (action:UIAlertAction!) -> Void in
                 
                 let support = self.storyboard?.instantiateViewController(withIdentifier: "support")
-                self.present(support!, animated: true, completion: nil)
-                
+                self.navigationController?.pushViewController(support!, animated: true)
+                                
             })
             
             let checkAction = UIAlertAction(title: "今後このアラートを表示しない", style: .default, handler:{
@@ -244,9 +244,12 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
         if (segmentCount == 0){
         let linkURL = UserDefaults.standard.object(forKey: "newsLinkArray") as! [String]
             newsModalViewController.str = linkURL.reversed()[indexPath.row]
+            newsModalViewController.app_News_Check = true
+        
         }else{
             let linkURL = UserDefaults.standard.object(forKey: "movieLinkArray") as! [String]
             newsModalViewController.str = linkURL.reversed()[indexPath.row]
+        newsModalViewController.app_News_Check = true
         }
         //navigationControllerをstoryboardでセットしてから使う
         
@@ -406,8 +409,10 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
      func support() {
         
-        let support = self.storyboard?.instantiateViewController(withIdentifier: "support")
-        self.navigationController?.pushViewController(support!, animated: true)
+        
+                
+        let support_ViewController = self.storyboard?.instantiateViewController(withIdentifier: "support") as! Support_ViewController
+        self.navigationController?.pushViewController(support_ViewController, animated: true)
            }
     
 

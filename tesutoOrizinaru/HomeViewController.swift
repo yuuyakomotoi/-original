@@ -159,7 +159,7 @@ class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
             case 2:
                 if UserDefaults.standard.object(forKey: "check") == nil{
                     let support = self.storyboard?.instantiateViewController(withIdentifier: "support")
-                    present(support!, animated: true, completion: nil)
+                    self.navigationController?.pushViewController(support!, animated: true)
                     let check = "check"
                     UserDefaults.standard.set(check, forKey: "check")
 
@@ -260,9 +260,16 @@ break
         else if  indexPath.section == 1 {
             switch indexPath.row{
             case 0:
+                
+                self.tabBarController?.tabBar.isHidden = true
+
                 let app_News_ViewController = self.storyboard?.instantiateViewController(withIdentifier: "app_News") as! APP_News_ViewController
                 
-                present(app_News_ViewController, animated: true, completion: nil)
+                
+                self.navigationController?.pushViewController(app_News_ViewController, animated: true)
+                
+                
+
                 break
                 
             case 1:
