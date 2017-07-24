@@ -29,14 +29,20 @@ class ChangeProfileViewController: UIViewController,UITextFieldDelegate,UIImageP
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-        
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+        if appDelegate.navicheck == true{
+            self.tabBarController?.tabBar.isHidden = true
+        }
+
         
 		usernameTextField.delegate = self
 		usernameTextField.text = name
 
 
 		profileImageView.image = img.image
-	}
+	
+    self.title = "プロフィール設定"
+    }
 
 
 	override func viewWillAppear(_ animated: Bool) {

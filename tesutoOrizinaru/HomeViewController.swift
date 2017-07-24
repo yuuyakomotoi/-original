@@ -51,6 +51,14 @@ class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        
+        
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+        if appDelegate.navicheck == true{
+            self.tabBarController?.tabBar.isHidden = false
+        appDelegate.navicheck = false
+        }
+        
         SVProgressHUD.dismiss()
         
         userImage.layer.cornerRadius = userImage.frame.size.height/2
@@ -88,6 +96,7 @@ class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
         let navBarImage = UIImage(named: "navBarImage.png") as UIImage?
         self.navigationController?.navigationBar.setBackgroundImage(navBarImage,for:.default)
         self.navigationController?.navigationBar.backgroundColor = UIColor.white
+        
         
         
         
@@ -148,11 +157,18 @@ class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
         if indexPath.section == 0 {
             switch indexPath.row{
             case 0:
+                let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+                appDelegate.navicheck = true
+                
                 performSegue(withIdentifier:"next",sender:nil)
               
                 break
             case 1:
-                self.tabBarController?.tabBar.isHidden = true
+//                self.tabBarController?.tabBar.isHidden = true
+                
+                let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+                appDelegate.navicheck = true
+                
                 performSegue(withIdentifier:"favorite",sender:nil)
                 
                 break
@@ -261,8 +277,11 @@ break
             switch indexPath.row{
             case 0:
                 
-                self.tabBarController?.tabBar.isHidden = true
-
+//                self.tabBarController?.tabBar.isHidden = true
+                
+                let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+                appDelegate.navicheck = true
+                
                 let app_News_ViewController = self.storyboard?.instantiateViewController(withIdentifier: "app_News") as! APP_News_ViewController
                 
                 

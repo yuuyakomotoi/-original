@@ -21,7 +21,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     let refreshControl = UIRefreshControl()
     
-    var refresh_Chack = false
+//    var refresh_Chack = false
     
     var rss_data:String = ""
     var rss_data2:String = ""
@@ -59,6 +59,8 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     
     var dataArray = NSArray()
+    var dataArray2 = NSArray()
+    var download_Check = true
     
     //お気に入りに登録用の配列
     var newsTitleArray:[String] = []
@@ -147,7 +149,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
       
         
         refreshControl.attributedTitle = NSAttributedString(string: "引っ張って更新")
-        refreshControl.addTarget(self, action:#selector(delay), for:UIControlEvents.valueChanged)
+        refreshControl.addTarget(self, action:#selector(refresh), for:UIControlEvents.valueChanged)
         tableView.addSubview(refreshControl)
         
         
@@ -158,14 +160,8 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         
         
-        convery_count = urlArray.count
-        
-        for url_string in urlArray{
-            download_rss(url_str: url_string)
-            
-        }
-        
-        
+        self.totalBox = []
+        self.dataArray = []
        
         
         
@@ -177,12 +173,13 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         if totalBox != []{
         SVProgressHUD.dismiss()
         }
-        
+       
+        print(dataArray2.count)
         
         userId = UserDefaults.standard.object(forKey: "userId") as! String
         print("---------------->>>\(userId)")
         
-        
+       
         
         if UserDefaults.standard.object(forKey: "newsTitleArray") != nil{
             
@@ -206,7 +203,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     }
     
     //navBarImage.png
-    //タブバーいずひぢゅん
+    
     
     
     override func viewDidAppear(_ animated: Bool) {
@@ -215,7 +212,33 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         self.navigationController?.navigationBar.setBackgroundImage(navBarImage,for:.default)
         self.navigationController?.navigationBar.backgroundColor = UIColor.white
         
-        tableView.reloadData()
+       
+        
+        self.totalBox = []
+        convery_count = urlArray.count
+        
+        for url_string in urlArray{
+            download_rss(url_str: url_string)
+            
+        }
+
+        if self.dataArray2 != []{
+            if self.dataArray != self.dataArray2{
+            self.dataArray = self.dataArray2
+            tableView.reloadData()
+            }
+            }
+        
+        
+        //        if(self.dataArray.count != 20){
+//        convery_count = urlArray.count
+//            self.totalBox = []
+//            self.dataArray = []
+//        for url_string in urlArray{
+//            download_rss(url_str: url_string)
+//            
+//        }
+//        }
         
    
     }
@@ -223,25 +246,29 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     //引っ張って更新メソッド
     //引っ張って更新メソッドの時にもパースしたものを更新したいので上のコードをメソッドの中に入れる
     
+    func refresh(){
+        perform(#selector(delay), with: nil, afterDelay: 2.0)
+    }
+    
     
     func delay(){
         
-        if refresh_Chack == false{
-//        totalBox = []
-//            dataArray = []
-            refresh_Chack = true
-        convery_count = urlArray.count
-        
-        for url_string in urlArray{
-            download_rss(url_str: url_string)
-            
-            }
-            tableView.reloadData()
+        if self.dataArray2 != []{
+            if self.dataArray != self.dataArray2{
+                self.dataArray = self.dataArray2
+                refreshControl.endRefreshing()
+                tableView.reloadData()
             }else{
-            
+                refreshControl.endRefreshing()
+            }
+        }else{
+            refreshControl.endRefreshing()
 
         }
-            }
+        
+      
+    
+    }
     
     
     
@@ -446,28 +473,28 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             
             
-            rss_data += result6
+           rss_data += result6
         }else if convery_count == 0{
             print(convery_count)
-            //
-            //            result = rss.pregReplace(pattern: "<\\/script>", with: "")
-            //
-            //            result2 = result.pregReplace(pattern: "\\<\\?xml[.\\s]*.+[\\s]+[.\\s]+xmlns:content=.+\\s+.+.+\\s+.+.+\\s+.+.+\\s+.+.+\\s+.+m.+\\s.+|<channel>[.\\s]*.+\\s*.+[.\\s]*.+\\s*.+\\s.+\\s.+\\s.+\\s.+\\s.+tor>|<image>[.\\s]*.+\\s*.+[.\\s]*.+[.\\s]*.+[.\\s]*.+[.\\s]*.+[.\\s]*.+site>|<comments>.+[comments>.]|<h6.+|<p><strong>.+<\\/p>|<span.+|\\].+content:encoded>|<wfw:commentRss>.+[wfw:commentRss>.]|<slash:comments>.+[slash:comments>.]|<post-id.+id>|<\\/channel>|<\\/rss>.*|<category>.+[category>.]|<dc:creator>.+[creator>.]|<ins.+\\s+.+\\s+.+\\s+.+<\\/ins>|resize.+<\\/p>|<p>[^<].+<\\/p>|<guid.+[guid>.]|<description>.+[description>.]|<content:encoded>.+image-\\d{0,6}\"|<p>\\<.+<\\/p>|<!--.+-->|<\\/blockquote>|<blockquote.+|<strong>|<p>|<script.+|.adsbygoogle.+", with: "")
-            //
+            
+            
             result = rss
+           
+            result2 = rss.pregReplace(pattern: "\n\t\t", with: "")
+
+            result3 = result2.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_END<\\/title><\\/item><\\/ rss>")
             
-            
-            result2 = result.pregReplace(pattern: "<content:encoded>.+class.{30,50}src..", with: "\\\t<image>")
-            
-            result3 = result2.pregReplace(pattern: "resize.+|<p><img.+", with: "")
-            
-            result4 = result3.pregReplace(pattern: "jpg\\?", with: "jpg\\?</image><content:encoded><!\\[CDATA\\[")
-            
-            result5 = result4.pregReplace(pattern: "jpeg\\?", with: "jpeg\\?</image><content:encoded><!\\[CDATA\\[")
-            
-            result6 = result5.pregReplace(pattern: "\n\t\t", with: "")
-            
-            result7 = result6.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_END<\\/title><\\/item><\\/ rss>")
+//            result2 = result.pregReplace(pattern: "<content:encoded>.+class.{30,50}src..", with: "\\\t<image>")
+//            
+//            result3 = result2.pregReplace(pattern: "resize.+|<p><img.+", with: "")
+//            
+//            result4 = result3.pregReplace(pattern: "jpg\\?", with: "jpg\\?</image><content:encoded><!\\[CDATA\\[")
+//            
+//            result5 = result4.pregReplace(pattern: "jpeg\\?", with: "jpeg\\?</image><content:encoded><!\\[CDATA\\[")
+//            
+//            result6 = result5.pregReplace(pattern: "\n\t\t", with: "")
+//            
+//            result7 = result6.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_END<\\/title><\\/item><\\/ rss>")
 
             
             
@@ -483,7 +510,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             
             
-            rss_data2 += result7
+            rss_data2 += result3
             
 //            print(result7.debugDescription)
             
@@ -512,8 +539,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 if i == 0 {self.parser = XMLParser(data: self.data as! Data)
                     if self.parser != nil {
                         
-                        self.totalBox = []
-                        self.dataArray = []
+                        
                         
                         convery_count = 1
                         
@@ -602,13 +628,24 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             dateString.append(string)
         }
-        else if element == "image"{
+       
+        if(convery_count == 1){
+            if element == "image"{
+                imageString.append(string)
+                
+            }
             
-            print("imageを見つけた")
-            
-            imageString.append(string)
-        }
+        }else if(convery_count == 0){
+            if element == "content:encoded"{
+                
+                imageString.append(string)
+                
+            }
 
+        }
+        
+        
+        
     }
     
     //タグの終了を見つけた時
@@ -790,7 +827,24 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             if imageString != ""{
                 print("image---------->\(imageString)")
                 
-                elements.setObject(imageString, forKey: "image" as NSCopying)
+                if (convery_count == 0){
+                    var result:String = ""
+                    var result2:String = ""
+                    var result3:String = ""
+                    
+                    result = String(imageString).pregReplace(pattern: "\\s", with: "")
+                    result2 = result.pregReplace(pattern: "resize.+", with: "")
+                    result3 = result2.pregReplace(pattern: ".+src=.", with: "")
+                    
+                    print("image---------->\(result3)")
+
+                    elements.setObject(result3, forKey: "image" as NSCopying)
+                }else{
+                    elements.setObject(imageString, forKey: "image" as NSCopying)
+                }
+                
+                
+               
                 
             }
             
@@ -801,14 +855,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
 
             }else{
                 sortAndReloadData()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                   self.refreshControl.endRefreshing()
-                    self.tableView.reloadData()
-                    self.refresh_Chack = false
-                    SVProgressHUD.dismiss()
-                print(self.totalBox.debugDescription)
-                }
-
+                
                             }
             }
            
@@ -823,14 +870,26 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         let data:NSArray = totalBox as NSArray
         
+        if download_Check == true{
         dataArray = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
       
+       
         
         /////////
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-        self.tableView.reloadData()
-        print("dataArray------->\(self.dataArray.description)")
+            self.refreshControl.endRefreshing()
+            self.tableView.reloadData()
+//            self.refresh_Chack = false
+            SVProgressHUD.dismiss()
+            print(self.totalBox.debugDescription)
         }
+        download_Check = false
+        
+        }else{
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+        self.dataArray2 = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
+            }
+            }
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {

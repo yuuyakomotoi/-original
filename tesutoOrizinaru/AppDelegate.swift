@@ -23,11 +23,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var post_Check = false
     
+    var navicheck = false
     
-    var movie_dataArray:NSArray? = []
+    var ndataArray:NSArray = []
     
-    var dataArray:NSArray? = []
-    
+    var dataArray:NSArray = []
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.

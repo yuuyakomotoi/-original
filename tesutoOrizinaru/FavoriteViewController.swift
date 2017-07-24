@@ -42,13 +42,20 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
         tableView.delegate = self
         tableView.dataSource = self
         
-        let cansell = UIBarButtonItem(title: "ホーム", style: UIBarButtonItemStyle.plain, target: self, action:#selector(back))
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+        if appDelegate.navicheck == true{
+            self.tabBarController?.tabBar.isHidden = true
+        }
+        
         
         
         support_Button = UIBarButtonItem(title: "説明", style: UIBarButtonItemStyle.plain, target: self, action:#selector(support))
     
-        self.navigationItem.leftBarButtonItem = cansell
-        self.navigationItem.rightBarButtonItem = support_Button
+        self.title = "お気に入り"
+        /////////////////
+        //オートレイアウト
+        
+                self.navigationItem.rightBarButtonItem = support_Button
         
     }
         
@@ -396,13 +403,6 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
         
         showAlert(t:t,l:l,d:d,u:u,n:n,m_t:m_t,m_l:m_l,m_d:m_d,m_u:m_u,m_n:m_n,segmentCount:segmentCount)
 
-        
-    }
-    
-    func back(){
-       self.tabBarController?.tabBar.isHidden = false
-        
-        self.navigationController?.popViewController(animated: true)
         
     }
     

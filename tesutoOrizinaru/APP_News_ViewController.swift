@@ -32,7 +32,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     var data2:NSData? = NSData()
     var data3:NSData? = NSData()
     
-    
+  
     
     
     var totalBox = NSMutableArray()
@@ -82,7 +82,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
         
         refreshControl.attributedTitle = NSAttributedString(string: "引っ張って更新")
-        refreshControl.addTarget(self, action:#selector(delay), for:UIControlEvents.valueChanged)
+        refreshControl.addTarget(self, action:#selector(refresh), for:UIControlEvents.valueChanged)
         tableView.addSubview(refreshControl)
         
         
@@ -91,23 +91,27 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         tableView.delegate = self
         tableView.dataSource = self
         
+        self.totalBox = []
+       self.dataArray = []
+
         
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+        if appDelegate.navicheck == true{
+            self.tabBarController?.tabBar.isHidden = true
+        }
         
-        let cansell = UIBarButtonItem(title: "ホーム", style: UIBarButtonItemStyle.plain, target: self, action:#selector(back))
         
         
         support_Button = UIBarButtonItem(title: "説明", style: UIBarButtonItemStyle.plain, target: self, action:#selector(support))
         
-        self.navigationItem.leftBarButtonItem = cansell
+        self.title = "アプリニュース"
+        /////////////////
+        //オートレイアウト
+        
         self.navigationItem.rightBarButtonItem = support_Button
         
-//            print(dataArray)
-//            let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-//            self.dataArray = appDelegate.dataArray!
-        
-        
             convery_count = urlArray.count
-            print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        
             for url_string in urlArray{
                 download_rss(url_str: url_string)
                 
@@ -150,32 +154,48 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        if dataArray == []{
+            let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+            if appDelegate.dataArray != []{
+                self.dataArray = appDelegate.dataArray
+                tableView.reloadData()
+            }
+
+        }
+        
+        
         if totalBox == []{
             SVProgressHUD.show()
         }
       
-            }
+                    }
     
-    
-    //引っ張って更新メソッド
+       //引っ張って更新メソッド
     //引っ張って更新メソッドの時にもパースしたものを更新したいので上のコードをメソッドの中に入れる
     
     
+    func refresh(){
+       perform(#selector(delay), with: nil, afterDelay: 1.5)
+    }
+    
     func delay(){
+       
         
-        if refresh_Chack == false{
-            refresh_Chack = true
+            
+                refresh_Chack = true
+            
+            self.totalBox = []
+           
             convery_count = urlArray.count
             
             for url_string in urlArray{
                 download_rss(url_str: url_string)
                 
             }
-            
-        }else{
-            refreshControl.endRefreshing()
-            
-        }
+           refreshControl.endRefreshing()
+          
+        
     }
     
     
@@ -416,8 +436,6 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
                 if i == 0 {self.parser = XMLParser(data: self.data as! Data)
                     if self.parser != nil {
                         
-                        self.totalBox = []
-                        dataArray = []
                         
                         convery_count = 1
                         
@@ -612,7 +630,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
                     //Thu,20Jul10:36:00+0900
                     
                     
-                    date3 = date2.pregReplace(pattern: "Thu,|:\\d\\d\\+\\d\\d\\d\\d", with: "")
+                    date3 = date2.pregReplace(pattern: "...,|:\\d\\d\\+\\d\\d\\d\\d", with: "")
                     //20Jul10:36
                     
 
@@ -730,13 +748,6 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
 //                    appDelegate.dataArray = self.dataArray
                     sortAndReloadData()
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                        self.refreshControl.endRefreshing()
-                        self.tableView.reloadData()
-                        self.refresh_Chack = false
-                        SVProgressHUD.dismiss()
-//                        print(self.totalBox.debugDescription)
-                    }
                     
                 }
             }
@@ -776,11 +787,28 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         
         dataArray = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
         
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+        
     
-//        print("dataArray------->\(dataArray.description)")
+        if self.dataArray != []{
+        appDelegate.dataArray = self.dataArray
+        }else{
+
+            self.dataArray = appDelegate.dataArray
+        }
+        
+       print("AAAAAAAAAAAAAAAAAA")
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            
+            self.refreshControl.endRefreshing()
+             self.refresh_Chack = false
+            self.tableView.reloadData()
+            SVProgressHUD.dismiss()
         
     }
-    
+   
+    }
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         
         if error == nil {
@@ -859,12 +887,6 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
     
     
-    func back(){
-        self.tabBarController?.tabBar.isHidden = false
-        
-        self.navigationController?.popViewController(animated: true)
-        
-    }
     
     
     func support() {

@@ -167,6 +167,8 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
         }
         
         self.navigationController?.popViewController(animated: true)
+   //アップデート
+    //グーグル新規登録
     }
     
     
