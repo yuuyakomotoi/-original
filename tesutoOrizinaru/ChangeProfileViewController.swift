@@ -59,8 +59,7 @@ class ChangeProfileViewController: UIViewController,UITextFieldDelegate,UIImageP
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        //self.title = self.title! + "プロフィール設定"
-    //次回質問
+        
     }
 
     
@@ -114,7 +113,7 @@ class ChangeProfileViewController: UIViewController,UITextFieldDelegate,UIImageP
         
         if UserDefaults.standard.object(forKey: "userName") == nil{
             if usernameTextField.text == "No Name"{
-                SVProgressHUD.showError(withStatus: "この名前は利用できません")
+                SVProgressHUD.showError(withStatus: "このユーザー名では登録できません")
                 return
 
             }

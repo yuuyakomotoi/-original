@@ -15,7 +15,7 @@ class StrategyViewController: UIViewController,UITableViewDelegate,UITableViewDa
     var linkArray = ["https://shironekotennis.gamewith.jp/","https://twitter.com/Stennis_colopl"]
     
     
-    var imageArray = ["Wiki1.png","Wiki2.png"]
+    var imageArray = ["Wiki1.png","Wiki3.png"]
     
     
     

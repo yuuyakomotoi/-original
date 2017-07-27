@@ -160,8 +160,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         
         
-        self.totalBox = []
-        self.dataArray = []
+       
        
         
         
@@ -170,11 +169,21 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        
+        
+        convery_count = urlArray.count
+        
+        for url_string in urlArray{
+            download_rss(url_str: url_string)
+            
+        }
+        
+        
         if totalBox != []{
         SVProgressHUD.dismiss()
         }
        
-        print(dataArray2.count)
+        
         
         userId = UserDefaults.standard.object(forKey: "userId") as! String
         print("---------------->>>\(userId)")
@@ -208,26 +217,36 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        
+        if totalBox != []{
+            SVProgressHUD.dismiss()
+        }
+
+        
+        
         let navBarImage = UIImage(named: "navBarImage.png") as UIImage?
         self.navigationController?.navigationBar.setBackgroundImage(navBarImage,for:.default)
         self.navigationController?.navigationBar.backgroundColor = UIColor.white
         
        
         
-        self.totalBox = []
-        convery_count = urlArray.count
+//        self.totalBox = []
         
-        for url_string in urlArray{
-            download_rss(url_str: url_string)
-            
-        }
+        
+        
 
-        if self.dataArray2 != []{
-            if self.dataArray != self.dataArray2{
-            self.dataArray = self.dataArray2
-            tableView.reloadData()
-            }
-            }
+//        if self.dataArray2 != []{
+//            if self.dataArray != self.dataArray2{
+//            self.dataArray = []
+//                self.dataArray = self.dataArray2
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//                   self.tableView.reloadData()
+//                }
+//                
+//            
+//            }
+//            }
         
         
         //        if(self.dataArray.count != 20){
@@ -253,21 +272,55 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     func delay(){
         
-        if self.dataArray2 != []{
-            if self.dataArray != self.dataArray2{
-                self.dataArray = self.dataArray2
-                refreshControl.endRefreshing()
-                tableView.reloadData()
+        if self.data != nil{
+        
+            self.totalBox = []
+            self.dataArray = []
+            
+            for i in 0...1{
+            if i == 0 {self.parser = XMLParser(data: self.data! as Data)
+                if self.parser != nil {
+                    
+                    
+                    
+                    convery_count = 1
+                    
+                    self.parser!.delegate = self
+                    self.parser!.parse()
+                    
+                    print("パース成功")
+                } else {
+                    // パースに失敗した時
+                    print("パース失敗")
+                }
+                
             }else{
-                refreshControl.endRefreshing()
+                self.parser = XMLParser(data: self.data2! as Data)
+                if self.parser != nil {
+                    
+                    convery_count = 0
+                    
+                    self.parser!.delegate = self
+                    self.parser!.parse()
+                    print("パース成功")
+                } else {
+                    // パースに失敗した時
+                    print("パース失敗")
+                }
+                
             }
-        }else{
-            refreshControl.endRefreshing()
-
         }
         
+        refreshControl.endRefreshing()
+        
+        if self.dataArray2 != []{
+      print("ssssssssssss")
+            
+            self.dataArray = self.dataArray2
+            tableView.reloadData()
+        }
       
-    
+        }
     }
     
     
@@ -416,7 +469,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         var result4:String = ""
         var result5:String = ""
         var result6:String = ""
-        var result7:String = ""
+      
         
         
         
@@ -474,6 +527,10 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             
            rss_data += result6
+        
+            self.data = self.rss_data.data(using: String.Encoding.utf8)! as NSData
+
+        
         }else if convery_count == 0{
             print(convery_count)
             
@@ -514,7 +571,6 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
 //            print(result7.debugDescription)
             
-            self.data = self.rss_data.data(using: String.Encoding.utf8)! as NSData
             self.data2 = self.rss_data2.data(using: String.Encoding.utf8)! as NSData
             
             
@@ -535,8 +591,10 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             //print(rss_data.debugDescription)
             //print(data.debugDescription)
             
+            if (download_Check == true){
+            
             for i in 0...1{
-                if i == 0 {self.parser = XMLParser(data: self.data as! Data)
+                if i == 0 {self.parser = XMLParser(data: self.data! as Data)
                     if self.parser != nil {
                         
                         
@@ -553,7 +611,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                     }
                     
                 }else{
-                    self.parser = XMLParser(data: self.data2 as! Data)
+                    self.parser = XMLParser(data: self.data2! as Data)
                     if self.parser != nil {
                         
                         convery_count = 0
@@ -569,7 +627,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 }
             }
             
-            
+            }
             
         }
     
@@ -684,7 +742,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 var date3 = ""
                 var date3_2 = ""
                 var date3_3 = ""
-                var date3_4 = ""
+              
                 var date4 = ""
                 var date5 = ""
                 var date_Set = ""
@@ -872,7 +930,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         if download_Check == true{
         dataArray = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
-      
+        self.dataArray2 = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
        
         
         /////////
@@ -886,9 +944,11 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         download_Check = false
         
         }else{
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+        
         self.dataArray2 = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
-            }
+           print("bbbbbbbbbbbb")
+            print(self.dataArray2.count)
+            
             }
     }
     

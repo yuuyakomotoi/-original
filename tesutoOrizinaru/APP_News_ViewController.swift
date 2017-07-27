@@ -60,11 +60,11 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
     
     //お気に入りに登録用の配列
-    var newsTitleArray:[String] = []
-    var newsLinkArray:[String] = []
-    var newsDateArray:[String] = []
-    var newsUrlArray:[String] = []
-    var newsLink_NameArray:[String] = []
+    var app_newsTitleArray:[String] = []
+    var app_newsLinkArray:[String] = []
+    var app_newsDateArray:[String] = []
+    var app_newsUrlArray:[String] = []
+    var app_newsLink_NameArray:[String] = []
     
     var support_Button = UIBarButtonItem()
     
@@ -130,19 +130,19 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
             SVProgressHUD.dismiss()
         }
         
-        if UserDefaults.standard.object(forKey: "newsTitleArray") != nil{
+        if UserDefaults.standard.object(forKey: "app_newsTitleArray") != nil{
             
             
             
-            newsTitleArray = UserDefaults.standard.object(forKey: "newsTitleArray") as! [String]
+            app_newsTitleArray = UserDefaults.standard.object(forKey: "app_newsTitleArray") as! [String]
             
-            newsLinkArray = UserDefaults.standard.object(forKey: "newsLinkArray") as! [String]
+            app_newsLinkArray = UserDefaults.standard.object(forKey: "app_newsLinkArray") as! [String]
             
-            newsDateArray = UserDefaults.standard.object(forKey: "newsDateArray") as! [String]
+            app_newsDateArray = UserDefaults.standard.object(forKey: "app_newsDateArray") as! [String]
             
-            newsUrlArray = UserDefaults.standard.object(forKey: "newsUrlArray") as! [String]
+            app_newsUrlArray = UserDefaults.standard.object(forKey: "app_newsUrlArray") as! [String]
             
-            newsLink_NameArray = UserDefaults.standard.object(forKey: "newsLink_NameArray") as! [String]
+            app_newsLink_NameArray = UserDefaults.standard.object(forKey: "app_newsLink_NameArray") as! [String]
             
             
         }
@@ -159,6 +159,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
             let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
             if appDelegate.dataArray != []{
                 self.dataArray = appDelegate.dataArray
+                print(dataArray)
                 tableView.reloadData()
             }
 
@@ -433,7 +434,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
             //print(data.debugDescription)
             
             for i in 0...1{
-                if i == 0 {self.parser = XMLParser(data: self.data as! Data)
+                if i == 0 {self.parser = XMLParser(data: self.data! as Data)
                     if self.parser != nil {
                         
                         
@@ -449,7 +450,8 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
                     }
                     
                 }else{
-                    self.parser = XMLParser(data: self.data2 as! Data)
+                    self.parser = XMLParser(data: self.data2! as
+                        Data)
                     if self.parser != nil {
                         
                         convery_count = 0
@@ -840,20 +842,20 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     func addFavorite(newsTitle:String,newsLink:String,newsDate:String,newsUrl:String,newsLink_Name:String) {
         
         
-        newsTitleArray.append(newsTitle)
-        UserDefaults.standard.set(newsTitleArray, forKey: "newsTitleArray")
+        app_newsTitleArray.append(newsTitle)
+        UserDefaults.standard.set(app_newsTitleArray, forKey: "app_newsTitleArray")
         
-        newsLinkArray.append(newsLink)
-        UserDefaults.standard.set(newsLinkArray, forKey: "newsLinkArray")
+        app_newsLinkArray.append(newsLink)
+        UserDefaults.standard.set(app_newsLinkArray, forKey: "app_newsLinkArray")
         
-        newsDateArray.append(newsDate)
-        UserDefaults.standard.set(newsDateArray, forKey: "newsDateArray")
+        app_newsDateArray.append(newsDate)
+        UserDefaults.standard.set(app_newsDateArray, forKey: "app_newsDateArray")
         
-        newsUrlArray.append(newsUrl)
-        UserDefaults.standard.set(newsUrlArray, forKey: "newsUrlArray")
+        app_newsUrlArray.append(newsUrl)
+        UserDefaults.standard.set(app_newsUrlArray, forKey: "app_newsUrlArray")
         
-        newsLink_NameArray.append(newsLink_Name)
-        UserDefaults.standard.set(newsLink_NameArray, forKey: "newsLink_NameArray")
+        app_newsLink_NameArray.append(newsLink_Name)
+        UserDefaults.standard.set(app_newsLink_NameArray, forKey: "app_newsLink_NameArray")
         
         
         SVProgressHUD.showSuccess(withStatus: "お気に入りに\n追加しました")
@@ -872,10 +874,10 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         let newsUrl = (dataArray[(indexPath?.row)!] as AnyObject).value(forKey: "image") as? String
         let newsLink_Name = (dataArray[(indexPath?.row)!] as AnyObject).value(forKey: "link_Name") as? String
         
+    
         
         
-        
-        for i in newsLinkArray {
+        for i in app_newsLinkArray {
             if i == newsLink{
                 SVProgressHUD.showError(withStatus: "この記事はお気に入りに登録済みです")
                 return

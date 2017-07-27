@@ -279,13 +279,14 @@ break
                 
 //                self.tabBarController?.tabBar.isHidden = true
                 
+                
+                               
                 let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
                 appDelegate.navicheck = true
                 
-                let app_News_ViewController = self.storyboard?.instantiateViewController(withIdentifier: "app_News") as! APP_News_ViewController
                 
-                
-                self.navigationController?.pushViewController(app_News_ViewController, animated: true)
+                performSegue(withIdentifier:"app_News",sender:nil)
+               
                 
                 
 
