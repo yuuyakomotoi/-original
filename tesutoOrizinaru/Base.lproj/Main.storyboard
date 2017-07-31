@@ -41,7 +41,7 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="モンスト攻略速報まとめチャンネル" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kwn-FY-kQ7">
-                                                    <rect key="frame" x="106" y="76" width="235" height="15"/>
+                                                    <rect key="frame" x="106" y="76" width="196" height="15"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="15" id="m0k-9g-kyI"/>
                                                     </constraints>
@@ -50,7 +50,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="xx-xx xx:xx" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="slA-KT-9GV">
-                                                    <rect key="frame" x="341" y="75" width="65" height="16"/>
+                                                    <rect key="frame" x="302" y="75" width="65" height="16"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="65" id="Vgm-H4-1G8"/>
                                                     </constraints>
@@ -59,14 +59,14 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gkj-gp-x0V">
-                                                    <rect key="frame" x="381" y="50" width="25" height="25"/>
+                                                    <rect key="frame" x="342" y="50" width="25" height="25"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="25" id="0aW-v3-Xdq"/>
                                                     </constraints>
                                                     <state key="normal" title="Button" image="Entypo_d83d(0)_32.png"/>
                                                 </button>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" text="【白猫テニス】テニおせ＃10後編が公開！新キャラスキル紹介やトーナメント情報！" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gFG-0d-sJE">
-                                                    <rect key="frame" x="106" y="8" width="300" height="54"/>
+                                                    <rect key="frame" x="106" y="8" width="261" height="54"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -181,13 +181,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="【白猫テニス】テニおせ＃10後編が公開！新キャラスキル紹介やトーナメント情報！" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sRB-FB-wne">
-                                                    <rect key="frame" x="106" y="8" width="300" height="54"/>
+                                                    <rect key="frame" x="106" y="8" width="261" height="54"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LA6-Va-d0L">
-                                                    <rect key="frame" x="106" y="76" width="235" height="15"/>
+                                                    <rect key="frame" x="106" y="76" width="196" height="15"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="15" id="HdE-OK-xkP"/>
                                                     </constraints>
@@ -196,7 +196,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="xx-xx xx:xx" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Igs-Kp-yqf">
-                                                    <rect key="frame" x="341" y="75" width="65" height="16"/>
+                                                    <rect key="frame" x="302" y="75" width="65" height="16"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="65" id="7u0-dN-KhM"/>
                                                     </constraints>
@@ -211,7 +211,7 @@
                                                     </constraints>
                                                 </imageView>
                                                 <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wyd-iv-i6H">
-                                                    <rect key="frame" x="381" y="50" width="25" height="25"/>
+                                                    <rect key="frame" x="342" y="50" width="25" height="25"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="25" id="ujG-5r-Pdu"/>
                                                     </constraints>
@@ -317,7 +317,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="リンク元" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JFb-Vd-o70">
-                                                    <rect key="frame" x="106" y="66" width="235" height="15"/>
+                                                    <rect key="frame" x="106" y="66" width="196" height="15"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="15" id="EzO-kf-wup"/>
                                                     </constraints>
@@ -326,7 +326,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="https://shironekotennis.gamewith.jp/" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qZs-dX-ofC">
-                                                    <rect key="frame" x="155" y="66" width="251" height="16"/>
+                                                    <rect key="frame" x="155" y="66" width="212" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
@@ -338,7 +338,7 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="GameWith" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4OO-T4-0YN">
-                                                    <rect key="frame" x="106" y="8" width="300" height="45"/>
+                                                    <rect key="frame" x="106" y="8" width="261" height="45"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -1802,13 +1802,13 @@
                                                             </constraints>
                                                         </imageView>
                                                         <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="【白猫テニス】テニおせ＃10後編が公開！新キャラスキル紹介やトーナメント情報！" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xHt-TB-UUp">
-                                                            <rect key="frame" x="106" y="8" width="300" height="54"/>
+                                                            <rect key="frame" x="106" y="8" width="261" height="54"/>
                                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3月21日15:00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X0S-zX-geW">
-                                                            <rect key="frame" x="341" y="75" width="65" height="16"/>
+                                                            <rect key="frame" x="302" y="75" width="65" height="16"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="65" id="htW-kN-NfO"/>
                                                             </constraints>
@@ -1817,7 +1817,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="モンスト攻略速報まとめチャンネル" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h1b-qX-1LT">
-                                                            <rect key="frame" x="106" y="75" width="235" height="15"/>
+                                                            <rect key="frame" x="106" y="75" width="196" height="15"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="15" id="WYA-oe-YTy"/>
                                                             </constraints>
@@ -1826,7 +1826,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0tB-h5-pG8">
-                                                            <rect key="frame" x="381" y="50" width="25" height="25"/>
+                                                            <rect key="frame" x="342" y="50" width="25" height="25"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="25" id="iFL-A7-i9r"/>
                                                             </constraints>
@@ -1933,13 +1933,13 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="【白猫テニス】テニおせ＃10後編が公開！新キャラスキル紹介やトーナメント情報！" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g0s-Ag-Sts">
-                                                    <rect key="frame" x="106" y="8" width="300" height="54"/>
+                                                    <rect key="frame" x="106" y="8" width="261" height="54"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3月21日15:00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Np5-08-xUh">
-                                                    <rect key="frame" x="341" y="75" width="65" height="16"/>
+                                                    <rect key="frame" x="302" y="75" width="65" height="16"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="65" id="Bcy-rp-PDN"/>
                                                     </constraints>
@@ -1948,7 +1948,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="モンスト攻略速報まとめチャンネル" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xB4-qv-Ecu">
-                                                    <rect key="frame" x="106" y="76" width="235" height="15"/>
+                                                    <rect key="frame" x="106" y="76" width="196" height="15"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="15" id="itn-Je-Bi3"/>
                                                     </constraints>
@@ -1957,7 +1957,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5nR-br-lHc">
-                                                    <rect key="frame" x="381" y="50" width="25" height="25"/>
+                                                    <rect key="frame" x="342" y="50" width="25" height="25"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="25" id="aa5-j4-6SW"/>
                                                     </constraints>

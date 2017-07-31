@@ -93,6 +93,10 @@ class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        //ナビゲーションのスワイプ有効
+        self.navigationController!.interactivePopGestureRecognizer!.isEnabled = true
+        
         let navBarImage = UIImage(named: "navBarImage.png") as UIImage?
         self.navigationController?.navigationBar.setBackgroundImage(navBarImage,for:.default)
         self.navigationController?.navigationBar.backgroundColor = UIColor.white

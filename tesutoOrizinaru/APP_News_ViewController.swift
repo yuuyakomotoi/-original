@@ -20,9 +20,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
     var refresh_Chack = false
     
-    var rss_data:String = ""
-    var rss_data2:String = ""
-    var rss_data3:String = ""
+    
     
     var convery_count = 0
     
@@ -30,7 +28,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
     var data:NSData? = NSData()
     var data2:NSData? = NSData()
-    var data3:NSData? = NSData()
+    
     
   
     
@@ -155,6 +153,9 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        //ナビゲーションのスワイプ無効
+        self.navigationController!.interactivePopGestureRecognizer!.isEnabled = false
+        
         if dataArray == []{
             let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
             if appDelegate.dataArray != []{
@@ -169,7 +170,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         if totalBox == []{
             SVProgressHUD.show()
         }
-      
+     
                     }
     
        //引っ張って更新メソッド
@@ -366,12 +367,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         
         // 正規表現に置き換える
         
-        var result:String = ""
-        var result2:String = ""
-        var result3:String = ""
-        var result4:String = ""
-        var result5:String = ""
-        var result6:String = ""
+        
         
         
         
@@ -381,7 +377,18 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         
         if convery_count == 1{
             print(convery_count)
-        result = rss
+        
+            var result:String = ""
+            var result2:String = ""
+            var result3:String = ""
+            var result4:String = ""
+            var result5:String = ""
+            var result6:String = ""
+            
+            var rss_data:String = ""
+            data = NSData()
+            
+            result = rss
             
  
             result2 = result.pregReplace(pattern: "<item.+rdf.+>", with: "<item>")
@@ -398,13 +405,22 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
 
             
             
-            //            print(result5.debugDescription)
-            
-            
             
             rss_data += result6
         
+            
+            self.data = rss_data.data(using: String.Encoding.utf8)! as NSData
+      
+        
         }else if convery_count == 0{
+            
+            var result:String = ""
+            var result2:String = ""
+            var result3:String = ""
+           
+            
+            var rss_data2:String = ""
+            data2 = NSData()
             
             result = rss
             
@@ -423,8 +439,8 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
             
            
             
-            self.data = self.rss_data.data(using: String.Encoding.utf8)! as NSData
-            self.data2 = self.rss_data2.data(using: String.Encoding.utf8)! as NSData
+            
+            self.data2 = rss_data2.data(using: String.Encoding.utf8)! as NSData
             
             
         

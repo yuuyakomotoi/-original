@@ -16,7 +16,9 @@ class ChangeProfileViewController: UIViewController,UITextFieldDelegate,UIImageP
 
 	var img = UIImageView()
 
+    var user_Profile_Check = ""
 
+    
 	@IBOutlet var usernameTextField: UITextField!
 
 
@@ -60,6 +62,14 @@ class ChangeProfileViewController: UIViewController,UITextFieldDelegate,UIImageP
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        if UserDefaults.standard.object(forKey: "user_Profile_Check") != nil{
+            user_Profile_Check = UserDefaults.standard.object(forKey: "user_Profile_Check") as! String
+        print(user_Profile_Check)
+        }
+        
+        
+        //ナビゲーションのスワイプ無効
+        self.navigationController!.interactivePopGestureRecognizer!.isEnabled = false
     }
 
     
@@ -105,6 +115,22 @@ class ChangeProfileViewController: UIViewController,UITextFieldDelegate,UIImageP
 	@IBAction func done(_ sender: AnyObject)
 	{
        
+        if (usernameTextField.text != name){
+           
+            let date = Date()
+            let calendar = Calendar.current
+            
+            let year = calendar.component(.year, from: date)
+            let month = calendar.component(.month, from: date)
+            let day = calendar.component(.day, from: date)
+            
+            let calendar_Check = String(year) + String(month) + String(day)
+        
+        if (calendar_Check == user_Profile_Check){
+            SVProgressHUD.showError(withStatus: "ユーザー名は翌日まで変更できません")
+            return
+        }
+        }
         
         if (usernameTextField.text?.characters.count)! > 22{
            SVProgressHUD.showError(withStatus: "ユーザー名を22文字以内にしてください")
@@ -115,14 +141,14 @@ class ChangeProfileViewController: UIViewController,UITextFieldDelegate,UIImageP
             if usernameTextField.text == "No Name"{
                 SVProgressHUD.showError(withStatus: "このユーザー名では登録できません")
                 return
-
-            }
+}
             
         }
         
+        if (usernameTextField.text != name){
         
-        let alertViewControler = UIAlertController(title: "本アプリは不正防止のため、一度登録した名前は今後変更できせん", message: "この名前で登録しますか？\n尚、プロフィール画像は何度でも変更可能です", preferredStyle:.alert)
-        let okAction = UIAlertAction(title: "この名前で登録する", style: .default, handler:{
+        let alertViewControler = UIAlertController(title: "本アプリは不正防止のため、登録したユーザー名は翌日まで変更できせん", message: "このユーザー名で登録しますか？ 尚、プロフィール画像は何度でも変更可能です", preferredStyle:.alert)
+        let okAction = UIAlertAction(title: "このユーザー名で登録する", style: .default, handler:{
             (action:UIAlertAction!) -> Void in
             self.doneAction()
         })
@@ -132,7 +158,22 @@ class ChangeProfileViewController: UIViewController,UITextFieldDelegate,UIImageP
         alertViewControler.addAction(cancelAction)
         present(alertViewControler, animated: true, completion: nil)
         
-        
+        }else{
+            var data: NSData = NSData()
+            if let image = profileImageView.image{
+                
+                data = UIImageJPEGRepresentation(image, 0.1)! as NSData
+                let base64String = data.base64EncodedString(options:
+                    NSData.Base64EncodingOptions.lineLength64Characters
+                    ) as String
+                UserDefaults.standard.set(base64String,forKey:"profileImage")
+                
+
+             }
+            
+            self.navigationController?.popViewController(animated: true)
+       
+        }
 
 	}
 
@@ -142,7 +183,32 @@ class ChangeProfileViewController: UIViewController,UITextFieldDelegate,UIImageP
 		if(usernameTextField.isFirstResponder){
 
 			usernameTextField.resignFirstResponder()
+           
+            if (usernameTextField.text != name){
+                
+                let date = Date()
+                let calendar = Calendar.current
+                
+                let year = calendar.component(.year, from: date)
+                let month = calendar.component(.month, from: date)
+                let day = calendar.component(.day, from: date)
+                
+                let calendar_Check = String(year) + String(month) + String(day)
+                
+                if (calendar_Check == user_Profile_Check){
+                  
+                    usernameTextField.text = name
+                    
+                    let alertViewControler = UIAlertController(title: "ユーザー名は翌日まで変更できません", message: "", preferredStyle:.alert)
+                    let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                    
+                    alertViewControler.addAction(cancelAction)
+                    present(alertViewControler, animated: true, completion: nil)
+                    
+                    
+                }
 
+            }
 		}
 
 	}
@@ -219,6 +285,37 @@ class ChangeProfileViewController: UIViewController,UITextFieldDelegate,UIImageP
         let base64String = data.base64EncodedString(options:
             NSData.Base64EncodingOptions.lineLength64Characters
             ) as String
+        
+        
+       
+        if UserDefaults.standard.object(forKey: "user_Profile_Check") == nil{
+            let date = Date()
+            let calendar = Calendar.current
+           
+            let year = calendar.component(.year, from: date)
+            let month = calendar.component(.month, from: date)
+            let day = calendar.component(.day, from: date)
+            
+            let calendar_Check = String(year) + String(month) + String(day)
+            
+            UserDefaults.standard.set(calendar_Check, forKey: "user_Profile_Check")
+            print(day)
+        }else{
+            UserDefaults.standard.removeObject(forKey: "user_Profile_Check")
+            
+            let date = Date()
+            let calendar = Calendar.current
+            
+            let year = calendar.component(.year, from: date)
+            let month = calendar.component(.month, from: date)
+            let day = calendar.component(.day, from: date)
+            
+            let calendar_Check = String(year) + String(month) + String(day)
+
+            UserDefaults.standard.set(calendar_Check, forKey: "user_Profile_Check")
+        }
+        
+
         
         //アプリ内へ保存する
         UserDefaults.standard.set(base64String,forKey:"profileImage")

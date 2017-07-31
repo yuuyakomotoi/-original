@@ -82,8 +82,7 @@ class MovieViewController: UIViewController,UITableViewDataSource,UITableViewDel
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
            
-            self.totalBox = []
-            self.dataArray = []
+            
             
             for urlAll in self.urlArray{
                 
@@ -133,7 +132,7 @@ class MovieViewController: UIViewController,UITableViewDataSource,UITableViewDel
             
         }
 
-    
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -158,6 +157,7 @@ class MovieViewController: UIViewController,UITableViewDataSource,UITableViewDel
     func delay(){
         //xmlを解析する(パース)
         totalBox = []
+        dataArray = []
         for urlAll in urlArray{
             
             let url = urlAll  //ここにサイトのURLを入れる

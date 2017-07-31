@@ -129,7 +129,13 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        //ナビゲーションのスワイプ無効
+        self.navigationController!.interactivePopGestureRecognizer!.isEnabled = false
+        
         if UserDefaults.standard.object(forKey: "check") == nil{
+            
+            
             
             
             

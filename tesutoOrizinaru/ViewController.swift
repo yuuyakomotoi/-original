@@ -23,9 +23,9 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
 //    var refresh_Chack = false
     
-    var rss_data:String = ""
-    var rss_data2:String = ""
-    var rss_data3:String = ""
+    
+    
+    
     
     var convery_count = 0
     
@@ -33,7 +33,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     var data:NSData? = NSData()
     var data2:NSData? = NSData()
-    var data3:NSData? = NSData()
+    
     
     
     
@@ -55,7 +55,9 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     var imageString = NSMutableString()
     
     
-     let urlArray = ["http://shironekotennisms.net/feed","http://shironekotennis-kouryaku.xyz/feed",""]//URLリスト
+    //http://2chmatomeru.info/entries/index.rss
+   // http://xn--zckzap0809doqd.jp/feed/
+     let urlArray = ["http://shironekotennisms.net/feed","http://xn--zckzap0809doqd.jp/feed/",""]//URLリスト
     
     
     var dataArray = NSArray()
@@ -81,7 +83,10 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     var id:[BBS_PostData1] = []
     
+    var config: URLSessionConfiguration?
+    
     @IBOutlet var tableView: UITableView!
+    
     
     
     
@@ -98,11 +103,22 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         UITabBar.appearance().tintColor = UIColor(red: 1, green: 0.6, blue: 0, alpha: 1)
         
-        
+       self.totalBox = []
         
         if totalBox == []{
             SVProgressHUD.show()
         }
+        
+        convery_count = urlArray.count
+        
+        for url_string in urlArray{
+            download_rss(url_str: url_string)
+            
+        }
+
+        
+        
+        
         
         
         if UserDefaults.standard.object(forKey: "userId") == nil{
@@ -113,7 +129,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm"
-            
+           
             let dateString:String = formatter.string(from:date  as Date)
             
             let user:NSDictionary = ["date":dateString]
@@ -169,18 +185,23 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        
-        
+       //ここ
+        //こkp
+        //ここ
+        if dataArray == []{
         convery_count = urlArray.count
         
         for url_string in urlArray{
             download_rss(url_str: url_string)
             
         }
+
+        }
         
-        
-        if totalBox != []{
-        SVProgressHUD.dismiss()
+        if (download_Check == false){
+            if totalBox == []{
+                SVProgressHUD.dismiss()
+            }
         }
        
         
@@ -218,11 +239,13 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        
-        if totalBox != []{
+        self.navigationController!.interactivePopGestureRecognizer!.isEnabled = true
+
+        if (download_Check == false){
+         if totalBox == []{
             SVProgressHUD.dismiss()
         }
-
+        }
         
         
         let navBarImage = UIImage(named: "navBarImage.png") as UIImage?
@@ -272,54 +295,11 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     func delay(){
         
-        if self.data != nil{
+        convery_count = urlArray.count
         
-            self.totalBox = []
-            self.dataArray = []
+        for url_string in urlArray{
+            download_rss(url_str: url_string)
             
-            for i in 0...1{
-            if i == 0 {self.parser = XMLParser(data: self.data! as Data)
-                if self.parser != nil {
-                    
-                    
-                    
-                    convery_count = 1
-                    
-                    self.parser!.delegate = self
-                    self.parser!.parse()
-                    
-                    print("パース成功")
-                } else {
-                    // パースに失敗した時
-                    print("パース失敗")
-                }
-                
-            }else{
-                self.parser = XMLParser(data: self.data2! as Data)
-                if self.parser != nil {
-                    
-                    convery_count = 0
-                    
-                    self.parser!.delegate = self
-                    self.parser!.parse()
-                    print("パース成功")
-                } else {
-                    // パースに失敗した時
-                    print("パース失敗")
-                }
-                
-            }
-        }
-        
-        refreshControl.endRefreshing()
-        
-        if self.dataArray2 != []{
-      print("ssssssssssss")
-            
-            self.dataArray = self.dataArray2
-            tableView.reloadData()
-        }
-      
         }
     }
     
@@ -416,19 +396,35 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     func download_rss(url_str:String){
         // 通信のコンフィグを用意.
-        let config: URLSessionConfiguration = URLSessionConfiguration.background(withIdentifier: "backgroundSession")
+
+        config = URLSessionConfiguration()
+        
+        config = URLSessionConfiguration.background(withIdentifier: "backgroundSession")
+        
+        //        let config: URLSessionConfiguration = URLSessionConfiguration.background(withIdentifier: "backgroundSession")
+//        
+        
+        if (config != nil){
+        
         // Sessionを作成する.
-        let session: URLSession = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        let session:URLSession? = URLSession(configuration: config!, delegate: self, delegateQueue: nil)
+        
         
         // ダウンロード先のURLからリクエストを生成.
         let url:NSURL = NSURL(string: url_str)!
         let request: URLRequest =  URLRequest(url: url as URL)
         
-        // ダウンロードタスクを生成.
-        let myTask: URLSessionDownloadTask = session.downloadTask(with: request)
         
-        // タスクを実行.
-        myTask.resume()
+        
+            // ダウンロードタスクを生成.
+            let myTask: URLSessionDownloadTask = (session?.downloadTask(with: request))!
+            
+            
+            // タスクを実行.
+            myTask.resume()
+        
+        
+        }
         
     }
     
@@ -453,6 +449,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         
         convertRSS(rss:rss)
+       
         
     }
     
@@ -463,13 +460,6 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         // 正規表現に置き換える
         
-        var result:String = ""
-        var result2:String = ""
-        var result3:String = ""
-        var result4:String = ""
-        var result5:String = ""
-        var result6:String = ""
-      
         
         
         
@@ -477,30 +467,13 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         
         if convery_count == 1{
-            print(convery_count)
-            //     ///////
-            //            ///
-            //            ////
-            //            ///
-            //            ///
-            //           result = rss
-            //
-            ////            result = rss.pregReplace(pattern: "<\\?xml.+\\s\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+|<rdf.+|<dc:language>.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+|<\\/rdf:Seq>\\s.+\\s.+\\s.+\\s.+\\s.+\\s.+(\\s|.).+|<description><\\/description>|<description>\\s.+\\s<\\/description>|</rdf:Seq>\\s.+\\s.+\\s\\s.+\\s.+\\s.+\\s.+\\s.+|</image>|<description>\\s\\s.+", with: "")
-            ////
-            ////            result2 = rss.pregReplace(pattern: "<item.+", with: "<item>")
-            ////
-            //           result3 = result.pregReplace(pattern: "dc:date", with: "pubDate")
-            ////
-            ////            result4 = result3.pregReplace(pattern: "<\\/rdf:RDF>", with: "")
-            ////
-            //            result5 = result3.pregReplace(pattern: "\\t|\\n|\\[ 　]", with: "")
-            //
-            //
-            //
-            //
-            //result = rss
-            //        rss_data += result
-            //
+        
+            var result:String = ""
+            var result2:String = ""
+            var result3:String = ""
+            var rss_data:String = ""
+            data = NSData()
+            
             result = rss
             
             
@@ -509,33 +482,46 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             
             
-            result2 = result.pregReplace(pattern: "<description>.+src=.", with: "\\\t<image>")
+//            result2 = result.pregReplace(pattern: "<description>.+src=.", with: "\\\t<image>")
+//            
+//            result3 = result2.pregReplace(pattern: "jpeg\\n\\t", with: "jpeg")
+//            
+//            result4 = result3.pregReplace(pattern: "jpeg\" class=\"", with: "jpeg<\\/image><description><\\!\\[CDATA\\[")
+//            
+//            
+//            result5 = result4.pregReplace(pattern: "\n\t\t", with: "")
+//            
+//            result6 = result5.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_Check<\\/title><\\/item><\\/ rss>")
             
-            result3 = result2.pregReplace(pattern: "jpeg\\n\\t", with: "jpeg")
             
-            result4 = result3.pregReplace(pattern: "jpeg\" class=\"", with: "jpeg<\\/image><description><\\!\\[CDATA\\[")
-            
-            
-            result5 = result4.pregReplace(pattern: "\n\t\t", with: "")
-            
-            result6 = result5.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_Check<\\/title><\\/item><\\/ rss>")
             
             
             
 //            print(result5.debugDescription)
             
+            result2 = result.pregReplace(pattern: "\n\t\t", with: "")
+            
+            result3 = result2.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_Check<\\/title><\\/item><\\/ rss>")
             
             
-           rss_data += result6
+           rss_data += result3
         
-            self.data = self.rss_data.data(using: String.Encoding.utf8)! as NSData
+            
+            data = rss_data.data(using: String.Encoding.utf8)! as NSData
 
         
         }else if convery_count == 0{
             print(convery_count)
             
             
-            result = rss
+           
+            var result2:String = ""
+            var result3:String = ""
+           
+            var rss_data2:String = ""
+            data2 = NSData()
+           
+           
            
             result2 = rss.pregReplace(pattern: "\n\t\t", with: "")
 
@@ -557,52 +543,61 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             
             
-            /*<content:encoded><!\\[CDATA\\[などの[CDATA\\[に問題があった。
-             //[CDATA\\[の中にイメージがあったため取り出すことができなかった。
-             <content:encoded>を<image>に変えて</image>で閉じた後に<content:encoded><!\\[CDATA\\[をずらして書くことで、上手くいった。
-             */
-            
-            
+        
             
             
             
             
             rss_data2 += result3
             
-//            print(result7.debugDescription)
+           
+//            if (download_Check == true){
+//            print(rss_data2)
+//            
+//              check_Rss_Data = rss_data2
+//                print(check_Rss_Data.count)
+// 
+//            }else{
+//                
+//                if rss_data2 != check_Rss_Data{
+//                  print(rss_data2.count)
+//                    print(check_Rss_Data.count)
+//               
+//                
+//                }else{
+//                    
+//                    
+//                }
             
-            self.data2 = self.rss_data2.data(using: String.Encoding.utf8)! as NSData
+              
+           
+//            }
+
+            
+            //            print(result3)
             
             
-            //            let formatter = DateFormatter()
-            //            formatter.dateFormat = "yyyy/MM/dd HH:mm:ss" //表示形式を設定
-            //
-            //            //現在時刻
-            //            let now = Date(timeIntervalSinceNow: 0) //"Dec 13, 2016, 4:10 PM"
-            //
-            //            //現在時刻を文字列で取得                   nouにデートストリング入れる
-            //            let nowString = formatter.string(from: now) //"2016/12/13 16:10:31"
-            //
-            //            //文字列から日付を取得
-            //            let dateFromString = formatter.date(from: "2005/12/12 9:24:21")! //"Dec 12, 2005, 9:24 AM"
+            data2 = rss_data2.data(using: String.Encoding.utf8)! as NSData
+            
             
             
             //print(self.rss_data2)
             //print(rss_data.debugDescription)
             //print(data.debugDescription)
             
-            if (download_Check == true){
+            
+            
             
             for i in 0...1{
-                if i == 0 {self.parser = XMLParser(data: self.data! as Data)
-                    if self.parser != nil {
+                if i == 0 {parser = XMLParser(data: data! as Data)
+                    if parser != nil {
                         
                         
                         
                         convery_count = 1
                         
-                        self.parser!.delegate = self
-                        self.parser!.parse()
+                        parser!.delegate = self
+                        parser!.parse()
                         
                         print("パース成功")
                     } else {
@@ -611,13 +606,13 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                     }
                     
                 }else{
-                    self.parser = XMLParser(data: self.data2! as Data)
-                    if self.parser != nil {
+                    parser = XMLParser(data: data2! as Data)
+                    if parser != nil {
                         
                         convery_count = 0
                         
-                        self.parser!.delegate = self
-                        self.parser!.parse()
+                        parser!.delegate = self
+                        parser!.parse()
                         print("パース成功")
                     } else {
                         // パースに失敗した時
@@ -627,7 +622,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 }
             }
             
-            }
+        
             
         }
     
@@ -640,6 +635,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
         
         element = elementName
+        
         
         
         
@@ -688,10 +684,9 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         }
        
         if(convery_count == 1){
-            if element == "image"{
+            if element == "content:encoded"{
                 imageString.append(string)
-                
-            }
+                }
             
         }else if(convery_count == 0){
             if element == "content:encoded"{
@@ -717,10 +712,10 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 print("title---------->\(titleString)")
                 elements.setObject(titleString, forKey: "title" as NSCopying)
             
-                if (self.convery_count == 1){
-                    link_Name = "白猫テニス攻略まとめ！ダグラス速報"
+                if (convery_count == 1){
+                    link_Name = "白猫テニス徹底攻略ガイド"
                 elements.setObject(link_Name, forKey: "link_Name" as NSCopying)
-                }else if (self.convery_count == 0){
+                }else if (convery_count == 0){
                     link_Name = "白猫テニスまとめ速報"
                 elements.setObject(link_Name, forKey: "link_Name" as NSCopying)
                 }
@@ -728,13 +723,16 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             }
             if linkString != "" {
                 //elementsにキー値を付与しながらtitleString(linkStrung)をセットする
-                print("link---------->\(linkString)")
+               
                 elements.setObject(linkString, forKey: "link" as NSCopying)
-            }
+               
+                }
             if dateString != ""{
                
-                if (self.convery_count == 1)||(self.convery_count == 0){
+                if (convery_count == 1)||(convery_count == 0){
 
+                
+                    
                 var date = ""
                 
 //                var date1 = ""
@@ -747,6 +745,9 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 var date5 = ""
                 var date_Set = ""
                 
+                let day_count = 1
+                    
+                    
                 date = String(dateString).pregReplace(pattern: "\\s|,", with: "")
                 
                 
@@ -760,7 +761,10 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                     date2 = date.pregReplace(pattern: "[a-zA-Z]{3}|\\d{4}\\d\\d:\\d\\d:\\d\\d\\+0000", with: "")
                 //日　03
                
-                date3 = date.pregReplace(pattern: "[a-z|A-Z]{3}\\d\\d[a-z|A-Z]{3}\\d\\d\\d\\d|:\\d\\d\\+0000", with: "")
+                    
+
+               
+                    date3 = date.pregReplace(pattern: "[a-z|A-Z]{3}\\d\\d[a-z|A-Z]{3}\\d\\d\\d\\d|:\\d\\d\\+0000", with: "")
                 //日時　09:10
                 
                 date3_2 = date3.pregReplace(pattern: ":..", with: "")
@@ -801,7 +805,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                         date3_2 = "23"
                     case "16":
                         date3_2 = "00"
-                    case "17":
+                     case "17":
                         date3_2 = "01"
                     case "18":
                         date3_2 = "02"
@@ -820,7 +824,9 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                     }
                
                     
+                    
                     date3_3 = date3.pregReplace(pattern: "..:", with: ":")
+                    
                     print("date---------->\(date3_3)")
 
                 //日時　:10
@@ -858,8 +864,85 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                     break
                 }
                 
-                date_Set = "\(date5)-\(date2) \(date3_2)\(date3_3)"
-                
+                   
+                    if date3_2 == "00" || date3_2 == "01" || date3_2 == "02" || date3_2 == "03" || date3_2 == "04" || date3_2 == "05" || date3_2 == "06" || date3_2 == "07"{
+                     
+                        var date2 = Int(date2)! + day_count
+                   
+                        
+                        switch date5 {
+                        case "01":
+                            if date2 == 32{
+                                date2 = 01
+                                date5 = "02"
+                            }
+                        case "02":
+                            if date2 == 29{
+                                date2 = 01
+                                date5 = "03"
+                            }
+                        case "03":
+                            if date2 == 32{
+                                date2 = 01
+                                date5 = "04"
+                            }
+                        case "04":
+                            if date2 == 31{
+                                date2 = 01
+                                date5 = "05"
+                            }
+                        case "05":
+                            if date2 == 32{
+                                date2 = 01
+                                date5 = "06"
+                            }
+                        case "06":
+                            if date2 == 31{
+                                date2 = 01
+                                date5 = "07"
+                            }
+                        case "07":
+                            if date2 == 32{
+                                date2 = 01
+                                date5 = "08"
+                            }
+                        case "08":
+                            if date2 == 32{
+                                date2 = 01
+                                date5 = "09"
+                            }
+                        case "09":
+                            if date2 == 31{
+                                date2 = 01
+                                date5 = "10"
+                            }
+                        case "10":
+                            if date2 == 32{
+                                date2 = 01
+                                date5 = "11"
+                            }
+                        case "11":
+                            if date2 == 31{
+                                date2 = 01
+                                date5 = "12"
+                            }
+                        case "12":
+                            if date2 == 32{
+                                date2 = 01
+                                date5 = "01"
+                            }
+                        default:
+                            break
+                        }
+
+                        
+                    date_Set = "\(date5)-\(date2) \(date3_2)\(date3_3)"
+                   
+                    }else{
+                    
+                    date_Set = "\(date5)-\(date2) \(date3_2)\(date3_3)"
+                    }
+                    
                     print("date---------->\(date_Set)")
                 
                 //                let formatter = DateFormatter()
@@ -883,7 +966,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             }
             if imageString != ""{
-                print("image---------->\(imageString)")
+//                print("image---------->\(imageString)")
                 
                 if (convery_count == 0){
                     var result:String = ""
@@ -894,11 +977,42 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                     result2 = result.pregReplace(pattern: "resize.+", with: "")
                     result3 = result2.pregReplace(pattern: ".+src=.", with: "")
                     
-                    print("image---------->\(result3)")
+//                    print("image---------->\(result3)")
 
                     elements.setObject(result3, forKey: "image" as NSCopying)
-                }else{
-                    elements.setObject(imageString, forKey: "image" as NSCopying)
+                }else if(convery_count == 1){
+                    
+                    var result:String = ""
+                    var result2:String = ""
+                    var result3:String = ""
+                    var result4:String = ""
+                    var result5:String = ""
+                    var result6:String = ""
+                    var result7:String = ""
+                   
+                    result = String(imageString).pregReplace(pattern: "src.+72.+alt", with: "")
+                    
+                    result2 = result.pregReplace(pattern: "\\s", with: "")
+                    
+                    result3 = result2.pregReplace(pattern: "alt.+", with: "")
+                    
+                    result4 = result3.pregReplace(pattern: ".+src=.", with: "")
+
+                    result5 = result4.pregReplace(pattern: "jpg.", with: "jpg")
+                    
+                    result6 = result5.pregReplace(pattern: "jpeg.", with: "jpeg")
+                    
+                    result7 = result6.pregReplace(pattern: "png.", with: "png")
+                    
+                    
+
+                    print("image---------->\(result7)")
+                    
+                    
+                    
+                    elements.setObject(result7, forKey: "image" as NSCopying)
+                
+                
                 }
                 
                 
@@ -909,8 +1023,11 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             if titleString != "RSS_Check"{
             
             if titleString != "RSS_END"{
-                totalBox.add(elements)
+                
+//                if (check(elements: elements)) {
 
+                totalBox.add(elements)
+//                }
             }else{
                 sortAndReloadData()
                 
@@ -922,6 +1039,24 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
        
     }
     
+    func check(elements:NSMutableDictionary) -> Bool {
+        let image:String = elements.value(forKey: "image") as! String
+        var ok = true
+        
+        if image.pregMatche(pattern: "http.+jp"){
+            
+        }else{
+            ok = false
+        }
+        
+        
+      
+        return ok
+    }
+
+    
+    
+    
     func sortAndReloadData() {
         let dateDiscripter:NSSortDescriptor = NSSortDescriptor.init(key: "pubDate", ascending: false)
         let sortDescriptors:NSArray = [dateDiscripter]
@@ -930,24 +1065,50 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         if download_Check == true{
         dataArray = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
-        self.dataArray2 = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
+        dataArray2 = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
        
         
         /////////
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            self.totalBox = []
             self.refreshControl.endRefreshing()
             self.tableView.reloadData()
-//            self.refresh_Chack = false
+
             SVProgressHUD.dismiss()
-            print(self.totalBox.debugDescription)
+            self.download_Check = false
         }
-        download_Check = false
+        
         
         }else{
         
-        self.dataArray2 = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
-           print("bbbbbbbbbbbb")
-            print(self.dataArray2.count)
+        dataArray2 = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
+           
+            
+            if dataArray2 != []{
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                    self.totalBox = []
+                    self.dataArray = []
+                
+                self.dataArray = self.dataArray2
+                
+                    self.dataArray2 = []
+                    
+                    self.refreshControl.endRefreshing()
+
+               self.tableView.reloadData()
+//                print(self.dataArray2)
+                }
+            
+            }else{
+               
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                    self.totalBox = []
+                    self.refreshControl.endRefreshing()
+                    
+                }
+                }
+
+            
             
             }
     }
@@ -1165,8 +1326,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
     
-
-    
+   
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -1234,6 +1394,7 @@ extension Date{
     }
 
 }
+
 
 //var alphabet = "title=ABCDE&body=FGHIJ"
 //

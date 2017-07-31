@@ -32,6 +32,9 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
+        
         let cansell = UIBarButtonItem(title: "閉じる", style: UIBarButtonItemStyle.plain, target: self, action:#selector(back))
     
         
