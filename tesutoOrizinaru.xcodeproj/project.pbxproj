@@ -10,6 +10,7 @@
 		1E86FBFE1EC0BB9A00D4DD1B /* BBS_PostData1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E86FBFD1EC0BB9A00D4DD1B /* BBS_PostData1.swift */; };
 		1ED840581EC08A990041D2E2 /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED840571EC08A990041D2E2 /* Const.swift */; };
 		3495344AEA35E0D2EEDEA072 /* Pods_tesutoOrizinaru.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D233A04FD0D12A9842BD8161 /* Pods_tesutoOrizinaru.framework */; };
+		600185C01F30A49E0044BEB6 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600185BF1F30A49E0044BEB6 /* PostViewController.swift */; };
 		601175CE1E87B558003DA8AE /* images2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 601175CD1E87B558003DA8AE /* images2.jpg */; };
 		602099031E8A60F4008F33B1 /* Entypo_d83d(10)_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 602098F81E8A60F4008F33B1 /* Entypo_d83d(10)_32.png */; };
 		602099041E8A60F4008F33B1 /* Entypo_d83d(9)_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 602098F91E8A60F4008F33B1 /* Entypo_d83d(9)_32.png */; };
@@ -70,6 +71,7 @@
 		1E86FBFD1EC0BB9A00D4DD1B /* BBS_PostData1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BBS_PostData1.swift; path = ../BBS_PostData1.swift; sourceTree = "<group>"; };
 		1ED840571EC08A990041D2E2 /* Const.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
 		5F3BF91077C776636DC929D7 /* Pods-tesutoOrizinaru.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tesutoOrizinaru.debug.xcconfig"; path = "Pods/Target Support Files/Pods-tesutoOrizinaru/Pods-tesutoOrizinaru.debug.xcconfig"; sourceTree = "<group>"; };
+		600185BF1F30A49E0044BEB6 /* PostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
 		601175CD1E87B558003DA8AE /* images2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = images2.jpg; sourceTree = "<group>"; };
 		602098F81E8A60F4008F33B1 /* Entypo_d83d(10)_32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Entypo_d83d(10)_32.png"; sourceTree = "<group>"; };
 		602098F91E8A60F4008F33B1 /* Entypo_d83d(9)_32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Entypo_d83d(9)_32.png"; sourceTree = "<group>"; };
@@ -89,9 +91,9 @@
 		6044BBB71F28CD0E00C5B893 /* Wiki3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Wiki3.png; sourceTree = "<group>"; };
 		605B8B051E94F3FB004B92C2 /* NewsModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsModalViewController.swift; sourceTree = "<group>"; };
 		6060CE4F1EAF225500A60B50 /* CommentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentViewController.swift; sourceTree = "<group>"; };
-		606627631EA9B07700991C0A /* MultiViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiViewController.swift; sourceTree = "<group>"; };
-		606627661EA9B11A00991C0A /* FriendViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendViewController.swift; sourceTree = "<group>"; };
-		606627681EA9B15B00991C0A /* TeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamViewController.swift; sourceTree = "<group>"; };
+		606627631EA9B07700991C0A /* MultiViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MultiViewController.swift; path = tesutoOrizinaru/MultiViewController.swift; sourceTree = "<group>"; };
+		606627661EA9B11A00991C0A /* FriendViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendViewController.swift; path = tesutoOrizinaru/FriendViewController.swift; sourceTree = "<group>"; };
+		606627681EA9B15B00991C0A /* TeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TeamViewController.swift; path = tesutoOrizinaru/TeamViewController.swift; sourceTree = "<group>"; };
 		60723D161EB09C7C00359D01 /* NextCommentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NextCommentViewController.swift; sourceTree = "<group>"; };
 		6077F6F31ECB03EB001CF8C6 /* BulletinBoardTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BulletinBoardTableViewCell.swift; sourceTree = "<group>"; };
 		6077F6F41ECB03EB001CF8C6 /* BulletinBoardTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BulletinBoardTableViewCell.xib; sourceTree = "<group>"; };
@@ -103,7 +105,7 @@
 		60889E751E87A12C0036AC42 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		60889E781E87A12C0036AC42 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		60889E7A1E87A12C0036AC42 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		60889E961E87A4FE0036AC42 /* kouryakuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = kouryakuViewController.swift; sourceTree = "<group>"; };
+		60889E961E87A4FE0036AC42 /* kouryakuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = kouryakuViewController.swift; path = tesutoOrizinaru/kouryakuViewController.swift; sourceTree = "<group>"; };
 		608DF95C1EDAEDD7006A6127 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		608DF9681EDE9C0B006A6127 /* No Image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "No Image.png"; sourceTree = "<group>"; };
 		608DF96C1EDFD0DF006A6127 /* No User.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "No User.png"; sourceTree = "<group>"; };
@@ -112,9 +114,9 @@
 		608DF9A81EE542F2006A6127 /* reload1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reload1.png; sourceTree = "<group>"; };
 		609AE9091EA5A82F0079A467 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		609AE90B1EA5B1F40079A467 /* BulletinBoardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BulletinBoardViewController.swift; path = ../BulletinBoardViewController.swift; sourceTree = "<group>"; };
-		609AE90D1EA5B2D30079A467 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		609AE90D1EA5B2D30079A467 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = tesutoOrizinaru/LoginViewController.swift; sourceTree = "<group>"; };
 		609AE90F1EA60B1F0079A467 /* ChangeProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeProfileViewController.swift; sourceTree = "<group>"; };
-		609AE9111EA7754A0079A467 /* EditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
+		609AE9111EA7754A0079A467 /* EditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EditViewController.swift; path = tesutoOrizinaru/EditViewController.swift; sourceTree = "<group>"; };
 		60C07FAF1EC31E210091E3DB /* FavoriteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteViewController.swift; sourceTree = "<group>"; };
 		60CCE9E81F1B1EF400C7717F /* navBarImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navBarImage.png; sourceTree = "<group>"; };
 		60CCE9F21F1B5A0B00C7717F /* StrategyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StrategyViewController.swift; sourceTree = "<group>"; };
@@ -175,13 +177,24 @@
 		606627651EA9B09200991C0A /* 書き込み */ = {
 			isa = PBXGroup;
 			children = (
+				600185BF1F30A49E0044BEB6 /* PostViewController.swift */,
+				60723D161EB09C7C00359D01 /* NextCommentViewController.swift */,
+			);
+			name = "書き込み";
+			sourceTree = "<group>";
+		};
+		608471D61F316C9100C72A26 /* その他 */ = {
+			isa = PBXGroup;
+			children = (
 				609AE9111EA7754A0079A467 /* EditViewController.swift */,
 				606627631EA9B07700991C0A /* MultiViewController.swift */,
 				606627661EA9B11A00991C0A /* FriendViewController.swift */,
 				606627681EA9B15B00991C0A /* TeamViewController.swift */,
-				60723D161EB09C7C00359D01 /* NextCommentViewController.swift */,
+				60889E961E87A4FE0036AC42 /* kouryakuViewController.swift */,
+				609AE90D1EA5B2D30079A467 /* LoginViewController.swift */,
 			);
-			name = "書き込み";
+			name = "その他";
+			path = ..;
 			sourceTree = "<group>";
 		};
 		60875BEA1EADF4DE0040E09A /* セルimg */ = {
@@ -196,7 +209,6 @@
 			isa = PBXGroup;
 			children = (
 				60889E6D1E87A12C0036AC42 /* tesutoOrizinaru */,
-				60889E6C1E87A12C0036AC42 /* Products */,
 				AD245E16ADFBCD2EFC520D23 /* Pods */,
 				36BEB006797021856E334076 /* Frameworks */,
 			);
@@ -208,6 +220,7 @@
 				60889E6B1E87A12C0036AC42 /* tesutoOrizinaru.app */,
 			);
 			name = Products;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		60889E6D1E87A12C0036AC42 /* tesutoOrizinaru */ = {
@@ -252,8 +265,8 @@
 				6077F6F41ECB03EB001CF8C6 /* BulletinBoardTableViewCell.xib */,
 				60DAF6B61ED463BC001589FC /* BulletinBoardTableViewCell2.swift */,
 				60DAF6B71ED463BC001589FC /* BulletinBoardTableViewCell2.xib */,
-				60889E961E87A4FE0036AC42 /* kouryakuViewController.swift */,
-				609AE90D1EA5B2D30079A467 /* LoginViewController.swift */,
+				608471D61F316C9100C72A26 /* その他 */,
+				60889E6C1E87A12C0036AC42 /* Products */,
 			);
 			path = tesutoOrizinaru;
 			sourceTree = "<group>";
@@ -433,6 +446,7 @@
 				1E86FBFE1EC0BB9A00D4DD1B /* BBS_PostData1.swift in Sources */,
 				609AE90C1EA5B1F40079A467 /* BulletinBoardViewController.swift in Sources */,
 				60C07FB01EC31E210091E3DB /* FavoriteViewController.swift in Sources */,
+				600185C01F30A49E0044BEB6 /* PostViewController.swift in Sources */,
 				60723D171EB09C7C00359D01 /* NextCommentViewController.swift in Sources */,
 				609AE9121EA7754A0079A467 /* EditViewController.swift in Sources */,
 				60CCE9F31F1B5A0B00C7717F /* StrategyViewController.swift in Sources */,

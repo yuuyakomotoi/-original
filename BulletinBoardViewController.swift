@@ -24,6 +24,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     
     
     var items = [BBS_PostData1]()
+    var id = [BBS_PostData1]()
     
 
     
@@ -83,6 +84,11 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         self.items = appDelegate.items2
         self.items = appDelegate.items3
         self.items = appDelegate.items4
+        self.id = appDelegate.id
+        
+        
+        
+        
         
         
         
@@ -90,9 +96,9 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         print("items----------------\(items)")
         
         
-        let nib = UINib(nibName: "BulletinBoardTableViewCell", bundle: nil)
-        tableView.register(nib, forCellReuseIdentifier: "Cell")
-        tableView.rowHeight = UITableViewAutomaticDimension
+//        let nib = UINib(nibName: "BulletinBoardTableViewCell", bundle: nil)
+//        tableView.register(nib, forCellReuseIdentifier: "Cell")
+//        tableView.rowHeight = UITableViewAutomaticDimension
         
         let nib2 = UINib(nibName: "BulletinBoardTableViewCell2", bundle: nil)
         tableView.register(nib2, forCellReuseIdentifier: "Cell2")
@@ -186,6 +192,13 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        let appDelegate2:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+        if appDelegate2.navicheck == true{
+            self.tabBarController?.tabBar.isHidden = false
+            appDelegate2.navicheck = false
+        }
+        
+        
         if (image_Select == true){
             SVProgressHUD.dismiss()
         }
@@ -226,6 +239,13 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        
+        self.navigationController!.interactivePopGestureRecognizer!.isEnabled = true
+        
+    
+        let navBarImage = UIImage(named: "navBarImage.png") as UIImage?
+        self.navigationController?.navigationBar.setBackgroundImage(navBarImage,for:.default)
+        self.navigationController?.navigationBar.backgroundColor = UIColor.white
         
         
         
@@ -274,7 +294,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         
         
         
-        if segmentCount == 0{
+//        if segmentCount == 0{
             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell2", for: indexPath) as! BulletinBoardTableViewCell2
             
             
@@ -397,136 +417,136 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             return cell
             
             
-        }else{
-            
-            
-            
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! BulletinBoardTableViewCell
-            cell.setPostData(BBS_PostData1: items[indexPath.row])
-            
-            // cell.layoutIfNeeded()
-            
-            
-            
-            //ハイライトがされない
-            cell.selectionStyle = .none
-            
-            let dict = items[(indexPath as NSIndexPath).row]
-            
-            
-            cell.backView.backgroundColor = UIColor(white:0.97,alpha:1.0)
-            
-            
-            
-            
-            //プロフィール画像
-            //デコードしたものを反映する
-            let decodedImage = dict.profile_image
-            
-            
-            //画像を丸くする。値が大きいほど丸くなる
-            cell.profileImageView.layer.cornerRadius = 8.0
-            cell.profileImageView.clipsToBounds = true
-            cell.profileImageView.image = decodedImage
-            
-            //ユーザーネーム
-            
-            cell.userNameLabel.text = dict.name
-            
-            
-            
-            //投稿時間
-            let formatter = DateFormatter()
-            formatter.locale = NSLocale(localeIdentifier: "ja_JP") as Locale!
-            formatter.dateFormat = "MM-dd HH:mm"
-            
-            if ( dict.date != nil ) {
-                let dateString:String = dict.date!
-                cell.time.text = dateString
-            }
-            
-            //コメント(本文)
-            cell.commentLabel.text = dict.comment
-            
-            
-            //投稿画像
-            //デコードしたものを反映する
-            
-            
-            cell.postedImageView.image = dict.image
-            
-            
-            
-            //セルのカテゴリータイトル
-            
-            switch segmentCount {
-            case 0:
-                cell.cell_CategoryTitle.isHidden = true
-                cell.cell_CategoryTitle.text = ""
-                break
-            case 1:
-                cell.cell_CategoryTitle.isHidden = false
-                cell.cell_CategoryTitle.text = "ルームID"
-                
-                break
-            case 2:
-                cell.cell_CategoryTitle.isHidden = false
-                cell.cell_CategoryTitle.text = "フレンドID"
-                break
-            case 3:
-                cell.cell_CategoryTitle.isHidden = false
-                cell.cell_CategoryTitle.text = "チーム名"
-                break
-                
-            default:
-                break
-            }
-            
-            //セルのカテゴリー内容
-            if segmentCount == 0 {
-                cell.cell_CategoryContent.isHidden = true
-                cell.cell_CategoryContent.text = ""
-            }else{
-                cell.cell_CategoryContent.isHidden = false
-                cell.cell_CategoryContent.text = dict.category
-            }
-            
-            //プロフィール画像拡大
-            
-            cell.profileLinkButton.addTarget(self, action:#selector(profile_handleButton(sender:event:)), for:  UIControlEvents.touchUpInside)
-            
-            //画像拡大
-            
-            cell.likeButton.addTarget(self, action:#selector(handleButton(sender:event:)), for:  UIControlEvents.touchUpInside)
-            
-            
-            //セルのコメント数
-            cell.cell_Reply_Count.text = "\(dict.comment_num)"
-            
-            //ユーザーのNG登録
-            cell.ngButton.addTarget(self, action:#selector(ngAction(sender:event:)), for: UIControlEvents.touchUpInside)
-            
-            
-            //ユーザーのお気に入り登録
-            cell.okButton.addTarget(self, action:#selector(okAction(sender:event:)), for: UIControlEvents.touchUpInside)
-            
-            
-            if (cell.postedImageView.image) == nil{
-                cell.postedImageView.isHidden = true
-                cell.likeButton.isHidden = true
-                cell.postedImage_height.constant = 0
-                cell.likeButton_height.constant = 0
-            }else{
-                cell.postedImageView.isHidden = false
-                cell.likeButton.isHidden = false
-                cell.postedImage_height.constant = self.view.frame.size.height / 5
-                cell.likeButton_height.constant = self.view.frame.size.height / 5
-            }
-            
-            
-            return cell
-        }
+//        }else{
+//            
+//            
+//            
+//            
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! BulletinBoardTableViewCell
+//            cell.setPostData(BBS_PostData1: items[indexPath.row])
+//            
+//            // cell.layoutIfNeeded()
+//            
+//            
+//            
+//            //ハイライトがされない
+//            cell.selectionStyle = .none
+//            
+//            let dict = items[(indexPath as NSIndexPath).row]
+//            
+//            
+//            cell.backView.backgroundColor = UIColor(white:0.97,alpha:1.0)
+//            
+//            
+//            
+//            
+//            //プロフィール画像
+//            //デコードしたものを反映する
+//            let decodedImage = dict.profile_image
+//            
+//            
+//            //画像を丸くする。値が大きいほど丸くなる
+//            cell.profileImageView.layer.cornerRadius = 8.0
+//            cell.profileImageView.clipsToBounds = true
+//            cell.profileImageView.image = decodedImage
+//            
+//            //ユーザーネーム
+//            
+//            cell.userNameLabel.text = dict.name
+//            
+//            
+//            
+//            //投稿時間
+//            let formatter = DateFormatter()
+//            formatter.locale = NSLocale(localeIdentifier: "ja_JP") as Locale!
+//            formatter.dateFormat = "MM-dd HH:mm"
+//            
+//            if ( dict.date != nil ) {
+//                let dateString:String = dict.date!
+//                cell.time.text = dateString
+//            }
+//            
+//            //コメント(本文)
+//            cell.commentLabel.text = dict.comment
+//            
+//            
+//            //投稿画像
+//            //デコードしたものを反映する
+//            
+//            
+//            cell.postedImageView.image = dict.image
+//            
+//            
+//            
+//            //セルのカテゴリータイトル
+//            
+//            switch segmentCount {
+//            case 0:
+//                cell.cell_CategoryTitle.isHidden = true
+//                cell.cell_CategoryTitle.text = ""
+//                break
+//            case 1:
+//                cell.cell_CategoryTitle.isHidden = false
+//                cell.cell_CategoryTitle.text = "ルームID"
+//                
+//                break
+//            case 2:
+//                cell.cell_CategoryTitle.isHidden = false
+//                cell.cell_CategoryTitle.text = "フレンドID"
+//                break
+//            case 3:
+//                cell.cell_CategoryTitle.isHidden = false
+//                cell.cell_CategoryTitle.text = "チーム名"
+//                break
+//                
+//            default:
+//                break
+//            }
+//            
+//            //セルのカテゴリー内容
+//            if segmentCount == 0 {
+//                cell.cell_CategoryContent.isHidden = true
+//                cell.cell_CategoryContent.text = ""
+//            }else{
+//                cell.cell_CategoryContent.isHidden = false
+//                cell.cell_CategoryContent.text = dict.category
+//            }
+//            
+//            //プロフィール画像拡大
+//            
+//            cell.profileLinkButton.addTarget(self, action:#selector(profile_handleButton(sender:event:)), for:  UIControlEvents.touchUpInside)
+//            
+//            //画像拡大
+//            
+//            cell.likeButton.addTarget(self, action:#selector(handleButton(sender:event:)), for:  UIControlEvents.touchUpInside)
+//            
+//            
+//            //セルのコメント数
+//            cell.cell_Reply_Count.text = "\(dict.comment_num)"
+//            
+//            //ユーザーのNG登録
+//            cell.ngButton.addTarget(self, action:#selector(ngAction(sender:event:)), for: UIControlEvents.touchUpInside)
+//            
+//            
+//            //ユーザーのお気に入り登録
+//            cell.okButton.addTarget(self, action:#selector(okAction(sender:event:)), for: UIControlEvents.touchUpInside)
+//            
+//            
+//            if (cell.postedImageView.image) == nil{
+//                cell.postedImageView.isHidden = true
+//                cell.likeButton.isHidden = true
+//                cell.postedImage_height.constant = 0
+//                cell.likeButton_height.constant = 0
+//            }else{
+//                cell.postedImageView.isHidden = false
+//                cell.likeButton.isHidden = false
+//                cell.postedImage_height.constant = self.view.frame.size.height / 5
+//                cell.likeButton_height.constant = self.view.frame.size.height / 5
+//            }
+//            
+//            
+//            return cell
+//        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -1263,57 +1283,26 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     @IBAction func contributionButton(_ sender: Any) {
         
         if UserDefaults.standard.object(forKey: "userName") == nil{
+            let alertViewControler = UIAlertController(title: "掲示板の書き込みには プロフィール登録が必要です", message: "「ホーム」 ➡︎　「プロフィールを変更」よりプロフィール登録を行ってください",preferredStyle:.alert)
+            let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
             
-            let alertViewControler = UIAlertController(title: "掲示板の書き込みには プロフィール登録が必要です", message: "「ホーム」 ➡︎　「プロフィールを変更」よりプロフィール登録を行ってください", preferredStyle:.alert)
-            let okAction = UIAlertAction(title: "OK", style: .default, handler:{
-                (action:UIAlertAction!) -> Void in
-                return
-            })
+            alertViewControler.addAction(cancelAction)
+            present(alertViewControler, animated: true, completion: nil)
             
-            alertViewControler.addAction(okAction)
-           present(alertViewControler, animated: true, completion: nil)
+            
+        }else{
 
-            
-        }
-
-        
-        if segmentCount == 0{
             image_Select = true
             let CGPoint2 = tableView.contentOffset
             self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
             self.tableView.isUserInteractionEnabled = false
             
-            let editViewController = self.storyboard?.instantiateViewController(withIdentifier: "edit")
-            self.present(editViewController!,animated: true, completion: nil)
-            //tableView.contentOffset.y = (self.tableView.contentInset.top )
-            ////
-        }
-        else if segmentCount == 1 {
-            image_Select = true
-            let CGPoint2 = tableView.contentOffset
-            self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-            self.tableView.isUserInteractionEnabled = false
-            let multiViewController = self.storyboard?.instantiateViewController(withIdentifier: "multi")
-            self.present(multiViewController!,animated: true, completion: nil)
-        }
-        else if segmentCount == 2 {
-            image_Select = true
-            let CGPoint2 = tableView.contentOffset
-            self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-            self.tableView.isUserInteractionEnabled = false
-            let friendViewController = self.storyboard?.instantiateViewController(withIdentifier: "friend")
-            self.present(friendViewController!,animated: true, completion: nil)
-        }
-        else if segmentCount == 3 {
-            image_Select = true
-            let CGPoint2 = tableView.contentOffset
-            self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-            self.tableView.isUserInteractionEnabled = false
-            let teamViewController = self.storyboard?.instantiateViewController(withIdentifier: "team")
-            self.present(teamViewController!,animated: true, completion: nil)
+            let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+            appDelegate.navicheck = true
+            
+            performSegue(withIdentifier:"post",sender:nil)
         }
     }
-    
     @IBAction func reloadButton(_ sender: Any) {
         
         auto_Reload_Check = false
@@ -1548,7 +1537,18 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         if (segue.identifier == "nextComment"){
             let commentViewController:CommentViewController = segue.destination as! CommentViewController
             commentViewController.postData = sender as! BBS_PostData1
-        }
+        }else if(segue.identifier == "post"){
+            let postViewController:PostViewController = segue.destination as! PostViewController
+            
+            if(segmentCount == 0){
+               postViewController.postSelect = 0
+            }else if(segmentCount == 1){
+                postViewController.postSelect = 1
+            }else if(segmentCount == 2){
+                postViewController.postSelect = 2
+            }else if(segmentCount == 3){
+                postViewController.postSelect = 3
+            }
     }
-    
+}
 }

@@ -113,10 +113,11 @@ class EditViewController: UIViewController,UIImagePickerControllerDelegate,UINav
     @IBAction func clear(_ sender: Any) {
         
         
-        commentTextView.text = ""
+        commentTextView.text = "[ギルド名]\n[人数]\n[ランク]"
         textViewLabel.text = " 本文を入力してください"
    postStop()
     }
+    
     
     @IBAction func postedImage(_ sender: AnyObject) {
         let alertViewControler = UIAlertController(title: "選択してください。", message: "", preferredStyle:.actionSheet)
@@ -170,7 +171,6 @@ class EditViewController: UIViewController,UIImagePickerControllerDelegate,UINav
     @IBAction func post(_ sender: AnyObject) {
         
         postAll()
-        
         
         
         
@@ -352,11 +352,10 @@ class EditViewController: UIViewController,UIImagePickerControllerDelegate,UINav
             if String(i) == " " || String(i) == "\n"{
                 count += 1
                 count2 += 1
-                print("count　-----> \(count)")
-                print("count2　-----> \(count2)")
+               
             }else{
                 count2 -= 1
-                print("count2　-----> \(count2)")
+                
             }
         }
         

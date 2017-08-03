@@ -297,7 +297,7 @@ break
                 break
                 
             case 1:
-                let url = URL(string:"http://weblabo.oscasierra.net")
+                let url = URL(string:"https://peraichi.com/landing_pages/view/emeg8game")
                 if( UIApplication.shared.canOpenURL(url!) ) {
                     UIApplication.shared.open(url!)
                 }

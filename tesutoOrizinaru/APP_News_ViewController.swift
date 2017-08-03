@@ -759,7 +759,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
 //                   if ( !checkMovie(elements: elements) ) {
                     totalBox.add(elements)
                     
-//                    }
+//                   }
                     }else{
                     
 //                    let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -776,10 +776,11 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     }
     
    
-    //elements.value(forKey: "title")の中を選別をする
+        //elements.value(forKey: "title")の中を選別をする
    
-    let ok_words = ["事前登録","iOS版","Android版","配信開始","βテスト","配信スタート","新作アプリ","サービスイン","PV","提供開始","リリース","DLを突破"]
+    let ok_words = ["事前登録","iOS版","Android版","配信開始","βテスト","配信スタート","新作アプリ","サービスイン","PV","提供開始","リリース","DLを突破","正式サービスを開始","新作スマホゲーム","配信予定の","ゲームアプリの製作が","4Gamerの1週間"]
     
+    //株、売上高
     
     func checkMovie(elements:NSMutableDictionary) -> Bool {
         let title:String = elements.value(forKey: "title") as! String
@@ -924,7 +925,53 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
 }
 
-
+//extension UITabBarController {
+//    override public func  -> Bool {
+//        return true
+//    }
+//    // もうちょっとちゃんとやる場合は、子供のViewControllerに
+//    // supportedInterfaceOrientationsを実装して
+//    // return selectedVC.supportedInterfaceOrientations()
+//    // とかすれば、判断を子供に委譲できる
+//    override public func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+//        guard let selectedVC = self.selectedViewController else {
+//            return UIInterfaceOrientationMask.portrait
+//        }
+//        // TabBarControllerの中でNavigationを使ってるケースがある
+//        guard let navigation = selectedVC as? UINavigationController else {
+//            return UIInterfaceOrientationMask.portrait
+//        }
+//        // Navigationで一番うえのやつを取得して
+//        guard let current = navigation.viewControllers.last else {
+//            return UIInterfaceOrientationMask.portrait
+//        }
+//        // これ！このビューのときだけ横を許可して！！
+//        if current is MyCoolViewController {
+//            return UIInterfaceOrientationMask.landscape
+//        }
+//        return UIInterfaceOrientationMask.portrait
+//    }
+//}
+//
+//// サービスの登録フローとかは、いきなりNavigationが出るので
+//extension UINavigationController {
+//    override public func shouldAutorotate() -> Bool {
+//        return true
+//    }
+//    override public func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+//        return UIInterfaceOrientationMask.portrait
+//    }
+//}
+//
+//// サービスのイントロ画面は、いきなりPageViewControllerなので
+//extension UIPageViewController {
+//    override public func shouldAutorotate() -> Bool {
+//        return true
+//    }
+//    override public func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+//        return UIInterfaceOrientationMask.portrait
+//    }
+//}
 //var alphabet = "title=ABCDE&body=FGHIJ"
 //
 //if alphabet.pregMatche(pattern: "ABCDE") {

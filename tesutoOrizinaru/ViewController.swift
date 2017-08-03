@@ -101,6 +101,9 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        config = URLSessionConfiguration()
+        
+        
         UITabBar.appearance().tintColor = UIColor(red: 1, green: 0.6, blue: 0, alpha: 1)
         
        self.totalBox = []
