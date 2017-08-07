@@ -29,7 +29,9 @@
 		6044BBB01F28BD6100C5B893 /* asanoha-400px.png in Resources */ = {isa = PBXBuildFile; fileRef = 6044BBAF1F28BD6100C5B893 /* asanoha-400px.png */; };
 		6044BBB81F28CD0E00C5B893 /* Wiki3.png in Resources */ = {isa = PBXBuildFile; fileRef = 6044BBB71F28CD0E00C5B893 /* Wiki3.png */; };
 		605B8B061E94F3FB004B92C2 /* NewsModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605B8B051E94F3FB004B92C2 /* NewsModalViewController.swift */; };
+		605D29191F372789008D5ACB /* app.png in Resources */ = {isa = PBXBuildFile; fileRef = 605D29181F372789008D5ACB /* app.png */; };
 		6060CE501EAF225500A60B50 /* CommentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6060CE4F1EAF225500A60B50 /* CommentViewController.swift */; };
+		6061C3F21F3702FE00DAE2BA /* Comment_ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6061C3F11F3702FE00DAE2BA /* Comment_ViewController.swift */; };
 		606627641EA9B07700991C0A /* MultiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606627631EA9B07700991C0A /* MultiViewController.swift */; };
 		606627671EA9B11A00991C0A /* FriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606627661EA9B11A00991C0A /* FriendViewController.swift */; };
 		606627691EA9B15B00991C0A /* TeamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606627681EA9B15B00991C0A /* TeamViewController.swift */; };
@@ -58,7 +60,6 @@
 		60CCE9E91F1B1EF400C7717F /* navBarImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 60CCE9E81F1B1EF400C7717F /* navBarImage.png */; };
 		60CCE9F31F1B5A0B00C7717F /* StrategyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60CCE9F21F1B5A0B00C7717F /* StrategyViewController.swift */; };
 		60CCE9F51F1B5BF300C7717F /* Wiki1.png in Resources */ = {isa = PBXBuildFile; fileRef = 60CCE9F41F1B5BF300C7717F /* Wiki1.png */; };
-		60CCE9F71F1B5BFA00C7717F /* Wiki2.png in Resources */ = {isa = PBXBuildFile; fileRef = 60CCE9F61F1B5BFA00C7717F /* Wiki2.png */; };
 		60DAF6B51ED199BA001589FC /* FavoriteUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60DAF6B41ED199BA001589FC /* FavoriteUserViewController.swift */; };
 		60DAF6B81ED463BC001589FC /* BulletinBoardTableViewCell2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60DAF6B61ED463BC001589FC /* BulletinBoardTableViewCell2.swift */; };
 		60DAF6B91ED463BC001589FC /* BulletinBoardTableViewCell2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 60DAF6B71ED463BC001589FC /* BulletinBoardTableViewCell2.xib */; };
@@ -90,7 +91,9 @@
 		6044BBAF1F28BD6100C5B893 /* asanoha-400px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asanoha-400px.png"; sourceTree = "<group>"; };
 		6044BBB71F28CD0E00C5B893 /* Wiki3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Wiki3.png; sourceTree = "<group>"; };
 		605B8B051E94F3FB004B92C2 /* NewsModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsModalViewController.swift; sourceTree = "<group>"; };
+		605D29181F372789008D5ACB /* app.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = app.png; sourceTree = "<group>"; };
 		6060CE4F1EAF225500A60B50 /* CommentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentViewController.swift; sourceTree = "<group>"; };
+		6061C3F11F3702FE00DAE2BA /* Comment_ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment_ViewController.swift; sourceTree = "<group>"; };
 		606627631EA9B07700991C0A /* MultiViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MultiViewController.swift; path = tesutoOrizinaru/MultiViewController.swift; sourceTree = "<group>"; };
 		606627661EA9B11A00991C0A /* FriendViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendViewController.swift; path = tesutoOrizinaru/FriendViewController.swift; sourceTree = "<group>"; };
 		606627681EA9B15B00991C0A /* TeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TeamViewController.swift; path = tesutoOrizinaru/TeamViewController.swift; sourceTree = "<group>"; };
@@ -121,7 +124,6 @@
 		60CCE9E81F1B1EF400C7717F /* navBarImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navBarImage.png; sourceTree = "<group>"; };
 		60CCE9F21F1B5A0B00C7717F /* StrategyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StrategyViewController.swift; sourceTree = "<group>"; };
 		60CCE9F41F1B5BF300C7717F /* Wiki1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Wiki1.png; sourceTree = "<group>"; };
-		60CCE9F61F1B5BFA00C7717F /* Wiki2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Wiki2.png; sourceTree = "<group>"; };
 		60DAF6B41ED199BA001589FC /* FavoriteUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteUserViewController.swift; sourceTree = "<group>"; };
 		60DAF6B61ED463BC001589FC /* BulletinBoardTableViewCell2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BulletinBoardTableViewCell2.swift; sourceTree = "<group>"; };
 		60DAF6B71ED463BC001589FC /* BulletinBoardTableViewCell2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BulletinBoardTableViewCell2.xib; sourceTree = "<group>"; };
@@ -228,8 +230,8 @@
 			children = (
 				6044BBAF1F28BD6100C5B893 /* asanoha-400px.png */,
 				60CCE9F41F1B5BF300C7717F /* Wiki1.png */,
-				60CCE9F61F1B5BFA00C7717F /* Wiki2.png */,
 				6044BBB71F28CD0E00C5B893 /* Wiki3.png */,
+				605D29181F372789008D5ACB /* app.png */,
 				60CCE9E81F1B1EF400C7717F /* navBarImage.png */,
 				608DF9A81EE542F2006A6127 /* reload1.png */,
 				60448B191ECF027E00975D79 /* sns.png */,
@@ -245,6 +247,7 @@
 				603A36701E9CD99F007941BC /* MovieViewController.swift */,
 				609AE90B1EA5B1F40079A467 /* BulletinBoardViewController.swift */,
 				6060CE4F1EAF225500A60B50 /* CommentViewController.swift */,
+				6061C3F11F3702FE00DAE2BA /* Comment_ViewController.swift */,
 				60875BEA1EADF4DE0040E09A /* セルimg */,
 				606627651EA9B09200991C0A /* 書き込み */,
 				60CCE9F21F1B5A0B00C7717F /* StrategyViewController.swift */,
@@ -354,6 +357,7 @@
 				601175CE1E87B558003DA8AE /* images2.jpg in Resources */,
 				6020990C1E8A60F4008F33B1 /* Material Icons_e0be(0)_32.png in Resources */,
 				608DF99B1EDFF9C7006A6127 /* Tap.png in Resources */,
+				605D29191F372789008D5ACB /* app.png in Resources */,
 				6077F6F61ECB03EB001CF8C6 /* BulletinBoardTableViewCell.xib in Resources */,
 				609AE90A1EA5A82F0079A467 /* GoogleService-Info.plist in Resources */,
 				602099051E8A60F4008F33B1 /* et-line_e005(6)_32.png in Resources */,
@@ -362,7 +366,6 @@
 				608DF96D1EDFD0DF006A6127 /* No User.png in Resources */,
 				60889E741E87A12C0036AC42 /* Main.storyboard in Resources */,
 				602099061E8A60F4008F33B1 /* et-line_e00b(4)_32.png in Resources */,
-				60CCE9F71F1B5BFA00C7717F /* Wiki2.png in Resources */,
 				60CCE9E91F1B1EF400C7717F /* navBarImage.png in Resources */,
 				608DF9691EDE9C0B006A6127 /* No Image.png in Resources */,
 				602099081E8A60F4008F33B1 /* FontAwesome_f02d(1)_32.png in Resources */,
@@ -446,6 +449,7 @@
 				1E86FBFE1EC0BB9A00D4DD1B /* BBS_PostData1.swift in Sources */,
 				609AE90C1EA5B1F40079A467 /* BulletinBoardViewController.swift in Sources */,
 				60C07FB01EC31E210091E3DB /* FavoriteViewController.swift in Sources */,
+				6061C3F21F3702FE00DAE2BA /* Comment_ViewController.swift in Sources */,
 				600185C01F30A49E0044BEB6 /* PostViewController.swift in Sources */,
 				60723D171EB09C7C00359D01 /* NextCommentViewController.swift in Sources */,
 				609AE9121EA7754A0079A467 /* EditViewController.swift in Sources */,

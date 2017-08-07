@@ -1,10 +1,10 @@
 //
-//  CommentViewController.swift
+//  Comment_ViewController.swift
 //  tesutoOrizinaru
 //
-//  Created by 小本裕也 on 2017/04/25.
+//  Created by 小本裕也 on 2017/08/06.
 //  Copyright © 2017年 小本裕也. All rights reserved.
-// タイマー　リロードアアチ
+//
 
 
 import UIKit
@@ -13,98 +13,84 @@ import FirebaseAuth
 import FirebaseDatabase
 import SVProgressHUD
 
+class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource{
 
-
-class CommentViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
-    
     var postData:BBS_PostData1!
     
-    var post_select = 0
-    var post_id = ""
-    var profileImageView2 = UIImageView()
-    var userNameLabel2 = ""
     
-    var commentTextView2 = String()
-    var postedImageView2 = UIImageView()
-    var cell_CategoryTitle2 = ""
-    var cell_CategoryContent2 = String()
+    var image_Select = false
     
-    var cellCount2:String!
-    var cellUserName2:String!
     
-    var ok_UserArayy:[String] = []
     
     var ng_UserArayy:[String] = []
     
-    var timer:Timer!
+    var commentArray:[BBS_PostData1] = []
     
+    var timer = Timer()
     
     var check:Bool = false
     
     var timerCount = 0
     
+    
     @IBOutlet var tableView: UITableView!
     
+    @IBOutlet var profileImageView: UIImageView!
     
-    @IBOutlet var reloadButton: UIButton!
+    @IBOutlet var app_ImageView: UIImageView!
     
-    var items = [NSDictionary]()
-    
-    let refreshControl = UIRefreshControl()
-    
-    var commentArray:[BBS_PostData1] = []
-   
-var id:[BBS_PostData1] = []
+    @IBOutlet var comment_BlurView: UIVisualEffectView!
 
+    @IBOutlet var reloadButton: UIButton!
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-       
-        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-        
-        self.id = appDelegate.id
-        
-        tableView.delegate = self
-        tableView.dataSource = self
+
         
         
-        //処理の順番があるためカスタムセルはviewDidLoad()で宣言
-        let nib = UINib(nibName: "BulletinBoardTableViewCell", bundle: nil)
-        tableView.register(nib, forCellReuseIdentifier: "Cell")
-        tableView.rowHeight = UITableViewAutomaticDimension
         
         let nib2 = UINib(nibName: "BulletinBoardTableViewCell2", bundle: nil)
         tableView.register(nib2, forCellReuseIdentifier: "Cell2")
         tableView.rowHeight = UITableViewAutomaticDimension
         
+       tableView.delegate = self
+    tableView.dataSource = self
+        
+        
         self.tableView.estimatedRowHeight = 298
         self.tableView.rowHeight = UITableViewAutomaticDimension
         
-        
-        
-    }
-    
+            }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     
+        if UserDefaults.standard.object(forKey: "profileImage") != nil{
+            
+            //エンコードして取り出す
+            let decodeData = UserDefaults.standard.object(forKey: "profileImage")
+            
+            let decodedData = NSData(base64Encoded:decodeData as! String , options: NSData.Base64DecodingOptions.ignoreUnknownCharacters)
+            let decodedImage = UIImage(data:decodedData! as Data)
+            profileImageView.image = decodedImage
+        }else{
+            profileImageView.image = UIImage(named:"No User.png")
+        }
+        
+        profileImageView.layer.cornerRadius = self.profileImageView.frame.size.height/2
+      
+       
+        if (UserDefaults.standard.object(forKey: "ng_UserArayy")) != nil{
+            ng_UserArayy = UserDefaults.standard.object(forKey: "ng_UserArayy") as! [String]
+        }
+    
     }
+    
     
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        
-        
-        if (UserDefaults.standard.object(forKey: "ng_UserArayy")) != nil{
-            ng_UserArayy = UserDefaults.standard.object(forKey: "ng_UserArayy") as! [String]
-        }
-        print("ng_UserArayy  --> \(ng_UserArayy)")
-        
-        if (UserDefaults.standard.object(forKey: "ok_UserArayy")) != nil{
-            ok_UserArayy = UserDefaults.standard.object(forKey: "ok_UserArayy") as! [String]
-        }
-        print("ok_UserArayy  --> \(ok_UserArayy)")
-        
         loadAllData()
     }
     
@@ -118,21 +104,18 @@ var id:[BBS_PostData1] = []
         }else{
             return commentArray.count
         }
+
+        
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        
-        
+       
         if indexPath.section == 0 {
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! BulletinBoardTableViewCell
+        
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell2", for: indexPath) as! BulletinBoardTableViewCell2
             
             cell.selectionStyle = .none
-            
-            cell.backView.backgroundColor = UIColor(white:0.98,alpha:1.0)
-            
-            
+        
             //プロフィール画像
             //デコードしたものを反映する
             let decodedImage = postData.profile_image
@@ -163,45 +146,11 @@ var id:[BBS_PostData1] = []
             
             cell.postedImageView.image = postData.image
             
-            //セルのカテゴリータイトル
-            
-            //セルのカテゴリー内容
-            
-            let category:Int = postData.bbs_type
-            
-            switch  category {
-            case 0:
-                cell.cell_CategoryTitle.isHidden = true
-                cell.cell_CategoryContent.isHidden = true
-                cell.cell_CategoryTitle.text = ""
-                cell.cell_CategoryContent.text = ""
-                break
-            case 1:
-                cell.cell_CategoryTitle.isHidden = false
-                cell.cell_CategoryContent.isHidden = false
-                cell.cell_CategoryTitle.text = "ルームID"
-                cell.cell_CategoryContent.text = postData.category
-                break
-            case 2:
-                cell.cell_CategoryTitle.isHidden = false
-                cell.cell_CategoryContent.isHidden = false
-                cell.cell_CategoryTitle.text = "フレンドID"
-                cell.cell_CategoryContent.text = postData.category
-                break
-            case 3:
-                cell.cell_CategoryTitle.isHidden = false
-                cell.cell_CategoryContent.isHidden = false
-                cell.cell_CategoryTitle.text = "チーム名"
-                cell.cell_CategoryContent.text = postData.category
-                break
-            default:
-                break
-            }
-            
+        
             //プロフィール画像拡大
             cell.profileLinkButton.addTarget(self, action:#selector(profile_handleButton(sender:event:)), for:  UIControlEvents.touchUpInside)
             
-            //
+          
             //画像拡大
             cell.likeButton.addTarget(self, action:#selector(handleButton(sender:event:)), for:  UIControlEvents.touchUpInside)
             
@@ -222,15 +171,14 @@ var id:[BBS_PostData1] = []
             
             //ユーザーのNG登録
             cell.ngButton.isHidden = true
-            
-            //ユーザーのお気に入り登録
-            cell.okButton.addTarget(self, action:#selector(okAction(sender:event:)), for: UIControlEvents.touchUpInside)
+//            
+//            //ユーザーのお気に入り登録
+//            cell.okButton.addTarget(self, action:#selector(okAction(sender:event:)), for: UIControlEvents.touchUpInside)
             
             
             return cell
-            
         }else{
-            
+
             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell2", for: indexPath) as! BulletinBoardTableViewCell2
             
             cell.selectionStyle = .none
@@ -289,13 +237,14 @@ var id:[BBS_PostData1] = []
             
             //ユーザーのNG登録
             cell.ngButton.addTarget(self, action:#selector(ngAction2(sender:event:)), for: UIControlEvents.touchUpInside)
-            
-            //ユーザーのお気に入り登録
-            cell.okButton.addTarget(self, action:#selector(okAction2(sender:event:)), for: UIControlEvents.touchUpInside)
+//
+//            //ユーザーのお気に入り登録
+//            cell.okButton.addTarget(self, action:#selector(okAction2(sender:event:)), for: UIControlEvents.touchUpInside)
             
             return cell
         }
     }
+
     func loadAllData(){ // 雑談掲示板
         
         self.commentArray = []
@@ -352,34 +301,34 @@ var id:[BBS_PostData1] = []
     
     
     
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        print("スクロールスタート")
-        reloadButton.isEnabled = false
-        reloadButton.alpha = 0.3
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-        reloadButton.isEnabled = false
-        reloadButton.alpha = 0.3
-        print("スクロール中")
-        
-        //最下部にスクロールしても、print("スクロール中")が表示されるため⇩
-        
-        if tableView.contentOffset.y == (self.tableView.contentSize.height - self.tableView.frame.size.height ) || tableView.contentOffset.y == (self.tableView.contentInset.top ) {
-            print("スクロール解除")
-            reloadButton.isEnabled = true
-            reloadButton.alpha = 1.0
-            
-        }
-    }
-    
-    
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView,willDecelerate decelerate: Bool){
-        print("スクロールで指が離れたところ")
-        reloadButton.isEnabled = true
-        reloadButton.alpha = 1.0
-    }
+//    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+//        print("スクロールスタート")
+//        reloadButton.isEnabled = false
+//        reloadButton.alpha = 0.3
+//    }
+//    
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        
+//        reloadButton.isEnabled = false
+//        reloadButton.alpha = 0.3
+//        print("スクロール中")
+//        
+//        //最下部にスクロールしても、print("スクロール中")が表示されるため⇩
+//        
+//        if tableView.contentOffset.y == (self.tableView.contentSize.height - self.tableView.frame.size.height ) || tableView.contentOffset.y == (self.tableView.contentInset.top ) {
+//            print("スクロール解除")
+//            reloadButton.isEnabled = true
+//            reloadButton.alpha = 1.0
+//            
+//        }
+//    }
+//    
+//    
+//    func scrollViewDidEndDragging(_ scrollView: UIScrollView,willDecelerate decelerate: Bool){
+//        print("スクロールで指が離れたところ")
+//        reloadButton.isEnabled = true
+//        reloadButton.alpha = 1.0
+//    }
     
     
     func time(){
@@ -402,6 +351,7 @@ var id:[BBS_PostData1] = []
     
     
     
+    
     @IBAction func back(_ sender: AnyObject) {
         dismiss(animated: true, completion: nil)
     }
@@ -409,6 +359,29 @@ var id:[BBS_PostData1] = []
     @IBAction func contributionButton(_ sender: Any) {
         
         performSegue(withIdentifier: "nextCommentViewController", sender: nil)
+
+            
+//            if UserDefaults.standard.object(forKey: "userName") == nil{
+//                let alertViewControler = UIAlertController(title: "掲示板の書き込みには プロフィール登録が必要です", message: "「ホーム」 ➡︎　「プロフィールを変更」よりプロフィール登録を行ってください",preferredStyle:.alert)
+//                let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+//                
+//                alertViewControler.addAction(cancelAction)
+//                present(alertViewControler, animated: true, completion: nil)
+//                
+//                
+//            }else{
+//                
+//                image_Select = true
+//                let CGPoint2 = tableView.contentOffset
+//                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+//                self.tableView.isUserInteractionEnabled = false
+//                
+//                let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+//                appDelegate.navicheck = true
+//                
+//                performSegue(withIdentifier:"post",sender:nil)
+//            }
+    
     }
     
     @IBAction func reloadButton(_ sender: Any) {
@@ -474,7 +447,6 @@ var id:[BBS_PostData1] = []
         
     }
     
-    
     func ngAction2(sender: UIButton, event:UIEvent){
         
         
@@ -536,88 +508,6 @@ var id:[BBS_PostData1] = []
     }
     
     
-    func okAction(sender: UIButton, event:UIEvent){
-        
-        
-        let okUser = postData.userId
-        print("okUser ----------->\(okUser)")
-        
-        if  (UserDefaults.standard.object(forKey: "ok_UserArayy")) != nil{
-            let userArayy:[String] = UserDefaults.standard.object(forKey: "ok_UserArayy") as! [String]
-            for i in userArayy{
-                if i == okUser{
-                    SVProgressHUD.showError(withStatus: "このユーザーはお気に入りに登録済みです")
-                    return
-                    
-                }
-            }
-        }
-        
-        okAlert(okUser:okUser)
-        
-        print("okUser  --> \(okUser)")
-    }
-    
-    func okAction2(sender: UIButton, event:UIEvent){
-        
-        
-        let touch = event.allTouches?.first
-        let point = touch!.location(in: tableView)
-        let indexPath = tableView.indexPathForRow(at: point)
-        
-        let okUser = commentArray[(indexPath?.row)!].userId
-        
-        print("okUser  --> \(okUser)")
-        
-        if  (UserDefaults.standard.object(forKey: "ok_UserArayy")) != nil{
-            let userArayy:[String] = UserDefaults.standard.object(forKey: "ok_UserArayy") as! [String]
-            for i in userArayy{
-                if i == okUser{
-                    SVProgressHUD.showError(withStatus: "このユーザーはお気に入りに登録済みです")
-                    return
-                    
-                }
-            }
-        }
-        
-        okAlert(okUser:okUser)
-        
-        
-        
-        print("okUser  --> \(okUser)")
-    }
-    
-    func okAlert(okUser:String){
-        
-        
-        
-        let alertViewControler = UIAlertController(title:"このユーザーをお気に\n入り登録しますか？", message: "お気に入り登録をすることで「ホーム」→「お気に入りユーザー」より登録したユーザーの書き込みのみが表示可能となります", preferredStyle:.alert)
-        
-        let okAction = UIAlertAction(title: "お気に入りに登録する", style: .default, handler: {
-            (action:UIAlertAction!) -> Void in
-            self.addokAction(okUser: okUser)
-        })
-        
-        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
-        
-        alertViewControler.addAction(okAction)
-        alertViewControler.addAction(cancelAction)
-        
-        present(alertViewControler, animated: true, completion: nil)
-        
-    }
-    
-    func addokAction(okUser:String){
-        
-        
-        ok_UserArayy.append(okUser)
-        UserDefaults.standard.set(ok_UserArayy, forKey: "ok_UserArayy")
-        
-        SVProgressHUD.showError(withStatus: "お気に入りに\n登録しました")
-        
-        print("ok_UserArayy  --> \(ok_UserArayy)")
-        
-    }
     
     
     

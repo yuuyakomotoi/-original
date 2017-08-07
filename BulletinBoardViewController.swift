@@ -313,7 +313,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             let dict = items[(indexPath as NSIndexPath).row]
             
             
-            cell.backView.backgroundColor = UIColor(white:0.98,alpha:1.0)
+//            cell.backView.backgroundColor = UIColor(white:1.0,alpha:1.0)
             
             
             
@@ -552,7 +552,10 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let dict = items[indexPath.row] as BBS_PostData1
         
-        //セルのカテゴリータイトル
+        
+        self.tabBarController?.tabBar.isHidden = true
+
+        
         image_Select = true
         performSegue(withIdentifier: "nextComment", sender: dict)
     }
@@ -1535,8 +1538,8 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "nextComment"){
-            let commentViewController:CommentViewController = segue.destination as! CommentViewController
-            commentViewController.postData = sender as! BBS_PostData1
+            let comment_ViewController:Comment_ViewController = segue.destination as! Comment_ViewController
+            comment_ViewController.postData = sender as! BBS_PostData1
         }else if(segue.identifier == "post"){
             let postViewController:PostViewController = segue.destination as! PostViewController
             

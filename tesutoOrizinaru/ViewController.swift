@@ -57,7 +57,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     //http://2chmatomeru.info/entries/index.rss
    // http://xn--zckzap0809doqd.jp/feed/
-     let urlArray = ["http://shironekotennisms.net/feed","http://xn--zckzap0809doqd.jp/feed/",""]//URLリスト
+     let urlArray = ["http://shironekotennisms.net/feed","http://xn--zckzap0809doqd.jp/feed/"]//URLリスト
     
     
     var dataArray = NSArray()
@@ -512,7 +512,23 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             data = rss_data.data(using: String.Encoding.utf8)! as NSData
 
-        
+            parser = XMLParser(data: data! as Data)
+            if parser != nil {
+                
+                
+                
+                convery_count = 1
+                
+                parser!.delegate = self
+                parser!.parse()
+                
+                print("パース成功")
+            } else {
+                // パースに失敗した時
+                print("パース失敗")
+            }
+            
+            
         }else if convery_count == 0{
             print(convery_count)
             
@@ -591,24 +607,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             
             
-            for i in 0...1{
-                if i == 0 {parser = XMLParser(data: data! as Data)
-                    if parser != nil {
-                        
-                        
-                        
-                        convery_count = 1
-                        
-                        parser!.delegate = self
-                        parser!.parse()
-                        
-                        print("パース成功")
-                    } else {
-                        // パースに失敗した時
-                        print("パース失敗")
-                    }
-                    
-                }else{
+            
                     parser = XMLParser(data: data2! as Data)
                     if parser != nil {
                         
@@ -620,11 +619,10 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                     } else {
                         // パースに失敗した時
                         print("パース失敗")
-                    }
                     
-                }
             }
-            
+        
+        
         
             
         }
@@ -759,8 +757,11 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 
 //                date1 = String(date).pregReplace(pattern: "[a-z|A-Z]{3}\\d\\d[a-z|A-Z]{3}|.........0000", with: "")
                 //2017
+                    //<pubDate>Sat,05Aug201707:00:09+0000</pubDate>
+                    //<pubDate>Wed, 02 Aug 2017 21:00:38 +0000</pubDate>
+                    //<pubDate>Fri, 04 Aug 2017 14:11:42 +0000</pubDate>
                 
-                
+                    
                     date2 = date.pregReplace(pattern: "[a-zA-Z]{3}|\\d{4}\\d\\d:\\d\\d:\\d\\d\\+0000", with: "")
                 //日　03
                
@@ -770,7 +771,8 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                     date3 = date.pregReplace(pattern: "[a-z|A-Z]{3}\\d\\d[a-z|A-Z]{3}\\d\\d\\d\\d|:\\d\\d\\+0000", with: "")
                 //日時　09:10
                 
-                date3_2 = date3.pregReplace(pattern: ":..", with: "")
+                
+                    date3_2 = date3.pregReplace(pattern: ":..", with: "")
                 //　09
                     
                     switch date3_2 {
@@ -866,79 +868,300 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 default:
                     break
                 }
-                
-                   
+                //08-13 09:05
+                    
                     if date3_2 == "00" || date3_2 == "01" || date3_2 == "02" || date3_2 == "03" || date3_2 == "04" || date3_2 == "05" || date3_2 == "06" || date3_2 == "07"{
                      
-                        var date2 = Int(date2)! + day_count
+                        
+                        
+
+                        func dd(){
+                            switch date2 {
+                            case "01":
+                                date2 = "02"
+                            case "02":
+                                date2 = "03"
+                            case "03":
+                                date2 = "04"
+                            case "04":
+                                date2 = "05"
+                            case "05":
+                                date2 = "06"
+                            case "06":
+                                date2 = "07"
+                            case "07":
+                                date2 = "08"
+                            case "08":
+                                date2 = "09"
+                            case "09":
+                                date2 = "10"
+                            case "10":
+                                date2 = "11"
+                            case "11":
+                                date2 = "12"
+                            case "12":
+                                date2 = "13"
+                            case "13":
+                                date2 = "14"
+                            case "14":
+                                date2 = "15"
+                            case "15":
+                                date2 = "16"
+                            case "16":
+                                date2 = "17"
+                            case "17":
+                                date2 = "18"
+                            case "18":
+                                date2 = "19"
+                            case "19":
+                                date2 = "20"
+                            case "20":
+                                date2 = "21"
+                            case "21":
+                                date2 = "22"
+                            case "22":
+                                date2 = "23"
+                            case "23":
+                                date2 = "24"
+                            case "24":
+                                date2 = "25"
+                            case "25":
+                                date2 = "26"
+                            case "26":
+                                date2 = "27"
+                            case "27":
+                                date2 = "28"
+                            default:
+                                break
+                            }
+                        }
+                        
+//                        var date2 = Int(date2)! + day_count
                    
+                        
+                        
+                        
+                        print("!!!!!!!date2----------->\(date2)")//3
                         
                         switch date5 {
                         case "01":
-                            if date2 == 32{
-                                date2 = 01
+                            dd()
+                            switch date2 {
+                            case "28":
+                                date2 = "29"
+                            case "29":
+                                date2 = "30"
+                            case "30":
+                                date2 = "31"
+                            case "31":
+                                date2 = "32"
+                            default:
+                                break
+                            }
+                            if date2 == "32"{
+                                date2 = "01"
                                 date5 = "02"
                             }
                         case "02":
-                            if date2 == 29{
-                                date2 = 01
+                            dd()
+                            switch date2 {
+                            case "28":
+                                date2 = "29"
+                            default:
+                                break
+                            }
+
+                            if date2 == "29"{
+                                date2 = "01"
                                 date5 = "03"
                             }
                         case "03":
-                            if date2 == 32{
-                                date2 = 01
+                            dd()
+                            switch date2 {
+                            case "28":
+                                date2 = "29"
+                            case "29":
+                                date2 = "30"
+                            case "30":
+                                date2 = "31"
+                            case "31":
+                                date2 = "32"
+                            default:
+                                break
+                            }
+
+                            if date2 == "32"{
+                                date2 = "01"
                                 date5 = "04"
                             }
                         case "04":
-                            if date2 == 31{
-                                date2 = 01
+                            dd()
+                            switch date2 {
+                            case "28":
+                                date2 = "29"
+                            case "29":
+                                date2 = "30"
+                            case "30":
+                                date2 = "31"
+                            default:
+                                break
+                            }
+
+                            if date2 == "31"{
+                                date2 = "01"
                                 date5 = "05"
                             }
                         case "05":
-                            if date2 == 32{
-                                date2 = 01
+                            dd()
+                            switch date2 {
+                            case "28":
+                                date2 = "29"
+                            case "29":
+                                date2 = "30"
+                            case "30":
+                                date2 = "31"
+                            case "31":
+                                date2 = "32"
+                            default:
+                                break
+                            }
+
+                            if date2 == "32"{
+                                date2 = "01"
                                 date5 = "06"
                             }
                         case "06":
-                            if date2 == 31{
-                                date2 = 01
+                           dd()
+                           switch date2 {
+                           case "28":
+                            date2 = "29"
+                           case "29":
+                            date2 = "30"
+                           case "30":
+                            date2 = "31"
+                           default:
+                            break
+                           }
+
+                           if date2 == "31"{
+                                date2 = "01"
                                 date5 = "07"
                             }
                         case "07":
-                            if date2 == 32{
-                                date2 = 01
+                           dd()
+                           switch date2 {
+                           case "28":
+                            date2 = "29"
+                           case "29":
+                            date2 = "30"
+                           case "30":
+                            date2 = "31"
+                           case "31":
+                            date2 = "32"
+                           default:
+                            break
+                           }
+                           if date2 == "32"{
+                                date2 = "01"
                                 date5 = "08"
                             }
                         case "08":
-                            if date2 == 32{
-                                date2 = 01
+                            dd()
+                            switch date2 {
+                            case "28":
+                                date2 = "29"
+                            case "29":
+                                date2 = "30"
+                            case "30":
+                                date2 = "31"
+                            case "31":
+                                date2 = "32"
+                            default:
+                                break
+                            }
+
+                            if date2 == "32"{
+                                date2 = "01"
                                 date5 = "09"
                             }
                         case "09":
-                            if date2 == 31{
-                                date2 = 01
+                            dd()
+                            switch date2 {
+                            case "28":
+                                date2 = "29"
+                            case "29":
+                                date2 = "30"
+                            case "30":
+                                date2 = "31"
+                            default:
+                                break
+                            }
+
+                            if date2 == "31"{
+                                date2 = "01"
                                 date5 = "10"
                             }
                         case "10":
-                            if date2 == 32{
-                                date2 = 01
+                           dd()
+                           switch date2 {
+                           case "28":
+                            date2 = "29"
+                           case "29":
+                            date2 = "30"
+                           case "30":
+                            date2 = "31"
+                           case "31":
+                            date2 = "32"
+                           default:
+                            break
+                           }
+
+                           if date2 == "32"{
+                                date2 = "01"
                                 date5 = "11"
                             }
                         case "11":
-                            if date2 == 31{
-                                date2 = 01
+                            dd()
+                            switch date2 {
+                            case "28":
+                                date2 = "29"
+                            case "29":
+                                date2 = "30"
+                            case "30":
+                                date2 = "31"
+                            default:
+                                break
+                            }
+
+                            if date2 == "31"{
+                                date2 = "01"
                                 date5 = "12"
                             }
                         case "12":
-                            if date2 == 32{
-                                date2 = 01
+                           
+                            dd()
+                            switch date2 {
+                            case "28":
+                                date2 = "29"
+                            case "29":
+                                date2 = "30"
+                            case "30":
+                                date2 = "31"
+                            case "31":
+                                date2 = "32"
+                            default:
+                                break
+                            }
+
+                            if date2 == "32"{
+                                date2 = "01"
                                 date5 = "01"
                             }
                         default:
                             break
                         }
 
-                        
+                                                
                     date_Set = "\(date5)-\(date2) \(date3_2)\(date3_3)"
                    
                     }else{
@@ -961,6 +1184,8 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 //               let dateFromString = formatter.date(from: "2005/12/12 9:24:21")! //"Dec 12, 2005, 9:24 AM"
                 
                 elements.setObject(date_Set, forKey: "pubDate" as NSCopying)
+                print("date_Set------------->\(date_Set)")
+                
                 }
                 else{
                     elements.setObject(dateString, forKey: "pubDate" as NSCopying)
