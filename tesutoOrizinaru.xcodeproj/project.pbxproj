@@ -51,6 +51,15 @@
 		608DF99B1EDFF9C7006A6127 /* Tap.png in Resources */ = {isa = PBXBuildFile; fileRef = 608DF99A1EDFF9C7006A6127 /* Tap.png */; };
 		608DF9A11EDFFC0F006A6127 /* Support_ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 608DF9A01EDFFC0F006A6127 /* Support_ViewController.swift */; };
 		608DF9A91EE542F3006A6127 /* reload1.png in Resources */ = {isa = PBXBuildFile; fileRef = 608DF9A81EE542F2006A6127 /* reload1.png */; };
+		6094FDEA1F3BFE08007A9D04 /* Favorite1_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 6094FDE21F3BFE08007A9D04 /* Favorite1_1.png */; };
+		6094FDEB1F3BFE08007A9D04 /* Favorite1_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 6094FDE31F3BFE08007A9D04 /* Favorite1_2.png */; };
+		6094FDEC1F3BFE08007A9D04 /* Favorite1_3.png in Resources */ = {isa = PBXBuildFile; fileRef = 6094FDE41F3BFE08007A9D04 /* Favorite1_3.png */; };
+		6094FDED1F3BFE08007A9D04 /* Favorite1_4.png in Resources */ = {isa = PBXBuildFile; fileRef = 6094FDE51F3BFE08007A9D04 /* Favorite1_4.png */; };
+		6094FDEE1F3BFE08007A9D04 /* Favorite1_5.png in Resources */ = {isa = PBXBuildFile; fileRef = 6094FDE61F3BFE08007A9D04 /* Favorite1_5.png */; };
+		6094FDEF1F3BFE08007A9D04 /* Favorite1_6.png in Resources */ = {isa = PBXBuildFile; fileRef = 6094FDE71F3BFE08007A9D04 /* Favorite1_6.png */; };
+		6094FDF01F3BFE08007A9D04 /* Favorite1_7.png in Resources */ = {isa = PBXBuildFile; fileRef = 6094FDE81F3BFE08007A9D04 /* Favorite1_7.png */; };
+		6094FDF11F3BFE08007A9D04 /* Favorite1_8.png in Resources */ = {isa = PBXBuildFile; fileRef = 6094FDE91F3BFE08007A9D04 /* Favorite1_8.png */; };
+		6094FDF61F3C0C7B007A9D04 /* First_BulletinBoard_ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6094FDF51F3C0C7B007A9D04 /* First_BulletinBoard_ViewController.swift */; };
 		609AE90A1EA5A82F0079A467 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 609AE9091EA5A82F0079A467 /* GoogleService-Info.plist */; };
 		609AE90C1EA5B1F40079A467 /* BulletinBoardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609AE90B1EA5B1F40079A467 /* BulletinBoardViewController.swift */; };
 		609AE90E1EA5B2D30079A467 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609AE90D1EA5B2D30079A467 /* LoginViewController.swift */; };
@@ -97,9 +106,9 @@
 		606627631EA9B07700991C0A /* MultiViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MultiViewController.swift; path = tesutoOrizinaru/MultiViewController.swift; sourceTree = "<group>"; };
 		606627661EA9B11A00991C0A /* FriendViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FriendViewController.swift; path = tesutoOrizinaru/FriendViewController.swift; sourceTree = "<group>"; };
 		606627681EA9B15B00991C0A /* TeamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TeamViewController.swift; path = tesutoOrizinaru/TeamViewController.swift; sourceTree = "<group>"; };
-		60723D161EB09C7C00359D01 /* NextCommentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NextCommentViewController.swift; sourceTree = "<group>"; };
-		6077F6F31ECB03EB001CF8C6 /* BulletinBoardTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BulletinBoardTableViewCell.swift; sourceTree = "<group>"; };
-		6077F6F41ECB03EB001CF8C6 /* BulletinBoardTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BulletinBoardTableViewCell.xib; sourceTree = "<group>"; };
+		60723D161EB09C7C00359D01 /* NextCommentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NextCommentViewController.swift; path = tesutoOrizinaru/NextCommentViewController.swift; sourceTree = "<group>"; };
+		6077F6F31ECB03EB001CF8C6 /* BulletinBoardTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BulletinBoardTableViewCell.swift; path = tesutoOrizinaru/BulletinBoardTableViewCell.swift; sourceTree = "<group>"; };
+		6077F6F41ECB03EB001CF8C6 /* BulletinBoardTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BulletinBoardTableViewCell.xib; path = tesutoOrizinaru/BulletinBoardTableViewCell.xib; sourceTree = "<group>"; };
 		60875BEB1EADF5070040E09A /* CellImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellImageViewController.swift; sourceTree = "<group>"; };
 		60889E6B1E87A12C0036AC42 /* tesutoOrizinaru.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tesutoOrizinaru.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		60889E6E1E87A12C0036AC42 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -115,6 +124,15 @@
 		608DF99A1EDFF9C7006A6127 /* Tap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Tap.png; sourceTree = "<group>"; };
 		608DF9A01EDFFC0F006A6127 /* Support_ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Support_ViewController.swift; sourceTree = "<group>"; };
 		608DF9A81EE542F2006A6127 /* reload1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reload1.png; sourceTree = "<group>"; };
+		6094FDE21F3BFE08007A9D04 /* Favorite1_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Favorite1_1.png; sourceTree = "<group>"; };
+		6094FDE31F3BFE08007A9D04 /* Favorite1_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Favorite1_2.png; sourceTree = "<group>"; };
+		6094FDE41F3BFE08007A9D04 /* Favorite1_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Favorite1_3.png; sourceTree = "<group>"; };
+		6094FDE51F3BFE08007A9D04 /* Favorite1_4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Favorite1_4.png; sourceTree = "<group>"; };
+		6094FDE61F3BFE08007A9D04 /* Favorite1_5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Favorite1_5.png; sourceTree = "<group>"; };
+		6094FDE71F3BFE08007A9D04 /* Favorite1_6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Favorite1_6.png; sourceTree = "<group>"; };
+		6094FDE81F3BFE08007A9D04 /* Favorite1_7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Favorite1_7.png; sourceTree = "<group>"; };
+		6094FDE91F3BFE08007A9D04 /* Favorite1_8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Favorite1_8.png; sourceTree = "<group>"; };
+		6094FDF51F3C0C7B007A9D04 /* First_BulletinBoard_ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = First_BulletinBoard_ViewController.swift; sourceTree = "<group>"; };
 		609AE9091EA5A82F0079A467 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		609AE90B1EA5B1F40079A467 /* BulletinBoardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BulletinBoardViewController.swift; path = ../BulletinBoardViewController.swift; sourceTree = "<group>"; };
 		609AE90D1EA5B2D30079A467 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = tesutoOrizinaru/LoginViewController.swift; sourceTree = "<group>"; };
@@ -176,18 +194,12 @@
 			path = "新規フォルダー2";
 			sourceTree = "<group>";
 		};
-		606627651EA9B09200991C0A /* 書き込み */ = {
-			isa = PBXGroup;
-			children = (
-				600185BF1F30A49E0044BEB6 /* PostViewController.swift */,
-				60723D161EB09C7C00359D01 /* NextCommentViewController.swift */,
-			);
-			name = "書き込み";
-			sourceTree = "<group>";
-		};
 		608471D61F316C9100C72A26 /* その他 */ = {
 			isa = PBXGroup;
 			children = (
+				60723D161EB09C7C00359D01 /* NextCommentViewController.swift */,
+				6077F6F41ECB03EB001CF8C6 /* BulletinBoardTableViewCell.xib */,
+				6077F6F31ECB03EB001CF8C6 /* BulletinBoardTableViewCell.swift */,
 				609AE9111EA7754A0079A467 /* EditViewController.swift */,
 				606627631EA9B07700991C0A /* MultiViewController.swift */,
 				606627661EA9B11A00991C0A /* FriendViewController.swift */,
@@ -197,14 +209,6 @@
 			);
 			name = "その他";
 			path = ..;
-			sourceTree = "<group>";
-		};
-		60875BEA1EADF4DE0040E09A /* セルimg */ = {
-			isa = PBXGroup;
-			children = (
-				60875BEB1EADF5070040E09A /* CellImageViewController.swift */,
-			);
-			name = "セルimg";
 			sourceTree = "<group>";
 		};
 		60889E621E87A12C0036AC42 = {
@@ -228,7 +232,37 @@
 		60889E6D1E87A12C0036AC42 /* tesutoOrizinaru */ = {
 			isa = PBXGroup;
 			children = (
-				6044BBAF1F28BD6100C5B893 /* asanoha-400px.png */,
+				6094FDF21F3C0B5C007A9D04 /* image */,
+				60889E6E1E87A12C0036AC42 /* AppDelegate.swift */,
+				60889E701E87A12C0036AC42 /* ViewController.swift */,
+				605B8B051E94F3FB004B92C2 /* NewsModalViewController.swift */,
+				603A36701E9CD99F007941BC /* MovieViewController.swift */,
+				60CCE9F21F1B5A0B00C7717F /* StrategyViewController.swift */,
+				6094FDF31F3C0BC0007A9D04 /* 掲示板関連 */,
+				6094FDF41F3C0BFB007A9D04 /* ホーム関連 */,
+				60889E721E87A12C0036AC42 /* Main.storyboard */,
+				60889E751E87A12C0036AC42 /* Assets.xcassets */,
+				60889E771E87A12C0036AC42 /* LaunchScreen.storyboard */,
+				60889E7A1E87A12C0036AC42 /* Info.plist */,
+				609AE9091EA5A82F0079A467 /* GoogleService-Info.plist */,
+				608471D61F316C9100C72A26 /* その他 */,
+				60889E6C1E87A12C0036AC42 /* Products */,
+			);
+			path = tesutoOrizinaru;
+			sourceTree = "<group>";
+		};
+		6094FDF21F3C0B5C007A9D04 /* image */ = {
+			isa = PBXGroup;
+			children = (
+				602098F71E8A60F4008F33B1 /* 新規フォルダー2 */,
+				6094FDE21F3BFE08007A9D04 /* Favorite1_1.png */,
+				6094FDE31F3BFE08007A9D04 /* Favorite1_2.png */,
+				6094FDE41F3BFE08007A9D04 /* Favorite1_3.png */,
+				6094FDE51F3BFE08007A9D04 /* Favorite1_4.png */,
+				6094FDE61F3BFE08007A9D04 /* Favorite1_5.png */,
+				6094FDE71F3BFE08007A9D04 /* Favorite1_6.png */,
+				6094FDE81F3BFE08007A9D04 /* Favorite1_7.png */,
+				6094FDE91F3BFE08007A9D04 /* Favorite1_8.png */,
 				60CCE9F41F1B5BF300C7717F /* Wiki1.png */,
 				6044BBB71F28CD0E00C5B893 /* Wiki3.png */,
 				605D29181F372789008D5ACB /* app.png */,
@@ -240,38 +274,39 @@
 				608DF99A1EDFF9C7006A6127 /* Tap.png */,
 				608DF9681EDE9C0B006A6127 /* No Image.png */,
 				608DF96C1EDFD0DF006A6127 /* No User.png */,
-				602098F71E8A60F4008F33B1 /* 新規フォルダー2 */,
-				60889E6E1E87A12C0036AC42 /* AppDelegate.swift */,
-				60889E701E87A12C0036AC42 /* ViewController.swift */,
-				605B8B051E94F3FB004B92C2 /* NewsModalViewController.swift */,
-				603A36701E9CD99F007941BC /* MovieViewController.swift */,
+				6044BBAF1F28BD6100C5B893 /* asanoha-400px.png */,
+			);
+			name = image;
+			sourceTree = "<group>";
+		};
+		6094FDF31F3C0BC0007A9D04 /* 掲示板関連 */ = {
+			isa = PBXGroup;
+			children = (
+				6094FDF51F3C0C7B007A9D04 /* First_BulletinBoard_ViewController.swift */,
 				609AE90B1EA5B1F40079A467 /* BulletinBoardViewController.swift */,
+				600185BF1F30A49E0044BEB6 /* PostViewController.swift */,
+				60875BEB1EADF5070040E09A /* CellImageViewController.swift */,
 				6060CE4F1EAF225500A60B50 /* CommentViewController.swift */,
 				6061C3F11F3702FE00DAE2BA /* Comment_ViewController.swift */,
-				60875BEA1EADF4DE0040E09A /* セルimg */,
-				606627651EA9B09200991C0A /* 書き込み */,
-				60CCE9F21F1B5A0B00C7717F /* StrategyViewController.swift */,
+				1ED840571EC08A990041D2E2 /* Const.swift */,
+				1E86FBFD1EC0BB9A00D4DD1B /* BBS_PostData1.swift */,
+				60DAF6B61ED463BC001589FC /* BulletinBoardTableViewCell2.swift */,
+				60DAF6B71ED463BC001589FC /* BulletinBoardTableViewCell2.xib */,
+			);
+			name = "掲示板関連";
+			sourceTree = "<group>";
+		};
+		6094FDF41F3C0BFB007A9D04 /* ホーム関連 */ = {
+			isa = PBXGroup;
+			children = (
 				60FE03001E87B1100062F768 /* HomeViewController.swift */,
 				609AE90F1EA60B1F0079A467 /* ChangeProfileViewController.swift */,
 				60C07FAF1EC31E210091E3DB /* FavoriteViewController.swift */,
 				60DAF6B41ED199BA001589FC /* FavoriteUserViewController.swift */,
 				60F4BC671F0F3E88004FEDD3 /* APP_News_ViewController.swift */,
 				608DF9A01EDFFC0F006A6127 /* Support_ViewController.swift */,
-				60889E721E87A12C0036AC42 /* Main.storyboard */,
-				60889E751E87A12C0036AC42 /* Assets.xcassets */,
-				60889E771E87A12C0036AC42 /* LaunchScreen.storyboard */,
-				60889E7A1E87A12C0036AC42 /* Info.plist */,
-				609AE9091EA5A82F0079A467 /* GoogleService-Info.plist */,
-				1ED840571EC08A990041D2E2 /* Const.swift */,
-				1E86FBFD1EC0BB9A00D4DD1B /* BBS_PostData1.swift */,
-				6077F6F31ECB03EB001CF8C6 /* BulletinBoardTableViewCell.swift */,
-				6077F6F41ECB03EB001CF8C6 /* BulletinBoardTableViewCell.xib */,
-				60DAF6B61ED463BC001589FC /* BulletinBoardTableViewCell2.swift */,
-				60DAF6B71ED463BC001589FC /* BulletinBoardTableViewCell2.xib */,
-				608471D61F316C9100C72A26 /* その他 */,
-				60889E6C1E87A12C0036AC42 /* Products */,
 			);
-			path = tesutoOrizinaru;
+			name = "ホーム関連";
 			sourceTree = "<group>";
 		};
 		AD245E16ADFBCD2EFC520D23 /* Pods */ = {
@@ -351,10 +386,15 @@
 				60889E791E87A12C0036AC42 /* LaunchScreen.storyboard in Resources */,
 				60889E761E87A12C0036AC42 /* Assets.xcassets in Resources */,
 				6020990D1E8A60F4008F33B1 /* themify_f09a(3)_32.png in Resources */,
+				6094FDEC1F3BFE08007A9D04 /* Favorite1_3.png in Resources */,
 				60CCE9F51F1B5BF300C7717F /* Wiki1.png in Resources */,
 				602099031E8A60F4008F33B1 /* Entypo_d83d(10)_32.png in Resources */,
+				6094FDEA1F3BFE08007A9D04 /* Favorite1_1.png in Resources */,
 				608DF9A91EE542F3006A6127 /* reload1.png in Resources */,
+				6094FDED1F3BFE08007A9D04 /* Favorite1_4.png in Resources */,
+				6094FDEE1F3BFE08007A9D04 /* Favorite1_5.png in Resources */,
 				601175CE1E87B558003DA8AE /* images2.jpg in Resources */,
+				6094FDF01F3BFE08007A9D04 /* Favorite1_7.png in Resources */,
 				6020990C1E8A60F4008F33B1 /* Material Icons_e0be(0)_32.png in Resources */,
 				608DF99B1EDFF9C7006A6127 /* Tap.png in Resources */,
 				605D29191F372789008D5ACB /* app.png in Resources */,
@@ -362,8 +402,10 @@
 				609AE90A1EA5A82F0079A467 /* GoogleService-Info.plist in Resources */,
 				602099051E8A60F4008F33B1 /* et-line_e005(6)_32.png in Resources */,
 				6044BBB81F28CD0E00C5B893 /* Wiki3.png in Resources */,
+				6094FDF11F3BFE08007A9D04 /* Favorite1_8.png in Resources */,
 				60448B1A1ECF027E00975D79 /* sns.png in Resources */,
 				608DF96D1EDFD0DF006A6127 /* No User.png in Resources */,
+				6094FDEF1F3BFE08007A9D04 /* Favorite1_6.png in Resources */,
 				60889E741E87A12C0036AC42 /* Main.storyboard in Resources */,
 				602099061E8A60F4008F33B1 /* et-line_e00b(4)_32.png in Resources */,
 				60CCE9E91F1B1EF400C7717F /* navBarImage.png in Resources */,
@@ -374,6 +416,7 @@
 				6020990B1E8A60F4008F33B1 /* linecons_e029(7)_32.png in Resources */,
 				6044BBB01F28BD6100C5B893 /* asanoha-400px.png in Resources */,
 				6020990A1E8A60F4008F33B1 /* linea_7c(2)_32.png in Resources */,
+				6094FDEB1F3BFE08007A9D04 /* Favorite1_2.png in Resources */,
 				602099091E8A60F4008F33B1 /* FontAwesome_f0c0(8)_32.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -460,6 +503,7 @@
 				60DAF6B81ED463BC001589FC /* BulletinBoardTableViewCell2.swift in Sources */,
 				606627691EA9B15B00991C0A /* TeamViewController.swift in Sources */,
 				6077F6F51ECB03EB001CF8C6 /* BulletinBoardTableViewCell.swift in Sources */,
+				6094FDF61F3C0C7B007A9D04 /* First_BulletinBoard_ViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

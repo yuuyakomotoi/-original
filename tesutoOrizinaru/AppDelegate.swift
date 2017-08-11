@@ -25,6 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var navicheck = false
     
+    var navicheck2 = false
+    
     var ndataArray:NSArray = []
     
     var dataArray:NSArray = []

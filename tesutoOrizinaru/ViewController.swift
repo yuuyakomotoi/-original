@@ -103,7 +103,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         config = URLSessionConfiguration()
         
-        
+                
         UITabBar.appearance().tintColor = UIColor(red: 1, green: 0.6, blue: 0, alpha: 1)
         
        self.totalBox = []
@@ -407,6 +407,10 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         //        let config: URLSessionConfiguration = URLSessionConfiguration.background(withIdentifier: "backgroundSession")
 //        
         
+        config?.timeoutIntervalForRequest = 5
+        config?.timeoutIntervalForResource = 5
+        
+        
         if (config != nil){
         
         // Sessionを作成する.
@@ -438,20 +442,23 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         var data: NSData!
         
+        
+        
         do {
             data = try NSData(contentsOf: location, options: NSData.ReadingOptions.alwaysMapped)
+            
+            let rss = String(data: data as Data, encoding: .utf8)!
+        
+            ///rss入れた
+            //メソッド作る
+            
+            convertRSS(rss:rss)
+        
         } catch {
             print(error)
         }
         
-        let rss = String(data: data as Data, encoding: .utf8)!
         
-        
-        ///rss入れた
-        //メソッド作る
-        
-        
-        convertRSS(rss:rss)
        
         
     }
@@ -1314,6 +1321,8 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             
             if dataArray2 != []{
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                    
+                    
                     self.totalBox = []
                     self.dataArray = []
                 
@@ -1556,13 +1565,34 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
    
     
+    
+    
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
     
+    
+    // 画面の自動回転をさせない
+    override var shouldAutorotate: Bool {
+        
+        return false
+        
+    }
+    
+    // 画面をPortraitに指定する
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        
+        return .portrait
+        
+    }
+    
+    
 }
+
 
 extension String {
     //絵文字など(2文字分)も含めた文字数を返します
@@ -1623,7 +1653,31 @@ extension Date{
 
 }
 
+extension UINavigationController {
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return visibleViewController?.supportedInterfaceOrientations ?? super.supportedInterfaceOrientations
+    }
+    
+    open override var shouldAutorotate: Bool {
+        return visibleViewController?.shouldAutorotate ?? super.shouldAutorotate
+    }
+}
 
+extension UITabBarController {
+    open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        if let selected = selectedViewController {
+            return selected.supportedInterfaceOrientations
+        }
+        return super.supportedInterfaceOrientations
+    }
+    
+    open override var shouldAutorotate: Bool {
+        if let selected = selectedViewController {
+            return selected.shouldAutorotate
+        }
+        return super.shouldAutorotate
+    }
+}
 //var alphabet = "title=ABCDE&body=FGHIJ"
 //
 //if alphabet.pregMatche(pattern: "ABCDE") {

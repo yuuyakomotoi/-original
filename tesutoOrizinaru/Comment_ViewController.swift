@@ -37,7 +37,10 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     @IBOutlet var profileImageView: UIImageView!
     
-    @IBOutlet var app_ImageView: UIImageView!
+    @IBOutlet var bulletinBoard_Image: UIImageView!
+    
+    
+    
     
     @IBOutlet var comment_BlurView: UIVisualEffectView!
 
@@ -80,6 +83,19 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
         
         profileImageView.layer.cornerRadius = self.profileImageView.frame.size.height/2
       
+        if UserDefaults.standard.object(forKey: "bulletinBoard_Image") != nil{
+            
+            //エンコードして取り出す
+            let decodeData = UserDefaults.standard.object(forKey: "bulletinBoard_Image")
+            
+            let decodedData = NSData(base64Encoded:decodeData as! String , options: NSData.Base64DecodingOptions.ignoreUnknownCharacters)
+            let decodedImage = UIImage(data:decodedData! as Data)
+            bulletinBoard_Image.image = decodedImage
+        }else{
+            bulletinBoard_Image.image = UIImage(named:"asanoha-400px.png")
+        }
+
+        
        
         if (UserDefaults.standard.object(forKey: "ng_UserArayy")) != nil{
             ng_UserArayy = UserDefaults.standard.object(forKey: "ng_UserArayy") as! [String]
@@ -121,7 +137,7 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
             let decodedImage = postData.profile_image
             
             //画像を丸くする。値が大きいほど丸くなる
-            cell.profileImageView.layer.cornerRadius = 8.0
+            cell.profileImageView.layer.cornerRadius = cell.profileImageView.frame.size.height / 2
             cell.profileImageView.clipsToBounds = true
             cell.profileImageView.image = decodedImage
             
@@ -188,7 +204,7 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
             //プロフィール画像
             //画像を丸くする。値が大きいほど丸くなる
             let decodedImage = dict.profile_image
-            cell.profileImageView.layer.cornerRadius = 8.0
+            cell.profileImageView.layer.cornerRadius = cell.profileImageView.frame.size.height / 2
             cell.profileImageView.clipsToBounds = true
             cell.profileImageView.image = decodedImage
             
@@ -238,13 +254,17 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
             //ユーザーのNG登録
             cell.ngButton.addTarget(self, action:#selector(ngAction2(sender:event:)), for: UIControlEvents.touchUpInside)
 //
-//            //ユーザーのお気に入り登録
+
+            cell.okButton.isHidden = true
+            //            //ユーザーのお気に入り登録
 //            cell.okButton.addTarget(self, action:#selector(okAction2(sender:event:)), for: UIControlEvents.touchUpInside)
             
             return cell
         }
     }
 
+
+    
     func loadAllData(){ // 雑談掲示板
         
         self.commentArray = []
@@ -358,29 +378,29 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     @IBAction func contributionButton(_ sender: Any) {
         
-        performSegue(withIdentifier: "nextCommentViewController", sender: nil)
+//        performSegue(withIdentifier: "nextCommentViewController", sender: nil)
 
             
-//            if UserDefaults.standard.object(forKey: "userName") == nil{
-//                let alertViewControler = UIAlertController(title: "掲示板の書き込みには プロフィール登録が必要です", message: "「ホーム」 ➡︎　「プロフィールを変更」よりプロフィール登録を行ってください",preferredStyle:.alert)
-//                let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-//                
-//                alertViewControler.addAction(cancelAction)
-//                present(alertViewControler, animated: true, completion: nil)
-//                
-//                
-//            }else{
-//                
-//                image_Select = true
-//                let CGPoint2 = tableView.contentOffset
-//                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-//                self.tableView.isUserInteractionEnabled = false
-//                
-//                let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-//                appDelegate.navicheck = true
-//                
-//                performSegue(withIdentifier:"post",sender:nil)
-//            }
+        if UserDefaults.standard.object(forKey: "userName") == nil{
+            let alertViewControler = UIAlertController(title: "掲示板の書き込みには プロフィール登録が必要です", message: "「ホーム」 ➡︎　「プロフィールを変更」よりプロフィール登録を行ってください",preferredStyle:.alert)
+            let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+            
+            alertViewControler.addAction(cancelAction)
+            present(alertViewControler, animated: true, completion: nil)
+            
+            
+        }else{
+            
+            image_Select = true
+            let CGPoint2 = tableView.contentOffset
+            self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+            self.tableView.isUserInteractionEnabled = false
+            
+            let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+            appDelegate.navicheck = true
+            
+            performSegue(withIdentifier:"post",sender:nil)
+        }
     
     }
     
@@ -512,9 +532,18 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let nextCommentViewController:NextCommentViewController = segue.destination as! NextCommentViewController
-        nextCommentViewController.postData = postData
-        nextCommentViewController.post_id = postData.id
+      if (segue.identifier == "post"){
+            let postViewController:PostViewController = segue.destination as! PostViewController
+            
+        
+                postViewController.postSelect = 10
+                postViewController.postData = postData
+                postViewController.post_id = postData.id
+        }
+        
+        //        let nextCommentViewController:NextCommentViewController = segue.destination as! NextCommentViewController
+//        nextCommentViewController.postData = postData
+//        nextCommentViewController.post_id = postData.id
         
     }
     override func didReceiveMemoryWarning() {

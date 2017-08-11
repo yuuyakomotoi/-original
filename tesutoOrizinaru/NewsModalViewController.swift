@@ -50,7 +50,10 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
         webView.delegate = self
         
         webView.scalesPageToFit = true //PCサイトもwebViewの大きさに収まるようになる
+        
         webView.contentMode = .scaleAspectFit //scalesPageToFit = trueとセットで画面に収まる
+        
+        webView.scrollView.bounces = false
         
         let url:URL = URL(string: str)!
         let urlRequest = NSURLRequest(url:url)
@@ -174,11 +177,12 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
     //グーグル新規登録
     }
     
-    
-    
+        
     
 
     
+    
+        
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

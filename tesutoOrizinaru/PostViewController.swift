@@ -28,6 +28,11 @@ class PostViewController: UIViewController,UIImagePickerControllerDelegate,UINav
     
     var textCheck = true
    
+    var postData:BBS_PostData1!
+    
+    var post_id = ""
+    
+    
     @IBOutlet var textCountLabel: UILabel!
     
     
@@ -158,6 +163,18 @@ class PostViewController: UIViewController,UIImagePickerControllerDelegate,UINav
                commentTextView.text = "【チーム名】\n【リーグ】\n【現在の人数】\n【募集人数】\n【募集内容】"
             }
           
+        }else if(postSelect == 10){
+            self.title = "コメントを投稿"
+            if  UserDefaults.standard.object(forKey: "textComment5") != nil{
+                textComment = UserDefaults.standard.object(forKey: "textComment10") as! String
+                commentTextView.text = textComment
+                for _ in commentTextView.text.characters{
+                    textCount -= 1
+                    textCountLabel.text = "\(textCount)"
+                }
+            }else{
+                commentTextView.text = ""
+            }
         }
         
         postStop()
@@ -190,6 +207,9 @@ class PostViewController: UIViewController,UIImagePickerControllerDelegate,UINav
         }else if(postSelect == 3){
         commentTextView.text = "【チーム名】\n【リーグ】\n【現在の人数】\n【募集人数】\n【募集内容】"
         UserDefaults.standard.set(commentTextView.text,forKey:"textComment4")
+        }else if(postSelect == 10){
+            commentTextView.text = ""
+            UserDefaults.standard.set(commentTextView.text,forKey:"textComment10")
         }
 
         
@@ -248,6 +268,8 @@ class PostViewController: UIViewController,UIImagePickerControllerDelegate,UINav
                     UserDefaults.standard.set(textComment,forKey:"textComment3")
                 }else if(postSelect == 3){
                     UserDefaults.standard.set(textComment,forKey:"textComment4")
+                }else if(postSelect == 10){
+                    UserDefaults.standard.set(textComment,forKey:"textComment10")
                 }
 
                 
@@ -280,6 +302,8 @@ class PostViewController: UIViewController,UIImagePickerControllerDelegate,UINav
                     UserDefaults.standard.set(textComment,forKey:"textComment3")
                 }else if(postSelect == 3){
             UserDefaults.standard.set(textComment,forKey:"textComment4")
+                }else if(postSelect == 10){
+                    UserDefaults.standard.set(textComment,forKey:"textComment10")
                 }
 
         
@@ -367,6 +391,12 @@ class PostViewController: UIViewController,UIImagePickerControllerDelegate,UINav
                 textComment = ""
             }
             UserDefaults.standard.set(textComment,forKey:"textComment4")
+        }else if(postSelect == 10){
+            result = (textComment?.pregReplace(pattern: "\\s", with: ""))!
+            if (result == ""){
+                textComment = ""
+            }
+            UserDefaults.standard.set(textComment,forKey:"textComment10")
         }
         
         postStop()
@@ -402,6 +432,9 @@ class PostViewController: UIViewController,UIImagePickerControllerDelegate,UINav
                 UserDefaults.standard.set(textComment,forKey:"textComment3")
             }else if(postSelect == 3){
                 UserDefaults.standard.set(textComment,forKey:"textComment4")
+            }else if(postSelect == 10){
+                    UserDefaults.standard.set(textComment,forKey:"textComment4")
+                
             
         }
         
@@ -517,7 +550,18 @@ func postAll(){
         let user:NSDictionary = ["userId":userId,"username":username,"comment":message,"date":dateString,"image":base64String,"profile_image":base64String2,"comment_id":"3","bbs_type":3]
         databaseRef.child(Const.PostPath1).childByAutoId().setValue(user)
     UserDefaults.standard.removeObject(forKey: "textComment4")
-    }
+    }else if(postSelect == 10){
+        let user:NSDictionary = ["userId":userId,"username":username,"comment":message,"date":dateString,"image":base64String,"profile_image":base64String2,"comment_id":post_id]
+        databaseRef.child(Const.PostPath1).childByAutoId().setValue(user)
+        let org_databaseRef = FIRDatabase.database().reference().child(Const.PostPath1).child(post_id)
+        let comment_num = postData.comment_num + 1
+        org_databaseRef.updateChildValues(["comment_num":comment_num])
+
+        UserDefaults.standard.removeObject(forKey: "textComment10")
+        
+        
+        
+        }
     
     
     self.navigationController?.popViewController(animated: true)
@@ -603,7 +647,7 @@ func postAll(){
             }
         
         }
-
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
