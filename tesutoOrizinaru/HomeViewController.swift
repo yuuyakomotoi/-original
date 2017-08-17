@@ -424,7 +424,20 @@ break
        
     }
     
+    // 画面の自動回転をさせない
+    override var shouldAutorotate: Bool {
+        
+        return false
+        
+    }
     
+    // 画面をPortraitに指定する
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        
+        return .portrait
+        
+    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         

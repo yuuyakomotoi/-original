@@ -36,7 +36,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     
     
-    
+    var rss:String?
     
     var totalBox = NSMutableArray()
     
@@ -81,7 +81,10 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     var items4:[BBS_PostData1] = []
     
     
-    var id:[BBS_PostData1] = []
+    var id1:[BBS_PostData1] = []
+    var id2:[BBS_PostData1] = []
+    var id3:[BBS_PostData1] = []
+    var id4:[BBS_PostData1] = []
     
     var config: URLSessionConfiguration?
     
@@ -159,7 +162,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
         
         
-        loadAllData()
+       
       
         
         
@@ -185,8 +188,14 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
     }
     
+    
+    
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        
+        
         
        //ここ
         //こkp
@@ -447,13 +456,23 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         do {
             data = try NSData(contentsOf: location, options: NSData.ReadingOptions.alwaysMapped)
             
-            let rss = String(data: data as Data, encoding: .utf8)!
+            if data == nil{
+                
+            }
+            
+             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+             self.rss = String(data: data as Data, encoding: .utf8)!
         
+            //ここ
+            
+            
             ///rss入れた
             //メソッド作る
             
-            convertRSS(rss:rss)
-        
+            
+            //ここ
+            self.convertRSS(rss:self.rss!)
+            }
         } catch {
             print(error)
         }
@@ -718,6 +737,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             if titleString != ""{
                 
                 print("title---------->\(titleString)")
+               
                 elements.setObject(titleString, forKey: "title" as NSCopying)
             
                 if (convery_count == 1){
@@ -1433,135 +1453,137 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     
     
-    func loadAllData(){
-        
-        
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        
-            let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "0")
-            firebase.queryLimited(toLast: 50).observe(.value) { (snapshot,error) in
-                
-                if self.auto_Reload_Check == true{
-                    
-                    return
-                }
-                
-                self.auto_Reload_Check = true
-                
-                
-                
-                for item in(snapshot.children){
-                    let child = item as! FIRDataSnapshot
-                    let postData = BBS_PostData1(snapshot: child, myId: "")
-                    
-                    let data = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: postData.id)
-                    data.observe(.value) { (snapshot,error) in
-                        
-                        for item in(snapshot.children){
-                            let child = item as! FIRDataSnapshot
-                            let postData = BBS_PostData1(snapshot: child, myId: "")
-                            self.id.append(postData)
-                    
-                            let appDelegate_id:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-                            appDelegate_id.id = self.id
-                        }
-                        
-                        
-                    }
-
-                    
-                    
-                    self.items.append(postData)
-                    }
-                
-                self.items.reverse()
-    
-}
-        
-        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-         appDelegate.items = self.items
-        
-        
-        let firebase2 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "1")
-        firebase2.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
-            
-            if self.auto_Reload_Check == true{
-                
-                return
-            }
-            
-            self.auto_Reload_Check = true
-            
-            
-            
-            for item in(snapshot.children){
-                let child = item as! FIRDataSnapshot
-                let postData = BBS_PostData1(snapshot: child, myId: "")
-                self.items2.append(postData)
-            }
-            
-            self.items2.reverse()
-            
-        }
-        
-        let appDelegate2:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate2.items2 = self.items2
-
-        
-        let firebase3 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "2")
-        firebase3.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
-            
-            if self.auto_Reload_Check == true{
-                
-                return
-            }
-            
-            self.auto_Reload_Check = true
-            
-            
-            
-            for item in(snapshot.children){
-                let child = item as! FIRDataSnapshot
-                let postData = BBS_PostData1(snapshot: child, myId: "")
-                self.items3.append(postData)
-            }
-            
-            self.items3.reverse()
-            
-        }
-        
-        let appDelegate3:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate3.items3 = self.items3
-
-        
-        let firebase4 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "3")
-        firebase4.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
-            
-            if self.auto_Reload_Check == true{
-                
-                return
-            }
-            
-            self.auto_Reload_Check = true
-            
-            
-            
-            for item in(snapshot.children){
-                let child = item as! FIRDataSnapshot
-                let postData = BBS_PostData1(snapshot: child, myId: "")
-                self.items4.append(postData)
-            }
-            
-            self.items4.reverse()
-            
-        }
-        
-        let appDelegate4:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate4.items4 = self.items4
-
-        
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-        }
+//    func loadAllData(){
+//        
+//        
+//        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+//        
+//            let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "0")
+//            firebase.queryLimited(toLast: 50).observe(.value) { (snapshot,error) in
+//                
+//                
+//                
+//                
+//                for item in(snapshot.children){
+//                    let child = item as! FIRDataSnapshot
+//                    let postData = BBS_PostData1(snapshot: child, myId: "")
+//                    
+//                    
+//                        self.items.append(postData)
+//                  
+//                    }
+//
+//                
+//                
+//                self.items.reverse()
+//                let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+//                appDelegate.items = self.items
+//}
+//        
+//        
+//        
+//        
+//        let firebase2 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "1")
+//        firebase2.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
+//            
+//            
+//            
+//            
+//            for item in(snapshot.children){
+//                let child = item as! FIRDataSnapshot
+//                let postData = BBS_PostData1(snapshot: child, myId: "")
+//                 self.items2.append(postData)
+//
+//                }
+//
+//            
+//            
+//            self.items2.reverse()
+//            let appDelegate2:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+//            appDelegate2.items2 = self.items2
+//        }
+//        
+//        
+//
+//        
+//        let firebase3 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "2")
+//        firebase3.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
+//            
+//            
+//            
+//            
+//            for item in(snapshot.children){
+//                let child = item as! FIRDataSnapshot
+//                let postData = BBS_PostData1(snapshot: child, myId: "")
+//                let data = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: postData.id)
+//                data.observe(.value) { (snapshot,error) in
+//                    
+//                    for item in(snapshot.children){
+//                        let child = item as! FIRDataSnapshot
+//                        let postData = BBS_PostData1(snapshot: child, myId: "")
+//                        self.id3.append(postData)
+//                        
+//                        let appDelegate_id:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+//                        appDelegate_id.id3 = self.id3
+//                    }
+//                     self.items3.append(postData)
+//                    
+//                }
+//
+//               
+//            }
+//            
+//            self.items3.reverse()
+//            let appDelegate3:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+//            appDelegate3.items3 = self.items3
+//        }
+//        
+//        
+//
+//        
+//        let firebase4 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "3")
+//        firebase4.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
+//            
+//            if self.auto_Reload_Check == true{
+//                
+//                return
+//            }
+//            
+//            self.auto_Reload_Check = true
+//            
+//            
+//            
+//            for item in(snapshot.children){
+//                let child = item as! FIRDataSnapshot
+//                let postData = BBS_PostData1(snapshot: child, myId: "")
+//                let data = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: postData.id)
+//                data.observe(.value) { (snapshot,error) in
+//                    
+//                    for item in(snapshot.children){
+//                        let child = item as! FIRDataSnapshot
+//                        let postData = BBS_PostData1(snapshot: child, myId: "")
+//                        self.id4.append(postData)
+//                        
+//                        let appDelegate_id:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+//                        appDelegate_id.id4 = self.id4
+//                    }
+//                    
+//                    self.items4.append(postData)
+//
+//                }
+//
+//                            }
+//            
+//            self.items4.reverse()
+//            let appDelegate4:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+//            appDelegate4.items4 = self.items4
+//        }
+//        
+//        
+//
+//        
+//                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+//        }
     
    
     
@@ -1652,7 +1674,7 @@ extension Date{
     }
 
 }
-
+//画面の縦横
 extension UINavigationController {
     open override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return visibleViewController?.supportedInterfaceOrientations ?? super.supportedInterfaceOrientations
@@ -1678,6 +1700,73 @@ extension UITabBarController {
         return super.shouldAutorotate
     }
 }
+
+extension Date {
+    func timeAgoSinceDate(numericDates:Bool) -> String {
+        let calendar = NSCalendar.current
+        let now = NSDate()
+        let earliest = now.earlierDate(self as Date)
+        let latest = (earliest == now as Date) ? self : now as Date
+        let components = calendar.dateComponents([.minute , .hour , .day , .weekOfYear , .month , .year , .second], from: earliest, to: latest as Date)
+        
+        if (components.year! >= 2) {
+            return "\(components.year!) 年前"
+        } else if (components.year! >= 1){
+            if (numericDates){
+                return "1 年前"
+            } else {
+                return "去年"
+            }
+        } else if (components.month! >= 2) {
+            return "\(components.month!) ヶ月前"
+        } else if (components.month! >= 1){
+            if (numericDates){
+                return "1 ヶ月前"
+            } else {
+                return "先月"
+            }
+        } else if (components.weekOfYear! >= 2) {
+            return "\(components.weekOfYear!) 週間前"
+        } else if (components.weekOfYear! >= 1){
+            if (numericDates){
+                return "1 週間前"
+            } else {
+                return "先週"
+            }
+        } else if (components.day! >= 2) {
+            return "\(components.day!) 日前"
+        } else if (components.day! >= 1){
+            if (numericDates){
+                return "1 日前"
+            } else {
+                return "昨日"
+            }
+        } else if (components.hour! >= 2) {
+            return "\(components.hour!) 時間前"
+        } else if (components.hour! >= 1){
+            if (numericDates){
+                return "1 時間前"
+            } else {
+                return "1 時間前"
+            }
+        } else if (components.minute! >= 2) {
+            return "\(components.minute!) 分前"
+        } else if (components.minute! >= 1){
+            if (numericDates){
+                return "1 分前"
+            } else {
+                return "1 分前"
+            }
+        } else if (components.second! >= 3) {
+            return "\(components.second!) 秒前"
+        } else {
+            return "ついさっき"
+        }
+        
+    }
+    
+}
+
 //var alphabet = "title=ABCDE&body=FGHIJ"
 //
 //if alphabet.pregMatche(pattern: "ABCDE") {

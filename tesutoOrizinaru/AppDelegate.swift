@@ -19,7 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var items3:[BBS_PostData1] = []
     var items4:[BBS_PostData1] = []
     
-    var id:[BBS_PostData1] = []
+    var id1:[BBS_PostData1] = []
+    var id2:[BBS_PostData1] = []
+    var id3:[BBS_PostData1] = []
+    var id4:[BBS_PostData1] = []
+
+    
     
     var post_Check = false
     
@@ -47,18 +52,69 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    
     }
-
+    
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+   
+    
+    
+    
+    
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+   loadAllData()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+   
+    }
+var count = 0
+    func loadAllData(){
+        
+        
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        
+        let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "0")
+        firebase.queryLimited(toLast: 50).observe(.value) { (snapshot,error) in
+            
+                    }
+        
+        
+        
+        
+        let firebase2 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "1")
+        
+        firebase2.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
+           
+        }
+        
+        
+        
+        
+        let firebase3 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "2")
+        firebase3.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
+            
+        }
+        
+        
+        
+        
+        let firebase4 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "3")
+        firebase4.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
+            
+            
+        }
+        
+        
+        
+        
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
     }
 
 

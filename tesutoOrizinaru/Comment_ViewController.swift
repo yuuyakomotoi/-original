@@ -32,6 +32,15 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     var timerCount = 0
     
+    var auto_Reload_Check = false
+    
+    var check_Count = 0
+    var check_Count2 = 0
+    var totalCount = 0
+    
+    var post_Check = false
+
+    let refreshControl = UIRefreshControl()
     
     @IBOutlet var tableView: UITableView!
     
@@ -64,11 +73,68 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
         self.tableView.estimatedRowHeight = 298
         self.tableView.rowHeight = UITableViewAutomaticDimension
         
-            }
+        
+//        refreshControl.attributedTitle = NSAttributedString(string: "引っ張って更新")
+//        refreshControl.addTarget(self, action:#selector(refresh), for:UIControlEvents.valueChanged)
+//        tableView.addSubview(refreshControl)
+        
+        
+    }
 
+    
+    func refresh(){
+        
+        auto_Reload_Check = false
+        
+               if (check == false){
+                        
+                reloadButton.isEnabled = false
+                
+                check = true
+                loadAllData()
+                
+                tableView.reloadData()
+                refreshControl.endRefreshing()
+                SVProgressHUD.dismiss()
+               }else{
+                refreshControl.endRefreshing()
+        }
+            
+    }
+
+    
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     
+        
+        if (image_Select == true){
+            SVProgressHUD.dismiss()
+        }
+        
+        
+        
+        
+        
+        
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+        self.post_Check = appDelegate.post_Check
+        
+        
+        if self.post_Check == true{
+            tableView.contentOffset.y = (self.tableView.contentInset.top )
+            post_Check = false
+            
+            let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+            appDelegate.post_Check = self.post_Check
+        }else{
+            let table_point = tableView.contentOffset
+            self.tableView.setContentOffset(CGPoint(x: table_point.x, y: table_point.y ), animated: false)
+            
+        }
+
+        auto_Reload_Check = false
+        
         if UserDefaults.standard.object(forKey: "profileImage") != nil{
             
             //エンコードして取り出す
@@ -107,7 +173,23 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        loadAllData()
+        if (image_Select == true){
+            image_Select = false
+            SVProgressHUD.dismiss()
+            self.tableView.isUserInteractionEnabled = true
+            
+        }
+        else{
+            
+            //tableView.contentOffset.y = (self.tableView.contentInset.top )
+            let table_point = tableView.contentOffset
+            self.tableView.setContentOffset(CGPoint(x: table_point.x, y: table_point.y ), animated: false)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                
+                self.loadAllData()
+                
+            }
+        }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -267,11 +349,49 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     func loadAllData(){ // 雑談掲示板
         
-        self.commentArray = []
+        
+        
+        
         SVProgressHUD.show()
-        self.tableView.isUserInteractionEnabled = false //タッチ無効
+        
+            self.tableView.isUserInteractionEnabled = false
+            self.comment_BlurView.isHidden = false
+            //タッチ無効
+            
+        
         let data = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: postData.id)
-        data.observe(.value) { (snapshot,error) in
+        data.queryLimited(toLast:(100)).observe(.value) { (snapshot,error) in
+            
+            if self.auto_Reload_Check == true{
+                    SVProgressHUD.dismiss()
+                self.tableView.isUserInteractionEnabled = true
+                    self.comment_BlurView.isHidden = true
+                self.refreshControl.endRefreshing()
+                return
+                    }
+            
+                    self.auto_Reload_Check = true
+            
+            
+            self.commentArray = [BBS_PostData1]()
+            
+//            if self.segmentCount != 0{
+                //    SVProgressHUD.dismiss()
+                //    //                    self.segmentButton.isEnabled = true
+                //    self.tableView.isUserInteractionEnabled = true
+                //    self.comment_BlurView.isHidden = true
+                //
+                //    return
+                //    }
+                //    
+                //    self.items = [BBS_PostData1]()
+
+            
+            
+            
+            
+            
+        
             for item in(snapshot.children){
                 let child = item as! FIRDataSnapshot
                 let postData = BBS_PostData1(snapshot: child, myId: "")
@@ -279,40 +399,71 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
                 
                 var ng_flg = false
                 
-                for user in self.ng_UserArayy{
+                for user in self.ng_UserArayy {
                     print("check --> \(user)")
                     print("c --> \(self.ng_UserArayy)")
-                    if (postData.userId == user){
+                    if ( postData.userId == user ) {
                         ng_flg = true
+                        self.check_Count += 1
+                        self.totalCount += 1
                         print("      --> NG \(ng_flg)")
-                    }else{
+                    }
+                    else {
+                        self.check_Count += 1
+                        self.totalCount += 1
                         print("      --> OK \(ng_flg)")
                     }
                 }
                 
-                if (ng_flg == false){
-                    
+                if ( !ng_flg ) {  //次回質問
                     self.commentArray.append(postData)
                 }
             }
             
-            self.tableView.reloadData() //reloadData()1回
+                if self.check_Count + self.check_Count2 != self.totalCount{
             
-            if self.timerCount == 1{
-                self.timer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
+                    
+                self.auto_Reload_Check = false
+                if (self.check == false){
+                self.check = true
+                self.check_Count = 0
+                self.check_Count2 = 0
+                self.totalCount = 0
+//                self.refreshControl.endRefreshing()
+                    self.loadAllData()
                 
-            }
-            else{
-                self.tableView.isUserInteractionEnabled = true
-                SVProgressHUD.dismiss()
-                self.timerCount = 1
+                print("リターン------")
+                return
                 
-            }
+                }
+                }
+
+            
+            
+            
+            
+            self.tableView.reloadData()
+            
+            self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
-        
-        
     }
+
+
     
+//
+//
+//    self.items.reverse()
+//    let CGPoint2 = self.tableView.contentOffset
+//    
+//    self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+//    self.tableView.reloadData()
+//    
+//    print(self.count)
+//    self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
+//    UIApplication.shared.isNetworkActivityIndicatorVisible = false
+//    }
+
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         // Auto Layoutを使ってセルの高さを動的に変更する
@@ -326,24 +477,24 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
 //        reloadButton.isEnabled = false
 //        reloadButton.alpha = 0.3
 //    }
-//    
+//
 //    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        
+//
 //        reloadButton.isEnabled = false
 //        reloadButton.alpha = 0.3
 //        print("スクロール中")
-//        
+//
 //        //最下部にスクロールしても、print("スクロール中")が表示されるため⇩
-//        
+//
 //        if tableView.contentOffset.y == (self.tableView.contentSize.height - self.tableView.frame.size.height ) || tableView.contentOffset.y == (self.tableView.contentInset.top ) {
 //            print("スクロール解除")
 //            reloadButton.isEnabled = true
 //            reloadButton.alpha = 1.0
-//            
+//
 //        }
 //    }
-//    
-//    
+//
+//
 //    func scrollViewDidEndDragging(_ scrollView: UIScrollView,willDecelerate decelerate: Bool){
 //        print("スクロールで指が離れたところ")
 //        reloadButton.isEnabled = true
@@ -352,29 +503,62 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     
     func time(){
-        //top == 実機で右のスクロールが動いてない時
-        if tableView.contentOffset.y != (self.tableView.contentInset.top ){
-            self.tableView.setContentOffset(CGPoint(x: 0, y: self.tableView.contentSize.height - self.tableView.frame.size.height ), animated: false)
-        }
-        SVProgressHUD.dismiss()
-        self.timer.invalidate()
-        check = false
-        self.tableView.isUserInteractionEnabled = true
-        
-        if (reloadButton.isEnabled == false){
+     
+        if self.check_Count + self.check_Count2 != self.totalCount{
             
-            reloadButton.isEnabled = true
-        }
-    }
+            
+            
+                            self.auto_Reload_Check = false
+                            if (self.check == false){
+                                self.check = true
+                                self.check_Count = 0
+                                self.check_Count2 = 0
+                                self.totalCount = 0
+             self.refreshControl.endRefreshing()
+                                self.loadAllData()
+                                
+                                print("リターン------")
+                                return
+                                
+                            }
+                        }
+
+                tableView.allowsSelection = true
+                self.view.isUserInteractionEnabled = true
+                self.comment_BlurView.isHidden = true
+        
+        
+                SVProgressHUD.dismiss()
+                self.timer.invalidate()
+                check = false
+                self.tableView.isUserInteractionEnabled = true
+                if (reloadButton.isEnabled == false){
+        
+                    reloadButton.isEnabled = true
+                    reloadButton.alpha = 1.0
+                }
+        
+        
+        
+        
+                print("bbbbbbbbbbbbb")
+        let CGPoint2 = self.tableView.contentOffset
+        self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+        self.tableView.contentOffset.y = (self.tableView.contentSize.height - self.tableView.frame.size.height )
+
+//         self.refreshControl.endRefreshing()
+               self.tableView.reloadData()
+        
+        
+           }
+    
+
+
+
+
     
     
     
-    
-    
-    
-    @IBAction func back(_ sender: AnyObject) {
-        dismiss(animated: true, completion: nil)
-    }
     
     @IBAction func contributionButton(_ sender: Any) {
         
@@ -391,6 +575,15 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
             
         }else{
             
+            if (commentArray.count > 99){
+                let alertViewControler = UIAlertController(title: "コメント数が限界に到達しました", message: "新しいスレッドを立ててください",preferredStyle:.alert)
+                let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                
+                alertViewControler.addAction(cancelAction)
+                present(alertViewControler, animated: true, completion: nil)
+            
+            }else{
+            
             image_Select = true
             let CGPoint2 = tableView.contentOffset
             self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
@@ -401,27 +594,24 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
             
             performSegue(withIdentifier:"post",sender:nil)
         }
-    
+       
+        }
     }
     
     @IBAction func reloadButton(_ sender: Any) {
         
-        reloadButton.isEnabled = false
-        if (check == false){
-            check = true
-            loadAllData()
-            
-            //いらない
-            //            self.timer2 = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(self.time2), userInfo: nil, repeats: false)
-            //            self.timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
+        auto_Reload_Check = false
+        
+            reloadButton.isEnabled = false
+            if (check == false){
+                check = true
+                let CGPoint2 = self.tableView.contentOffset
+                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+              self.tableView.contentOffset.y = (self.tableView.contentSize.height - self.tableView.frame.size.height )
+                loadAllData()
+                
         }
         
-        //
-        //        self.tableView.contentOffset = CGPointMake(0, -self.tableView.contentInset.top) //上
-        
-        //        self.tableView.setContentOffset(
-        //            CGPointMake(0, self.tableView.contentSize.height - self.tableView.frame.size.height),
-        //            animated: false)　　//下
         
     }
     
@@ -430,6 +620,7 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
         let cellImageViewController = self.storyboard?.instantiateViewController(withIdentifier: "nextimg") as! CellImageViewController
         //投稿画像
         cellImageViewController.img.image = postData.image
+        image_Select = true
         present(cellImageViewController, animated: true, completion: nil)
     }
     
@@ -438,6 +629,7 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
         let cellImageViewController = self.storyboard?.instantiateViewController(withIdentifier: "nextimg") as! CellImageViewController
         //投稿画像
         cellImageViewController.img.image = postData.profile_image
+        image_Select = true
         present(cellImageViewController, animated: true, completion: nil)
     }
     
@@ -451,6 +643,7 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
         let dict = commentArray[(indexPath! as NSIndexPath).row]
         //投稿画像
         cellImageViewController.img.image = dict.image
+       image_Select = true
         present(cellImageViewController, animated: true, completion: nil)
     }
     
@@ -463,6 +656,7 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
         let dict = commentArray[(indexPath! as NSIndexPath).row]
         //投稿画像
         cellImageViewController.img.image = dict.profile_image
+        image_Select = true
         present(cellImageViewController, animated: true, completion: nil)
         
     }
@@ -546,6 +740,21 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
 //        nextCommentViewController.post_id = postData.id
         
     }
+    // 画面の自動回転をさせない
+    override var shouldAutorotate: Bool {
+        
+        return false
+        
+    }
+    
+    // 画面をPortraitに指定する
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        
+        return .portrait
+        
+    }
+
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }

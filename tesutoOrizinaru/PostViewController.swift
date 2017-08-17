@@ -112,11 +112,10 @@ class PostViewController: UIViewController,UIImagePickerControllerDelegate,UINav
             if  UserDefaults.standard.object(forKey: "textComment1") != nil{
                 textComment = UserDefaults.standard.object(forKey: "textComment1") as! String
                 commentTextView.text = textComment
-                for _ in commentTextView.text.characters{
-                    textCount -= 1
-                    textCountLabel.text = "\(textCount)"
-                }
                 
+                textCount = 255
+                textCountLabel.text = "\( (textCount) - (textComment.count))"
+                textCount = textCount - (textComment.count)
                 
             
             }else{
@@ -128,10 +127,9 @@ class PostViewController: UIViewController,UIImagePickerControllerDelegate,UINav
             if  UserDefaults.standard.object(forKey: "textComment2") != nil{
                 textComment = UserDefaults.standard.object(forKey: "textComment2") as! String
                 commentTextView.text = textComment
-                for _ in commentTextView.text.characters{
-                    textCount -= 1
-                    textCountLabel.text = "\(textCount)"
-                }
+                textCount = 255
+                textCountLabel.text = "\( (textCount) - (textComment.count))"
+                textCount = textCount - (textComment.count)
            
             }else{
                 commentTextView.text = "【部屋番号】"
@@ -142,10 +140,9 @@ class PostViewController: UIViewController,UIImagePickerControllerDelegate,UINav
             if  UserDefaults.standard.object(forKey: "textComment3") != nil{
                 textComment = UserDefaults.standard.object(forKey: "textComment3") as! String
                 commentTextView.text = textComment
-                for _ in commentTextView.text.characters{
-                    textCount -= 1
-                    textCountLabel.text = "\(textCount)"
-                }
+                textCount = 255
+                textCountLabel.text = "\( (textCount) - (textComment.count))"
+                textCount = textCount - (textComment.count)
             }else{
                 commentTextView.text = "【フレンドID】"
             }
@@ -155,23 +152,21 @@ class PostViewController: UIViewController,UIImagePickerControllerDelegate,UINav
             if  UserDefaults.standard.object(forKey: "textComment4") != nil{
                 textComment = UserDefaults.standard.object(forKey: "textComment4") as! String
                 commentTextView.text = textComment
-                for _ in commentTextView.text.characters{
-                    textCount -= 1
-                    textCountLabel.text = "\(textCount)"
-                }
+                textCount = 255
+                textCountLabel.text = "\( (textCount) - (textComment.count))"
+                textCount = textCount - (textComment.count)
             }else{
                commentTextView.text = "【チーム名】\n【リーグ】\n【現在の人数】\n【募集人数】\n【募集内容】"
             }
           
         }else if(postSelect == 10){
             self.title = "コメントを投稿"
-            if  UserDefaults.standard.object(forKey: "textComment5") != nil{
+            if  UserDefaults.standard.object(forKey: "textComment10") != nil{
                 textComment = UserDefaults.standard.object(forKey: "textComment10") as! String
                 commentTextView.text = textComment
-                for _ in commentTextView.text.characters{
-                    textCount -= 1
-                    textCountLabel.text = "\(textCount)"
-                }
+                textCount = 255
+                textCountLabel.text = "\( (textCount) - (textComment.count))"
+                textCount = textCount - (textComment.count)
             }else{
                 commentTextView.text = ""
             }
@@ -379,24 +374,36 @@ class PostViewController: UIViewController,UIImagePickerControllerDelegate,UINav
                 textComment = ""
             }
             UserDefaults.standard.set(textComment,forKey:"textComment2")
+            textCount = 255
+            textCountLabel.text = "\( (textCount) - (textComment?.count)!)"
+            textCount = textCount - (textComment?.count)!
         }else if(postSelect == 2){
             result = (textComment?.pregReplace(pattern: "\\s", with: ""))!
             if (result == ""){
                 textComment = ""
             }
             UserDefaults.standard.set(textComment,forKey:"textComment3")
+            textCount = 255
+            textCountLabel.text = "\( (textCount) - (textComment?.count)!)"
+            textCount = textCount - (textComment?.count)!
         }else if(postSelect == 3){
             result = (textComment?.pregReplace(pattern: "\\s", with: ""))!
             if (result == ""){
                 textComment = ""
             }
             UserDefaults.standard.set(textComment,forKey:"textComment4")
+            textCount = 255
+            textCountLabel.text = "\( (textCount) - (textComment?.count)!)"
+            textCount = textCount - (textComment?.count)!
         }else if(postSelect == 10){
             result = (textComment?.pregReplace(pattern: "\\s", with: ""))!
             if (result == ""){
                 textComment = ""
             }
             UserDefaults.standard.set(textComment,forKey:"textComment10")
+            textCount = 255
+            textCountLabel.text = "\( (textCount) - (textComment?.count)!)"
+            textCount = textCount - (textComment?.count)!
         }
         
         postStop()
@@ -433,7 +440,7 @@ class PostViewController: UIViewController,UIImagePickerControllerDelegate,UINav
             }else if(postSelect == 3){
                 UserDefaults.standard.set(textComment,forKey:"textComment4")
             }else if(postSelect == 10){
-                    UserDefaults.standard.set(textComment,forKey:"textComment4")
+                    UserDefaults.standard.set(textComment,forKey:"textComment10")
                 
             
         }
@@ -519,6 +526,15 @@ func postAll(){
     formatter.dateFormat = "MM-dd HH:mm"
     
     let dateString:String = formatter.string(from:date  as Date)
+    
+    
+//    let date1 = Date()
+//    
+//    let formatter = DateFormatter()
+//    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+//    
+//    let dateString:String = formatter.string(from:date1  as Date)
+
     
     //投稿画像
     var data:NSData = NSData()
@@ -648,7 +664,20 @@ func postAll(){
         
         }
     
+    // 画面の自動回転をさせない
+    override var shouldAutorotate: Bool {
+        
+        return false
+        
+    }
     
+    // 画面をPortraitに指定する
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        
+        return .portrait
+        
+    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         

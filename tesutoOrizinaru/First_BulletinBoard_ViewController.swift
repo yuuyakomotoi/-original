@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 class First_BulletinBoard_ViewController: UIViewController {
 
@@ -19,6 +20,8 @@ class First_BulletinBoard_ViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        SVProgressHUD.dismiss()
+        
         let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
         if(appDelegate.navicheck2 == true){
             self.tabBarController?.tabBar.isHidden = false
@@ -74,6 +77,23 @@ class First_BulletinBoard_ViewController: UIViewController {
         
         performSegue(withIdentifier:"next_Bulletin_Board",sender:nil)
     }
+    
+    
+    // 画面の自動回転をさせない
+    override var shouldAutorotate: Bool {
+        
+        return false
+        
+    }
+    
+    // 画面をPortraitに指定する
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        
+        return .portrait
+        
+    }
+
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

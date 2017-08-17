@@ -24,7 +24,8 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     
     
     var items = [BBS_PostData1]()
-    var id = [BBS_PostData1]()
+    
+    
     
 
     var bulletinBoard_Image_Button = UIBarButtonItem()
@@ -40,7 +41,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     
     var check:Bool = false
     
-    
+    var refreshCheck = false
     
     var next_100_check = false
     
@@ -81,6 +82,12 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
     
+       
+        
+        
+        
+
+        
             
         bulletinBoard_Image_Button = UIBarButtonItem(title: "背景", style: UIBarButtonItemStyle.plain, target: self, action:#selector(change_BulletinBoard_Image))
         
@@ -88,19 +95,9 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         self.navigationItem.rightBarButtonItem = bulletinBoard_Image_Button
         
         
-        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-        self.items = appDelegate.items
-        self.items = appDelegate.items2
-        self.items = appDelegate.items3
-        self.items = appDelegate.items4
-        self.id = appDelegate.id
         
         
-        
-        
-        
-        
-        
+
         
         print("items----------------\(items)")
         
@@ -134,8 +131,11 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     
     
     
+    
+    
     func refresh(){
         
+        refreshCheck = true
         auto_Reload_Check = false
         
         switch segmentCount {
@@ -208,6 +208,10 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        
+        
+        
         
 //        let appDelegate2:AppDelegate = UIApplication.shared.delegate as! AppDelegate
 //        if appDelegate2.navicheck == true{
@@ -419,9 +423,13 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             formatter.dateFormat = "MM-dd HH:mm"
             
             if ( dict.date != nil ) {
+                
+                
                 let dateString:String = dict.date!
                 cell.time.text = dateString
-            }
+            
+        
+        }
             
             //コメント(本文)
             cell.commentLabel.text = dict.comment
@@ -655,7 +663,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
 //                    self.segmentButton.isEnabled = true
                     self.tableView.isUserInteractionEnabled = true
                     self.comment_BlurView.isHidden = true
-                    
+                     self.refreshControl.endRefreshing()
                     return
                 }
                 
@@ -668,7 +676,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
 //                    self.segmentButton.isEnabled = true
                     self.tableView.isUserInteractionEnabled = true
                     self.comment_BlurView.isHidden = true
-                    
+                     self.refreshControl.endRefreshing()
                     return
                 }
                 
@@ -692,7 +700,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                             print("      --> NG \(ng_flg)")
                         }
                         else {
-                            self.check_Count += 1
+                            self.check_Count2 += 1
                             self.totalCount += 1
                             print("      --> OK \(ng_flg)")
                         }
@@ -704,7 +712,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 }
                 
                 
-                if self.items.count < 26 && self.count == 50{
+                if self.check_Count > 26 && self.count == 50{
                     
                         self.count = 100
                     
@@ -714,6 +722,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         self.check_Count = 0
                         self.check_Count2 = 0
                         self.totalCount = 0
+                         self.refreshControl.endRefreshing()
                         self.loadAllData(segmentCount:segmentCount)
                         
                         return
@@ -740,6 +749,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                             self.check_Count = 0
                             self.check_Count2 = 0
                             self.totalCount = 0
+                             self.refreshControl.endRefreshing()
                             self.loadAllData(segmentCount:segmentCount)
                             
                             print("リターン------")
@@ -750,11 +760,17 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 
                 
                 self.items.reverse()
-                let CGPoint2 = self.tableView.contentOffset
+//                let CGPoint2 = self.tableView.contentOffset
+//                
+//                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+//               
+//                if (self.refreshCheck == false){
+//                self.tableView.contentOffset.y = (self.tableView.contentInset.top )
+//                }
+//                self.tableView.reloadData()
                 
-                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-                self.tableView.reloadData()
                 
+                //タイマー広告
                 print(self.count)
                 self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
@@ -775,7 +791,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
 //                    self.segmentButton.isEnabled = true
                     self.tableView.isUserInteractionEnabled = true
                     self.comment_BlurView.isHidden = true
-                    
+                     self.refreshControl.endRefreshing()
                     return
                 }
                 
@@ -788,7 +804,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
 //                    self.segmentButton.isEnabled = true
                     self.tableView.isUserInteractionEnabled = true
                     self.comment_BlurView.isHidden = true
-                    
+                     self.refreshControl.endRefreshing()
                     return
                 }
                 
@@ -806,9 +822,12 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         if ( postData.userId == user ) {
                             ng_flg = true
                             self.check_Count += 1
+                            self.totalCount += 1
                             print("      --> NG \(ng_flg)")
                         }
                         else {
+                            self.check_Count2 += 1
+                            self.totalCount += 1
                             print("      --> OK \(ng_flg)")
                         }
                     }
@@ -819,7 +838,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 }
                 
                 
-                if self.items.count < 26 && self.count2 == 50{
+                if self.check_Count > 26 && self.count2 == 50{
                     
                     self.count2 = 100
                     
@@ -829,6 +848,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         self.check_Count = 0
                         self.check_Count2 = 0
                         self.totalCount = 0
+                         self.refreshControl.endRefreshing()
                         self.loadAllData(segmentCount:segmentCount)
                         
                         return
@@ -855,6 +875,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         self.check_Count = 0
                         self.check_Count2 = 0
                         self.totalCount = 0
+                         self.refreshControl.endRefreshing()
                         self.loadAllData(segmentCount:segmentCount)
                         
                         print("リターン------")
@@ -864,10 +885,14 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 }
                 
                 self.items.reverse()
-                let CGPoint2 = self.tableView.contentOffset
+//                let CGPoint2 = self.tableView.contentOffset
+//                
+//                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+//                if (self.refreshCheck == false){
+//                    self.tableView.contentOffset.y = (self.tableView.contentInset.top )
+//                }
+//                self.tableView.reloadData()
                 
-                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-                self.tableView.reloadData()
                 
                 print(self.count2)
                 self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
@@ -888,7 +913,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
 //                    self.segmentButton.isEnabled = true
                     self.tableView.isUserInteractionEnabled = true
                     self.comment_BlurView.isHidden = true
-                    
+                     self.refreshControl.endRefreshing()
                     return
                 }
                 
@@ -901,7 +926,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
 //                    self.segmentButton.isEnabled = true
                     self.tableView.isUserInteractionEnabled = true
                     self.comment_BlurView.isHidden = true
-                    
+                     self.refreshControl.endRefreshing()
                     return
                 }
                 
@@ -919,9 +944,12 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         if ( postData.userId == user ) {
                             ng_flg = true
                             self.check_Count += 1
+                            self.totalCount += 1
                             print("      --> NG \(ng_flg)")
                         }
                         else {
+                            self.check_Count2 += 1
+                            self.totalCount += 1
                             print("      --> OK \(ng_flg)")
                         }
                     }
@@ -932,7 +960,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 }
                 
                 
-                if self.items.count < 26 && self.count3 == 50{
+                if self.check_Count > 26 && self.count3 == 50{
                     
                     self.count3 = 100
                     
@@ -942,6 +970,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         self.check_Count = 0
                         self.check_Count2 = 0
                         self.totalCount = 0
+                         self.refreshControl.endRefreshing()
                         self.loadAllData(segmentCount:segmentCount)
                         
                         return
@@ -968,6 +997,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         self.check_Count = 0
                         self.check_Count2 = 0
                         self.totalCount = 0
+                         self.refreshControl.endRefreshing()
                         self.loadAllData(segmentCount:segmentCount)
                         
                         print("リターン------")
@@ -977,10 +1007,13 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 }
                 
                 self.items.reverse()
-                let CGPoint2 = self.tableView.contentOffset
-                
-                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-                self.tableView.reloadData()
+//                let CGPoint2 = self.tableView.contentOffset
+//                
+//                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+//                if (self.refreshCheck == false){
+//                    self.tableView.contentOffset.y = (self.tableView.contentInset.top )
+//                }
+//                self.tableView.reloadData()
                 
                 print(self.count3)
                 self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
@@ -1001,7 +1034,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
 //                    self.segmentButton.isEnabled = true
                     self.tableView.isUserInteractionEnabled = true
                     self.comment_BlurView.isHidden = true
-                    
+                     self.refreshControl.endRefreshing()
                     return
                 }
                 
@@ -1014,7 +1047,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
 //                    self.segmentButton.isEnabled = true
                     self.tableView.isUserInteractionEnabled = true
                     self.comment_BlurView.isHidden = true
-                    
+                     self.refreshControl.endRefreshing()
                     return
                 }
                 
@@ -1033,9 +1066,12 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         if ( postData.userId == user ) {
                             ng_flg = true
                             self.check_Count += 1
+                            self.totalCount += 1
                             print("      --> NG \(ng_flg)")
                         }
                         else {
+                            self.check_Count2 += 1
+                            self.totalCount += 1
                             print("      --> OK \(ng_flg)")
                         }
                     }
@@ -1046,7 +1082,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 }
                 
                 
-                if self.items.count < 26 && self.count4 == 50{
+                if self.check_Count > 26 && self.count4 == 50{
                     
                     self.count4 = 100
                     
@@ -1056,6 +1092,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         self.check_Count = 0
                         self.check_Count2 = 0
                         self.totalCount = 0
+                         self.refreshControl.endRefreshing()
                         self.loadAllData(segmentCount:segmentCount)
                         
                         return
@@ -1082,6 +1119,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         self.check_Count = 0
                         self.check_Count2 = 0
                         self.totalCount = 0
+                        self.refreshControl.endRefreshing()
                         self.loadAllData(segmentCount:segmentCount)
                         
                         print("リターン------")
@@ -1092,13 +1130,16 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 
                 
                 self.items.reverse()
-                let CGPoint2 = self.tableView.contentOffset
-                
-                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-                self.tableView.reloadData()
+//                let CGPoint2 = self.tableView.contentOffset
+//                
+//                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+//                if (self.refreshCheck == false){
+//                    self.tableView.contentOffset.y = (self.tableView.contentInset.top )
+//                }
+//                self.tableView.reloadData()
                 
                 print(self.count4)
-                self.timer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
+                self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
             }
         }
@@ -1215,7 +1256,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 self.check_Count = 0
                 self.check_Count2 = 0
                 self.totalCount = 0
-                
+                 self.refreshControl.endRefreshing()
                 self.loadAllData(segmentCount:segmentCount)
                 
                 print("リターン------")
@@ -1241,7 +1282,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     self.check_Count = 0
                     self.check_Count2 = 0
                     self.totalCount = 0
-                    
+                     self.refreshControl.endRefreshing()
                     self.loadAllData(segmentCount:segmentCount)
                     
                     print("リターン------")
@@ -1268,7 +1309,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     self.check_Count = 0
                     self.check_Count2 = 0
                     self.totalCount = 0
-                    
+                    self.refreshControl.endRefreshing()
                     self.loadAllData(segmentCount:segmentCount)
                     
                     print("リターン------")
@@ -1323,9 +1364,18 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         
         
         print("bbbbbbbbbbbbb")
+        print(auto_Reload_Check)
+        print(check)
+        refreshControl.endRefreshing()
         let CGPoint2 = tableView.contentOffset
         self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-   tableView.reloadData()
+        
+        if (self.refreshCheck == false){
+            self.tableView.contentOffset.y = (self.tableView.contentInset.top )
+        refreshCheck = true
+        }
+        
+        tableView.reloadData()
     }
     
     
@@ -1432,9 +1482,12 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             reloadButton.isEnabled = false
             if (check == false){
                 check = true
+                
+                //ポイントを求めてからトップへ
                 let CGPoint2 = self.tableView.contentOffset
                 
                 self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+                tableView.contentOffset.y = (self.tableView.contentInset.top )
                 loadAllData(segmentCount:0)
                 
 //                tableView.reloadData()
@@ -1453,6 +1506,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 let CGPoint2 = self.tableView.contentOffset
                 
                 self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+               tableView.contentOffset.y = (self.tableView.contentInset.top )
                 loadAllData(segmentCount:1)
 //                  tableView.reloadData()
                
@@ -1471,6 +1525,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 let CGPoint2 = self.tableView.contentOffset
                 
                 self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+                tableView.contentOffset.y = (self.tableView.contentInset.top )
                 loadAllData(segmentCount:2)
 //                tableView.reloadData()
 //                
@@ -1488,6 +1543,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 let CGPoint2 = self.tableView.contentOffset
                 
                 self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+               tableView.contentOffset.y = (self.tableView.contentInset.top )
                 loadAllData(segmentCount:3)
                
 //            tableView.reloadData()
@@ -1766,7 +1822,20 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     
     
     
+    // 画面の自動回転をさせない
+    override var shouldAutorotate: Bool {
+        
+        return false
+        
+    }
     
+    // 画面をPortraitに指定する
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        
+        return .portrait
+        
+    }
+
     
     
     

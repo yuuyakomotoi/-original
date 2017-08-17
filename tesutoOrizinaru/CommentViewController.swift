@@ -54,15 +54,12 @@ class CommentViewController: UIViewController,UITableViewDelegate,UITableViewDat
     
     var commentArray:[BBS_PostData1] = []
    
-var id:[BBS_PostData1] = []
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
        
-        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-        
-        self.id = appDelegate.id
         
         tableView.delegate = self
         tableView.dataSource = self

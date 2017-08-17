@@ -24,9 +24,21 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
     
     @IBOutlet var webView: UIWebView!
     
+    //もし画面が横方向なら
+    func isLandscape() -> Bool {
+        return UIInterfaceOrientationIsLandscape(UIApplication.shared.statusBarOrientation)
+    }
+    //もし画面が縦方向なら
+    func isPortrait() -> Bool {
+        return UIInterfaceOrientationIsPortrait(UIApplication.shared.statusBarOrientation)
+    }
     
-    
-    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+//閉じるときに呼ばれるメソッド
+        
+    }
     
     
     override func viewDidLoad() {
@@ -69,7 +81,9 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        
+        if (check == false){
+            SVProgressHUD.show()
+        }
         
         if (self.webView.canGoBack) {
             go_Back.isEnabled = true
@@ -105,9 +119,7 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
     
     
     func webViewDidStartLoad(_ webView: UIWebView) {
-        if (check == false){
-        SVProgressHUD.show()
-        }
+        
     }
     
     func webViewDidFinishLoad(_ webView: UIWebView) {
@@ -167,6 +179,11 @@ class NewsModalViewController: UIViewController,UIWebViewDelegate {
     
     
     func back(){
+        //閉じるときに縦にする
+        if (isLandscape()){
+            let value = UIInterfaceOrientation.portrait.rawValue
+            UIDevice.current.setValue(value, forKey: "orientation")
+        }
         
         if app_News_Check == false{
         self.tabBarController?.tabBar.isHidden = false
