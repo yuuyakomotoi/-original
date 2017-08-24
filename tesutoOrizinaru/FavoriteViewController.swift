@@ -57,7 +57,8 @@ class FavoriteViewController: UIViewController,UITableViewDelegate,UITableViewDa
             self.tabBarController?.tabBar.isHidden = true
         }
         
-        
+//        let image = UIImage(named: "AAA.png")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+//        support_Button = UIBarButtonItem(image: image, style: UIBarButtonItemStyle.plain, target: self, action:#selector(support))
         
         support_Button = UIBarButtonItem(title: "説明", style: UIBarButtonItemStyle.plain, target: self, action:#selector(support))
     

@@ -27,12 +27,13 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     
     
-    var convery_count = 0
+    var convery_count = 10
     
     var parser:XMLParser? = XMLParser()
     
     var data:NSData? = NSData()
     var data2:NSData? = NSData()
+    var data3:NSData? = NSData()
     
     
     
@@ -54,14 +55,31 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     var imageString = NSMutableString()
     
+    //お知らせ用
+    var notice_Image = UIBarButtonItem()
+    var notice_Array:[String] = []
+    
+    
+    //お知らせ用&マルチのカテゴリー配列
+    
+    var o_TitleArray:[String] = []
+    var o_DateArray:[String] = []
+    var o_ContentArray:[String] = []
+    var o_MultiArray:[String] = []
+    
+    
+    var o_ContentString = NSMutableString()
+    var o_MultiString = NSMutableString()
+
+    
     
     //http://2chmatomeru.info/entries/index.rss
    // http://xn--zckzap0809doqd.jp/feed/
-     let urlArray = ["http://shironekotennisms.net/feed","http://xn--zckzap0809doqd.jp/feed/"]//URLリスト
+     let urlArray = ["http://shironekotennisms.net/feed","http://xn--zckzap0809doqd.jp/feed/","http://iosapp01.blog.fc2.com/?xml"]//URLリスト
     
     
     var dataArray = NSArray()
-    var dataArray2 = NSArray()
+    
     var download_Check = true
     
     //お気に入りに登録用の配列
@@ -76,15 +94,6 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     var userId:String = ""
     
     var items:[BBS_PostData1] = []
-    var items2:[BBS_PostData1] = []
-    var items3:[BBS_PostData1] = []
-    var items4:[BBS_PostData1] = []
-    
-    
-    var id1:[BBS_PostData1] = []
-    var id2:[BBS_PostData1] = []
-    var id3:[BBS_PostData1] = []
-    var id4:[BBS_PostData1] = []
     
     var config: URLSessionConfiguration?
     
@@ -115,7 +124,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             SVProgressHUD.show()
         }
         
-        convery_count = urlArray.count
+        loadAllData()
         
         for url_string in urlArray{
             download_rss(url_str: url_string)
@@ -197,18 +206,6 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         
         
-       //ここ
-        //こkp
-        //ここ
-        if dataArray == []{
-        convery_count = urlArray.count
-        
-        for url_string in urlArray{
-            download_rss(url_str: url_string)
-            
-        }
-
-        }
         
         if (download_Check == false){
             if totalBox == []{
@@ -216,7 +213,11 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             }
         }
        
-        
+        if UserDefaults.standard.object(forKey: "notice_Array") != nil{
+        notice_Array = UserDefaults.standard.object(forKey: "notice_Array") as! [String]
+        }else{
+            
+        }
         
         userId = UserDefaults.standard.object(forKey: "userId") as! String
         print("---------------->>>\(userId)")
@@ -260,9 +261,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         }
         
         
-        let navBarImage = UIImage(named: "navBarImage.png") as UIImage?
-        self.navigationController?.navigationBar.setBackgroundImage(navBarImage,for:.default)
-        self.navigationController?.navigationBar.backgroundColor = UIColor.white
+        
         
        
         
@@ -301,13 +300,17 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     //引っ張って更新メソッドの時にもパースしたものを更新したいので上のコードをメソッドの中に入れる
     
     func refresh(){
-        perform(#selector(delay), with: nil, afterDelay: 2.0)
+        self.totalBox = []
+         o_TitleArray = []
+         o_DateArray = []
+        o_ContentArray = []
+         o_MultiArray = []
+        perform(#selector(delay), with: nil, afterDelay: 0.5)
     }
     
     
     func delay(){
         
-        convery_count = urlArray.count
         
         for url_string in urlArray{
             download_rss(url_str: url_string)
@@ -456,24 +459,24 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         do {
             data = try NSData(contentsOf: location, options: NSData.ReadingOptions.alwaysMapped)
             
-            if data == nil{
-                
+            if data != nil{
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                    self.rss = String(data: data as Data, encoding: .utf8)!
+                    
+                    //ここ
+                    
+                    
+                    ///rss入れた
+                    //メソッド作る
+                    
+                    
+                    //ここ
+                    self.convertRSS(rss:self.rss!)
+                }
+
             }
             
-             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-             self.rss = String(data: data as Data, encoding: .utf8)!
-        
-            //ここ
-            
-            
-            ///rss入れた
-            //メソッド作る
-            
-            
-            //ここ
-            self.convertRSS(rss:self.rss!)
-            }
-        } catch {
+                     } catch {
             print(error)
         }
         
@@ -490,12 +493,88 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         // 正規表現に置き換える
         
         
+        if rss.pregMatche(pattern: ".link.http...xn--zckzap0809doqd.jp..link."){
+          
+            var result:String = ""
+            var result2:String = ""
+            var result3:String = ""
+            var rss_data3:String = ""
+            data3 = NSData()
+            
+            result = rss
+            
+            
+            
+            
+            
+            result2 = result.pregReplace(pattern: "\n\t\t", with: "")
+            
+            result3 = result2.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_Check<\\/title><\\/item><\\/ rss>")
+            
+            
+            rss_data3 += result3
+            
+            print(rss_data3)
+            
+            data3 = rss_data3.data(using: String.Encoding.utf8)! as NSData
+            
+            parser = XMLParser(data: data3! as Data)
+            if parser != nil {
+                
+                
+                
+                convery_count = 2
+                
+                parser!.delegate = self
+                parser!.parse()
+                
+                print("パース成功")
+            } else {
+                // パースに失敗した時
+                print("パース失敗")
+            }
         
-        
-        convery_count -= 1
-        
-        
-        if convery_count == 1{
+        }else if rss.pregMatche(pattern: ".link.http...shironekotennisms.net") {
+            print(convery_count)
+            
+            
+            var result2:String = ""
+           
+            
+            var rss_data2:String = ""
+            data2 = NSData()
+            
+            
+            
+            result2 = rss.pregReplace(pattern: "\n\t\t", with: "")
+            
+            
+            
+            
+            rss_data2 += result2
+            
+            
+            
+            data2 = rss_data2.data(using: String.Encoding.utf8)! as NSData
+            
+            
+            
+            
+            parser = XMLParser(data: data2! as Data)
+            if parser != nil {
+                
+                convery_count = 1
+                
+                parser!.delegate = self
+                parser!.parse()
+                print("パース成功")
+            } else {
+                // パースに失敗した時
+                print("パース失敗")
+                
+            }
+            
+          }else if rss.pregMatche(pattern: "http...iosapp01.blog.fc2.com") {
         
             var result:String = ""
             var result2:String = ""
@@ -506,44 +585,25 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             result = rss
             
             
+            result2 = result.pregReplace(pattern: "dc:date", with: "pubDate")
+            
+            result3 = result2.pregReplace(pattern: "\\<\\!\\[CDATA\\[|\\]\\]\\>", with: "")
+            
+//           result4 = result3.pregReplace(pattern: "<\\/rdf:RDF>", with: "\\\t<item>\\\t<title>RSS_END<\\/title><\\/item><\\/rdf:RDF>")
             
             
+            rss_data += result3
             
-            
-            
-//            result2 = result.pregReplace(pattern: "<description>.+src=.", with: "\\\t<image>")
-//            
-//            result3 = result2.pregReplace(pattern: "jpeg\\n\\t", with: "jpeg")
-//            
-//            result4 = result3.pregReplace(pattern: "jpeg\" class=\"", with: "jpeg<\\/image><description><\\!\\[CDATA\\[")
-//            
-//            
-//            result5 = result4.pregReplace(pattern: "\n\t\t", with: "")
-//            
-//            result6 = result5.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_Check<\\/title><\\/item><\\/ rss>")
-            
-            
-            
-            
-            
-//            print(result5.debugDescription)
-            
-            result2 = result.pregReplace(pattern: "\n\t\t", with: "")
-            
-            result3 = result2.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_Check<\\/title><\\/item><\\/ rss>")
-            
-            
-           rss_data += result3
-        
+            print(rss_data)
             
             data = rss_data.data(using: String.Encoding.utf8)! as NSData
-
+            
             parser = XMLParser(data: data! as Data)
             if parser != nil {
                 
                 
                 
-                convery_count = 1
+                convery_count = 0
                 
                 parser!.delegate = self
                 parser!.parse()
@@ -553,105 +613,11 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 // パースに失敗した時
                 print("パース失敗")
             }
-            
-            
-        }else if convery_count == 0{
-            print(convery_count)
-            
-            
-           
-            var result2:String = ""
-            var result3:String = ""
-           
-            var rss_data2:String = ""
-            data2 = NSData()
-           
-           
-           
-            result2 = rss.pregReplace(pattern: "\n\t\t", with: "")
 
-            result3 = result2.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_END<\\/title><\\/item><\\/ rss>")
-            
-//            result2 = result.pregReplace(pattern: "<content:encoded>.+class.{30,50}src..", with: "\\\t<image>")
-//            
-//            result3 = result2.pregReplace(pattern: "resize.+|<p><img.+", with: "")
-//            
-//            result4 = result3.pregReplace(pattern: "jpg\\?", with: "jpg\\?</image><content:encoded><!\\[CDATA\\[")
-//            
-//            result5 = result4.pregReplace(pattern: "jpeg\\?", with: "jpeg\\?</image><content:encoded><!\\[CDATA\\[")
-//            
-//            result6 = result5.pregReplace(pattern: "\n\t\t", with: "")
-//            
-//            result7 = result6.pregReplace(pattern: "<\\/rss>", with: "\\\t<item>\\\t<title>RSS_END<\\/title><\\/item><\\/ rss>")
-
-            
-            
-            
-            
-        
-            
-            
-            
-            
-            rss_data2 += result3
-            
-           
-//            if (download_Check == true){
-//            print(rss_data2)
-//            
-//              check_Rss_Data = rss_data2
-//                print(check_Rss_Data.count)
-// 
-//            }else{
-//                
-//                if rss_data2 != check_Rss_Data{
-//                  print(rss_data2.count)
-//                    print(check_Rss_Data.count)
-//               
-//                
-//                }else{
-//                    
-//                    
-//                }
-            
-              
-           
-//            }
-
-            
-            //            print(result3)
-            
-            
-            data2 = rss_data2.data(using: String.Encoding.utf8)! as NSData
-            
-            
-            
-            //print(self.rss_data2)
-            //print(rss_data.debugDescription)
-            //print(data.debugDescription)
-            
-            
-            
-            
-            
-                    parser = XMLParser(data: data2! as Data)
-                    if parser != nil {
-                        
-                        convery_count = 0
-                        
-                        parser!.delegate = self
-                        parser!.parse()
-                        print("パース成功")
-                    } else {
-                        // パースに失敗した時
-                        print("パース失敗")
-                    
-            }
-        
-        
-        
-            
         }
+        
+        
+        
     
     }
 
@@ -680,6 +646,10 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             dateString = ""
             imageString = NSMutableString()
             imageString = ""
+            o_ContentString = NSMutableString()
+            o_ContentString = ""
+            o_MultiString = NSMutableString()
+            o_MultiString = ""
         }
     }
     
@@ -702,6 +672,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             print("linkを見つけた")
             
             linkString.append(string)
+        
         }
         else if element == "pubDate"{
             
@@ -710,18 +681,25 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             dateString.append(string)
         }
        
-        if(convery_count == 1){
-            if element == "content:encoded"{
+       
+        else if element == "content:encoded"{
+               
+            if(convery_count != 0){
+            //画像
                 imageString.append(string)
-                }
-            
-        }else if(convery_count == 0){
-            if element == "content:encoded"{
-                
-                imageString.append(string)
-                
+            }else{
+               //お知らせ内容
+                o_ContentString.append(string)
+           
             }
-
+       
+            //マルチ用の配列
+        }else if element == "dc:subject"{
+            if (convery_count == 0){
+                o_MultiString.append(string)
+            
+            
+            }
         }
         
         
@@ -738,12 +716,19 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 
                 print("title---------->\(titleString)")
                
+                if(convery_count != 0){
                 elements.setObject(titleString, forKey: "title" as NSCopying)
-            
-                if (convery_count == 1){
+                }else{
+                   //\nが入る
+                    o_TitleArray.append(titleString as String)
+               
+                }
+                
+                
+                if (convery_count == 2){
                     link_Name = "白猫テニス徹底攻略ガイド"
                 elements.setObject(link_Name, forKey: "link_Name" as NSCopying)
-                }else if (convery_count == 0){
+                }else if (convery_count == 1){
                     link_Name = "白猫テニスまとめ速報"
                 elements.setObject(link_Name, forKey: "link_Name" as NSCopying)
                 }
@@ -751,13 +736,13 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
             }
             if linkString != "" {
                 //elementsにキー値を付与しながらtitleString(linkStrung)をセットする
-               
+                   if(convery_count != 0){
                 elements.setObject(linkString, forKey: "link" as NSCopying)
-               
+                }
                 }
             if dateString != ""{
                
-                if (convery_count == 1)||(convery_count == 0){
+                if (convery_count == 2)||(convery_count == 1){
 
                 
                     
@@ -1214,16 +1199,30 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 print("date_Set------------->\(date_Set)")
                 
                 }
-                else{
-                    elements.setObject(dateString, forKey: "pubDate" as NSCopying)
-
+                else if(convery_count == 0){
+                    var date1 = ""
+                    var date2 = ""
+                    var date3 = ""
+                    var date4 = ""
+                    
+                    date1 = String(dateString).pregReplace(pattern: "\\s|,", with: "")
+                    date2 = date1.pregReplace(pattern: "20...", with: "")
+                    date3 = date2.pregReplace(pattern: "T", with: " ")
+                    date4 = date3.pregReplace(pattern: ":\\d\\d.\\d\\d:\\d\\d", with: "")
+                   
+                    
+                    
+                    o_DateArray.append(date4 as String)
+                    
+                    
                 }
             
             }
+           
             if imageString != ""{
 //                print("image---------->\(imageString)")
                 
-                if (convery_count == 0){
+                if (convery_count == 1){
                     var result:String = ""
                     var result2:String = ""
                     var result3:String = ""
@@ -1235,7 +1234,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
 //                    print("image---------->\(result3)")
 
                     elements.setObject(result3, forKey: "image" as NSCopying)
-                }else if(convery_count == 1){
+                }else if(convery_count == 2){
                     
                     var result:String = ""
                     var result2:String = ""
@@ -1269,24 +1268,52 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 
                 
                 }
-                
-                
-               
-                
             }
             
-            if titleString != "RSS_Check"{
+            //お知らせ用日記の内容
+                if o_ContentString != ""{
+                   
+                    if(convery_count == 0){
+                   
+                        o_ContentArray.append(o_ContentString as String)
+                 
+                    }
+                }
             
-            if titleString != "RSS_END"{
+            //マルチ用の配列
+            if o_MultiString != ""{
+                
+                if(convery_count == 0){
+                   
+                    var result:String = ""
+                    
+                    result = String(o_MultiString).pregReplace(pattern: "\\s", with: "")
+                    
+                    o_MultiArray.append(result)
+      
+                
+                }
+            }
+
+            
+            
+            
+            if (titleString != "RSS_Check"){
+            
                 
 //                if (check(elements: elements)) {
 
+                if (convery_count != 0){
                 totalBox.add(elements)
-//                }
-            }else{
-                sortAndReloadData()
+                }else{
                 
-                            }
+               
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                self.sortAndReloadData()
+                    }
+                    
+                }
+                
             }
            
         }
@@ -1318,56 +1345,70 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         let data:NSArray = totalBox as NSArray
         
-        if download_Check == true{
-        dataArray = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
-        dataArray2 = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
-       
         
-        /////////
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-            self.totalBox = []
+        dataArray = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
+        
+        
+        
+        
+        
+        
             self.refreshControl.endRefreshing()
-            self.tableView.reloadData()
-
+            tableView.reloadData()
             SVProgressHUD.dismiss()
             self.download_Check = false
-        }
         
         
-        }else{
+//        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+//        appDelegate.o_TitleArray = self.o_TitleArray
+//        appDelegate.o_DateArray = self.o_DateArray
+//        appDelegate.o_ContentArray = self.o_ContentArray
+//        appDelegate.o_MultiArray = self.o_MultiArray
+//        
+//        if UserDefaults.standard.object(forKey: "notice_Array") == nil{
+//            UserDefaults.standard.set(o_TitleArray, forKey: "notice_Array")
+//            let image2 = UIImage(named: "NewNotice.png")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+//            
+//            notice_Image = UIBarButtonItem(image: image2, style: UIBarButtonItemStyle.plain, target: self, action:#selector(loadAllData))
+//            
+//            self.navigationItem.rightBarButtonItem = notice_Image
+//        }else{
+//            if(notice_Array != o_TitleArray){
+//                let image2 = UIImage(named: "NewNotice.png")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+//                
+//                
+//                notice_Image = UIBarButtonItem(image: image2, style: UIBarButtonItemStyle.plain, target: self, action:#selector(loadAllData))
+//                
+//                self.navigationItem.rightBarButtonItem = notice_Image
+//            //イメージのボタンをタップした時にUserDefaultsにo_TitleArrayを入れる
+//                UserDefaults.standard.set(o_TitleArray, forKey: "notice_Array")
+//
+//                
+//            }else{
+//                let image = UIImage(named: "Notice.png")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+//                
+//                notice_Image = UIBarButtonItem(image: image, style: UIBarButtonItemStyle.plain, target: self, action:#selector(loadAllData))
+//                
+//                self.navigationItem.rightBarButtonItem = notice_Image
+//            }
+//            
+//        }
         
-        dataArray2 = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
-           
-            
-            if dataArray2 != []{
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                    
-                    
-                    self.totalBox = []
-                    self.dataArray = []
-                
-                self.dataArray = self.dataArray2
-                
-                    self.dataArray2 = []
-                    
-                    self.refreshControl.endRefreshing()
-
-               self.tableView.reloadData()
-//                print(self.dataArray2)
-                }
-            
-            }else{
-               
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                    self.totalBox = []
-                    self.refreshControl.endRefreshing()
-                    
-                }
-                }
-
-            
-            
-            }
+        
+        
+        
+             print(o_TitleArray)
+            print(o_DateArray)
+            print(o_ContentArray)
+            print(o_MultiArray)
+            //APPデリゲートに送る処理と、RSSENDじゃないテーブルのリロード
+            //APPデリゲートに書く? //APPデリゲートはサーバーのものもアプリを開くたびにとってくるのでviewでぃロードに書いた方がいいかも
+          
+        
+        
+        
+        
+        
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
@@ -1375,7 +1416,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         if error == nil {
             print("ダウンロードが完了しました")
         } else {
-            convery_count -= 1
+//            convery_count -= 1
             print("ダウンロードが失敗しました")
         }
         
@@ -1453,138 +1494,45 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     
     
-//    func loadAllData(){
-//        
-//        
-//        UIApplication.shared.isNetworkActivityIndicatorVisible = true
-//        
-//            let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "0")
-//            firebase.queryLimited(toLast: 50).observe(.value) { (snapshot,error) in
-//                
-//                
-//                
-//                
-//                for item in(snapshot.children){
-//                    let child = item as! FIRDataSnapshot
-//                    let postData = BBS_PostData1(snapshot: child, myId: "")
-//                    
-//                    
-//                        self.items.append(postData)
-//                  
-//                    }
-//
-//                
-//                
-//                self.items.reverse()
-//                let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-//                appDelegate.items = self.items
-//}
-//        
-//        
-//        
-//        
-//        let firebase2 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "1")
-//        firebase2.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
-//            
-//            
-//            
-//            
-//            for item in(snapshot.children){
-//                let child = item as! FIRDataSnapshot
-//                let postData = BBS_PostData1(snapshot: child, myId: "")
-//                 self.items2.append(postData)
-//
-//                }
-//
-//            
-//            
-//            self.items2.reverse()
-//            let appDelegate2:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-//            appDelegate2.items2 = self.items2
-//        }
-//        
-//        
-//
-//        
-//        let firebase3 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "2")
-//        firebase3.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
-//            
-//            
-//            
-//            
-//            for item in(snapshot.children){
-//                let child = item as! FIRDataSnapshot
-//                let postData = BBS_PostData1(snapshot: child, myId: "")
-//                let data = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: postData.id)
-//                data.observe(.value) { (snapshot,error) in
-//                    
-//                    for item in(snapshot.children){
-//                        let child = item as! FIRDataSnapshot
-//                        let postData = BBS_PostData1(snapshot: child, myId: "")
-//                        self.id3.append(postData)
-//                        
-//                        let appDelegate_id:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-//                        appDelegate_id.id3 = self.id3
-//                    }
-//                     self.items3.append(postData)
-//                    
-//                }
-//
-//               
-//            }
-//            
-//            self.items3.reverse()
-//            let appDelegate3:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-//            appDelegate3.items3 = self.items3
-//        }
-//        
-//        
-//
-//        
-//        let firebase4 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "3")
-//        firebase4.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
-//            
-//            if self.auto_Reload_Check == true{
-//                
-//                return
-//            }
-//            
-//            self.auto_Reload_Check = true
-//            
-//            
-//            
-//            for item in(snapshot.children){
-//                let child = item as! FIRDataSnapshot
-//                let postData = BBS_PostData1(snapshot: child, myId: "")
-//                let data = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: postData.id)
-//                data.observe(.value) { (snapshot,error) in
-//                    
-//                    for item in(snapshot.children){
-//                        let child = item as! FIRDataSnapshot
-//                        let postData = BBS_PostData1(snapshot: child, myId: "")
-//                        self.id4.append(postData)
-//                        
-//                        let appDelegate_id:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-//                        appDelegate_id.id4 = self.id4
-//                    }
-//                    
-//                    self.items4.append(postData)
-//
-//                }
-//
-//                            }
-//            
-//            self.items4.reverse()
-//            let appDelegate4:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-//            appDelegate4.items4 = self.items4
-//        }
-//        
-//        
-//
-//        
-//                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-//        }
-    
+    func loadAllData(){
+        
+        
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        
+        let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "0")
+        firebase.queryLimited(toLast: 50).observe(.value) { (snapshot,error) in
+            
+        }
+        
+        
+        
+        
+        let firebase2 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "1")
+        
+        firebase2.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
+            
+        }
+        
+        
+        
+        
+        let firebase3 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "2")
+        firebase3.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
+            
+        }
+        
+        
+        
+        
+        let firebase4 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "3")
+        firebase4.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
+            
+            
+        }
+        
+        
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+    }
    
     
     
@@ -1701,6 +1649,7 @@ extension UITabBarController {
     }
 }
 
+//〇〇秒前
 extension Date {
     func timeAgoSinceDate(numericDates:Bool) -> String {
         let calendar = NSCalendar.current
@@ -1760,7 +1709,7 @@ extension Date {
         } else if (components.second! >= 3) {
             return "\(components.second!) 秒前"
         } else {
-            return "ついさっき"
+            return "今"
         }
         
     }

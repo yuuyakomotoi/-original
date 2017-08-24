@@ -489,6 +489,8 @@ func postAll(){
     
     
     result = commentTextView.text.pregReplace(pattern: "\\n{3,}", with: "\n\n")
+    
+    //空白を制限
     result2 = result.pregReplace(pattern: " {1,}", with: " ")
 
 
@@ -523,7 +525,7 @@ func postAll(){
     let date = NSDate()
     
     let formatter = DateFormatter()
-    formatter.dateFormat = "MM-dd HH:mm"
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
     
     let dateString:String = formatter.string(from:date  as Date)
     
@@ -537,17 +539,35 @@ func postAll(){
 
     
     //投稿画像
+    
+   var base64String = ""
+    
+    if imageView.image != nil{
+    
     var data:NSData = NSData()
-    if let image = imageView.image{
-        data = UIImageJPEGRepresentation(image,0.1)! as NSData
+    
+    
+    let result_Image = resizeImage(image: imageView.image!, width: 600.0)
+    
+    
+    
+    data = UIImageJPEGRepresentation(result_Image,0.001
+)! as NSData
+        //0,1
+    
+    
+     base64String = data.base64EncodedString(options:NSData.Base64EncodingOptions.lineLength64Characters) as String
     }
-    let base64String = data.base64EncodedString(options:NSData.Base64EncodingOptions.lineLength64Characters) as String
+    
     
     //profile画像
     var data2:NSData = NSData()
-    if let image2 = myProfileImageView.image{
-        data2 = UIImageJPEGRepresentation(image2,0.1)! as NSData
-    }
+    
+    let result_Image2 = resizeImage(image: myProfileImageView.image!, width: 600.0)
+    
+    
+        data2 = UIImageJPEGRepresentation(result_Image2,0.001)! as NSData
+    
     let base64String2 = data2.base64EncodedString(options:NSData.Base64EncodingOptions.lineLength64Characters) as String
     
     
@@ -570,7 +590,8 @@ func postAll(){
         let user:NSDictionary = ["userId":userId,"username":username,"comment":message,"date":dateString,"image":base64String,"profile_image":base64String2,"comment_id":post_id]
         databaseRef.child(Const.PostPath1).childByAutoId().setValue(user)
         let org_databaseRef = FIRDatabase.database().reference().child(Const.PostPath1).child(post_id)
-        let comment_num = postData.comment_num + 1
+        var comment_num = postData.comment_num
+        comment_num += 1
         org_databaseRef.updateChildValues(["comment_num":comment_num])
 
         UserDefaults.standard.removeObject(forKey: "textComment10")
@@ -633,8 +654,18 @@ func postAll(){
   
     
     }
-
     
+    //戻り値は変数に代入する
+    func resizeImage(image: UIImage, width: CGFloat) -> UIImage {
+        let ratioSize = image.size.height / image.size.width
+        UIGraphicsBeginImageContext(CGSize(width: width, height: width * ratioSize))
+        image.draw(in: CGRect(x: 0, y: 0,width: width, height: width * ratioSize))
+        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return resizedImage!
+    }
+        
     func postStop(){
         
         if textCount < 0{

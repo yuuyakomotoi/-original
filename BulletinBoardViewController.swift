@@ -22,6 +22,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     
     var ng_UserArayy:[String] = []
     
+    var favorite_Post_Arayy:[String] = []
     
     var items = [BBS_PostData1]()
     
@@ -223,9 +224,11 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         case 0:
             self.title = "雑談"
         contributionLabel.placeholder = "雑談に投稿"
+        
         case 1:
             self.title = "フレンドマッチ"
         contributionLabel.placeholder = "フレンドマッチに投稿"
+       
         case 2:
             self.title = "質問"
         contributionLabel.placeholder = "質問に投稿"
@@ -358,7 +361,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     }
     
     
-    
+    //画像のリサイズ
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -418,17 +421,23 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             
             
             //投稿時間
-            let formatter = DateFormatter()
-            formatter.locale = NSLocale(localeIdentifier: "ja_JP") as Locale!
-            formatter.dateFormat = "MM-dd HH:mm"
-            
-            if ( dict.date != nil ) {
-                
-                
-                let dateString:String = dict.date!
-                cell.time.text = dateString
-            
         
+        
+        if ( dict.date != nil ) {
+            
+            
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss" //フォーマット合わせる
+            if(formatter.date(from:dict.date!) != nil){
+            print("ここ")
+            print("\(dict.date)")
+            print(formatter.date(from:dict.date!))
+            
+            let posTimeText:String = formatter.date(from:dict.date!)!.timeAgoSinceDate(numericDates: true)
+            
+                cell.time.text = posTimeText
+            
+            }
         }
             
             //コメント(本文)
@@ -1026,6 +1035,8 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             self.comment_BlurView.isHidden = false
             
             let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "3")
+            
+            
             firebase.queryLimited(toLast: UInt(Int(count4))).observe(.value) { (snapshot,error) in
                 
                 
@@ -1367,15 +1378,19 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         print(auto_Reload_Check)
         print(check)
         refreshControl.endRefreshing()
-        let CGPoint2 = tableView.contentOffset
-        self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-        
-        if (self.refreshCheck == false){
-            self.tableView.contentOffset.y = (self.tableView.contentInset.top )
-        refreshCheck = true
-        }
         
         tableView.reloadData()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) {
+            let CGPoint2 = self.tableView.contentOffset
+            self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+            
+            if (self.refreshCheck == false){
+                self.tableView.contentOffset.y = (self.tableView.contentInset.top )
+                self.refreshCheck = true
+            }
+
+        }
+   
     }
     
     
@@ -1712,6 +1727,80 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         
     }
     
+    //お気に入りの投稿
+    
+    func favoriteAlert(favorite_Post:String){
+        
+        
+        
+        let alertViewControler = UIAlertController(title:"この投稿をお気に入り登録しますか？", message: "お気に入り登録をすることで「ホーム」→「お気に入りの投稿」より登録した書き込みが表示可能となります", preferredStyle:.alert)
+        
+        let okAction = UIAlertAction(title: "お気に入りに登録する", style: .default, handler: {
+            (action:UIAlertAction!) -> Void in
+            self.addfavoriteAction(favorite_Post:favorite_Post)
+        })
+        
+        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
+        
+        alertViewControler.addAction(okAction)
+        alertViewControler.addAction(cancelAction)
+        
+        present(alertViewControler, animated: true, completion: nil)
+        
+    }
+    
+    
+    
+    
+    func favoriteAction(sender: UIButton, event:UIEvent){
+        
+        
+        let touch = event.allTouches?.first
+        let point = touch!.location(in: tableView)
+        let indexPath = tableView.indexPathForRow(at: point)
+        
+        let favorite_Post = items[(indexPath?.row)!].id
+        
+        
+        if  (UserDefaults.standard.object(forKey: "favorite_Post_Arayy")) != nil{
+            let favorite_Post_Arayy2 = UserDefaults.standard.object(forKey: "favorite_Post_Arayy") as! [String]
+            
+            var favoritecheck = false
+            
+            for i in favorite_Post_Arayy2 {
+                if ( i == favorite_Post ) {
+                    favoritecheck = true
+                }
+            }
+            
+            if ( favoritecheck == true ) {
+                SVProgressHUD.showError(withStatus: "この投稿はお気に入りに登録済みです")
+                return
+            }
+            else {
+                print("favorite_Post  --> \(favorite_Post)")
+
+                favoriteAlert(favorite_Post:favorite_Post)
+            }
+            
+        
+        }
+    }
+    
+    
+    func addfavoriteAction(favorite_Post:String){
+        
+        
+        favorite_Post_Arayy.append(favorite_Post)
+        UserDefaults.standard.set(favorite_Post_Arayy, forKey: "favorite_Post_Arayy")
+        
+        //入らない
+        
+        SVProgressHUD.showSuccess(withStatus: "お気に入りに\n登録しました")
+        
+        
+        
+    }
     
     
     func change_BulletinBoard_Image() {

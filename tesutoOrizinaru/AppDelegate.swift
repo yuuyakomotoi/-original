@@ -14,17 +14,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    var items:[BBS_PostData1] = []
-    var items2:[BBS_PostData1] = []
-    var items3:[BBS_PostData1] = []
-    var items4:[BBS_PostData1] = []
-    
-    var id1:[BBS_PostData1] = []
-    var id2:[BBS_PostData1] = []
-    var id3:[BBS_PostData1] = []
-    var id4:[BBS_PostData1] = []
-
-    
     
     var post_Check = false
     
@@ -32,9 +21,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var navicheck2 = false
     
-    var ndataArray:NSArray = []
+    var o_TitleArray:[String] = []
+    var o_DateArray:[String] = []
+    var o_ContentArray:[String] = []
+    var o_MultiArray:[String] = []
     
-    var dataArray:NSArray = []
+    
+    
+    
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -67,55 +61,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-   loadAllData()
+   
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
    
     }
-var count = 0
-    func loadAllData(){
-        
-        
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        
-        let firebase = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "0")
-        firebase.queryLimited(toLast: 50).observe(.value) { (snapshot,error) in
-            
-                    }
-        
-        
-        
-        
-        let firebase2 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "1")
-        
-        firebase2.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
-           
-        }
-        
-        
-        
-        
-        let firebase3 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "2")
-        firebase3.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
-            
-        }
-        
-        
-        
-        
-        let firebase4 = FIRDatabase.database().reference().child(Const.PostPath1).queryOrdered(byChild: "comment_id").queryEqual(toValue: "3")
-        firebase4.queryLimited(toLast:50).observe(.value) { (snapshot,error) in
-            
-            
-        }
-        
-        
-        
-        
-        UIApplication.shared.isNetworkActivityIndicatorVisible = false
-    }
+
+   
+    
 
 
 }

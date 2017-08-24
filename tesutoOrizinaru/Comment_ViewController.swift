@@ -40,6 +40,8 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
     
     var post_Check = false
 
+    var first_Reload_Check = false
+    
     let refreshControl = UIRefreshControl()
     
     @IBOutlet var tableView: UITableView!
@@ -113,26 +115,23 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
         }
         
         
-        
-        
-        
-        
         let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
         self.post_Check = appDelegate.post_Check
         
         
         if self.post_Check == true{
-            tableView.contentOffset.y = (self.tableView.contentInset.top )
-            post_Check = false
             
-            let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-            appDelegate.post_Check = self.post_Check
-        }else{
-            let table_point = tableView.contentOffset
-            self.tableView.setContentOffset(CGPoint(x: table_point.x, y: table_point.y ), animated: false)
             
-        }
+                if (check == false){
+                
+                self.tableView.isHidden = true
+            }
+            }
 
+        
+        
+        
+        
         auto_Reload_Check = false
         
         if UserDefaults.standard.object(forKey: "profileImage") != nil{
@@ -177,19 +176,57 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
             image_Select = false
             SVProgressHUD.dismiss()
             self.tableView.isUserInteractionEnabled = true
-            
-        }
+            }
         else{
             
-            //tableView.contentOffset.y = (self.tableView.contentInset.top )
-            let table_point = tableView.contentOffset
-            self.tableView.setContentOffset(CGPoint(x: table_point.x, y: table_point.y ), animated: false)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+              DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 
+                
+                self.reloadButton.isEnabled = false
                 self.loadAllData()
                 
             }
         }
+    
+        
+        
+            let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+        self.post_Check = appDelegate.post_Check
+        
+        
+        if self.post_Check == true{
+            
+            
+            auto_Reload_Check = false
+            
+            reloadButton.isEnabled = false
+            if (check == false){
+                check = true
+                
+
+//                let CGPoint2 = tableView.contentOffset
+//                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+//
+//                self.tableView.contentOffset.y = (self.tableView.contentSize.height - self.tableView.frame.size.height )
+                
+                loadAllData()
+                
+            }
+            
+            
+            self.post_Check = false
+            
+            let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+            appDelegate.post_Check = self.post_Check
+        }else{
+           
+            let table_point = self.tableView.contentOffset
+            self.tableView.setContentOffset(CGPoint(x: table_point.x, y: table_point.y ), animated: false)
+            
+        }
+        
+    
+    
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -227,14 +264,17 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
             cell.userNameLabel.text = postData.name
             
             //投稿時間
-            let formatter = DateFormatter()
-            formatter.locale = NSLocale(localeIdentifier: "ja_JP") as Locale!
-            formatter.dateFormat = "MM-dd HH:mm"
-            
             if ( postData.date != nil ) {
-                let dateString:String = postData.date!
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss" //フォーマット合わせる
+                if(formatter.date(from:postData.date!) != nil){
+                    
+                    let posTimeText:String = formatter.date(from:postData.date!)!.timeAgoSinceDate(numericDates: true)
+                    
+                    cell.time.text = posTimeText
+                    
+                }
                 
-                cell.time.text = dateString
             }
             
             //コメント(本文)
@@ -295,14 +335,21 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
             
             //投稿時間
             
-            let formatter = DateFormatter()
-            formatter.locale = NSLocale(localeIdentifier: "ja_JP") as Locale!
-            formatter.dateFormat = "MM-dd HH:mm"
+            
             
             if ( dict.date != nil ) {
-                let dateString:String = dict.date!
-                cell.time.text = dateString
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss" //フォーマット合わせる
+                if(formatter.date(from:dict.date!) != nil){
+                    
+                    let posTimeText:String = formatter.date(from:dict.date!)!.timeAgoSinceDate(numericDates: true)
+                    
+                    cell.time.text = posTimeText
+                    
+                }
+
             }
+            
             
             //コメント(本文)
             cell.commentLabel.text = dict.comment
@@ -439,11 +486,13 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
                 }
 
             
-            
-            
-            
-            self.tableView.reloadData()
-            
+            if (self.first_Reload_Check == true)
+            {
+            if(self.tableView.contentInset.bottom < self.tableView.contentSize.height - self.tableView.frame.size.height){
+           self.tableView.contentOffset.y = (self.tableView.contentSize.height - self.tableView.frame.size.height )
+            }
+        }
+        
             self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
             UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
@@ -542,15 +591,38 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
         
         
                 print("bbbbbbbbbbbbb")
-        let CGPoint2 = self.tableView.contentOffset
-        self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-        self.tableView.contentOffset.y = (self.tableView.contentSize.height - self.tableView.frame.size.height )
+        
 
-//         self.refreshControl.endRefreshing()
-               self.tableView.reloadData()
         
         
-           }
+        
+        self.tableView.reloadData()
+        
+        if (self.first_Reload_Check == true){
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) {
+            print("aaaa")
+            
+            if(self.tableView.contentInset.bottom < self.tableView.contentSize.height - self.tableView.frame.size.height){
+            self.tableView.contentOffset.y = (self.tableView.contentSize.height - self.tableView.frame.size.height )
+            
+            let CGPoint2 = self.tableView.contentOffset
+            
+            self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: true)
+            
+            self.tableView.contentOffset.y = (self.tableView.contentSize.height - self.tableView.frame.size.height )
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) {
+           self.tableView.isHidden = false
+                self.tableView.contentOffset.y = (self.tableView.contentSize.height - self.tableView.frame.size.height )
+            }
+            }else{
+                self.tableView.isHidden = false
+           
+            }
+        }
+        }
+        first_Reload_Check = true
+        }
     
 
 
@@ -605,9 +677,11 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
             reloadButton.isEnabled = false
             if (check == false){
                 check = true
+               
                 let CGPoint2 = self.tableView.contentOffset
+                
                 self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-              self.tableView.contentOffset.y = (self.tableView.contentSize.height - self.tableView.frame.size.height )
+//                self.tableView.contentOffset.y = (self.tableView.contentSize.height - self.tableView.frame.size.height )
                 loadAllData()
                 
         }

@@ -58,6 +58,7 @@ class MovieViewController: UIViewController,UITableViewDataSource,UITableViewDel
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         UITabBar.appearance().tintColor = UIColor(red: 1, green: 0.6, blue: 0, alpha: 1)
         
         

@@ -20,6 +20,9 @@ class First_BulletinBoard_ViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        let appDelegate2:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+print(appDelegate2.o_TitleArray)
+       
         SVProgressHUD.dismiss()
         
         let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate

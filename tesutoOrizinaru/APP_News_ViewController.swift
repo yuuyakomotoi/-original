@@ -22,7 +22,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
     
     
-    var convery_count = 0
+    var convery_count = 10
     
     var parser:XMLParser? = XMLParser()
     
@@ -74,7 +74,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        SVProgressHUD.show()
         
         
     
@@ -108,7 +108,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         
         self.navigationItem.rightBarButtonItem = support_Button
         
-            convery_count = urlArray.count
+//            convery_count = urlArray.count
         
             for url_string in urlArray{
                 download_rss(url_str: url_string)
@@ -156,16 +156,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         //ナビゲーションのスワイプ無効
         self.navigationController!.interactivePopGestureRecognizer!.isEnabled = false
         
-        if dataArray == []{
-            let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-            if appDelegate.dataArray != []{
-                self.dataArray = appDelegate.dataArray
-                print(dataArray)
-                tableView.reloadData()
-            }
-
-        }
-        
+                
         
         if totalBox == []{
             SVProgressHUD.show()
@@ -178,7 +169,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
     
     
     func refresh(){
-       perform(#selector(delay), with: nil, afterDelay: 1.5)
+       perform(#selector(delay), with: nil, afterDelay: 2.0)
     }
     
     func delay(){
@@ -189,14 +180,13 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
             
             self.totalBox = []
            
-            convery_count = urlArray.count
-            
+//            convery_count = urlArray.count
+        
             for url_string in urlArray{
                 download_rss(url_str: url_string)
                 
             }
-           refreshControl.endRefreshing()
-          
+                    
         
     }
     
@@ -372,10 +362,10 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         
         
         
-        convery_count -= 1
+//        convery_count -= 1
         
         
-        if convery_count == 1{
+        if rss.pregMatche(pattern: "http...www.4gamer.net"){
             print(convery_count)
         
             var result:String = ""
@@ -411,8 +401,24 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
             
             self.data = rss_data.data(using: String.Encoding.utf8)! as NSData
       
+            self.parser = XMLParser(data: self.data! as
+                Data)
+            if self.parser != nil {
+                
+                convery_count = 1
+                
+                self.parser!.delegate = self
+                self.parser!.parse()
+                print("パース成功")
+            } else {
+                // パースに失敗した時
+                print("パース失敗")
+            }
+
+            
+            
         
-        }else if convery_count == 0{
+        }else if rss.pregMatche(pattern: "http...gamebiz.jp"){
             
             var result:String = ""
             var result2:String = ""
@@ -442,48 +448,22 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
             
             self.data2 = rss_data2.data(using: String.Encoding.utf8)! as NSData
             
-            
+            self.parser = XMLParser(data: self.data2! as Data)
         
-            
-            //print(self.rss_data2)
-            //print(rss_data.debugDescription)
-            //print(data.debugDescription)
-            
-            for i in 0...1{
-                if i == 0 {self.parser = XMLParser(data: self.data! as Data)
-                    if self.parser != nil {
-                        
-                        
-                        convery_count = 1
-                        
-                        self.parser!.delegate = self
-                        self.parser!.parse()
-                        
-                        print("パース成功")
-                    } else {
-                        // パースに失敗した時
-                        print("パース失敗")
-                    }
-                    
-                }else{
-                    self.parser = XMLParser(data: self.data2! as
-                        Data)
-                    if self.parser != nil {
-                        
-                        convery_count = 0
-                        
-                        self.parser!.delegate = self
-                        self.parser!.parse()
-                        print("パース成功")
-                    } else {
-                        // パースに失敗した時
-                        print("パース失敗")
-                    }
-                    
-                }
+            if self.parser != nil {
+                
+                
+                convery_count = 0
+                
+                self.parser!.delegate = self
+                self.parser!.parse()
+                
+                print("パース成功")
+            } else {
+                // パースに失敗した時
+                print("パース失敗")
             }
-            
-            
+
             
         }
         
@@ -579,6 +559,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
                 if (self.convery_count == 1){
                     link_Name = "4Gamer.net"
                     elements.setObject(link_Name, forKey: "link_Name" as NSCopying)
+               
                 }else if (self.convery_count == 0){
                     link_Name = "Social Game Info"
                     elements.setObject(link_Name, forKey: "link_Name" as NSCopying)
@@ -755,17 +736,18 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
             if titleString != "RSS_Check"{
                 
                 if titleString != "RSS_END"{
-                    
-//                   if ( !checkMovie(elements: elements) ) {
+//                    !checkMovie(elements: elements
+                   if ( checkMovie(elements: elements) ) {
                     totalBox.add(elements)
                     
-//                   }
+                   }
                     }else{
                     
 //                    let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
 //                    appDelegate.dataArray = self.dataArray
-                    sortAndReloadData()
-                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.sortAndReloadData()
+                    }
                     
                 }
             }
@@ -778,7 +760,9 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
    
         //elements.value(forKey: "title")の中を選別をする
    
-    let ok_words = ["事前登録","iOS版","Android版","配信開始","βテスト","配信スタート","新作アプリ","サービスイン","PV","提供開始","リリース","DLを突破","正式サービスを開始","新作スマホゲーム","配信予定の","ゲームアプリの製作が","4Gamerの1週間"]
+    let ok_words = ["ガンホー","iOS版","Android版","配信開始","βテスト","配信スタート","新作アプリ","サービスイン","PV","提供開始","リリース","DLを突破","正式サービスを開始","新作スマホゲーム","配信予定の","ゲームアプリの製作が","4Gamerの1週間"]
+    
+    let ng_words = ["株","営業益","営業収益","第1四半期","第2四半期","第3四半期","第4四半期"]
     
     //株、売上高
     
@@ -787,7 +771,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         
         var ok = true
         
-        for word in ok_words {
+        for word in ng_words {
             if ( title.contains(word) ) {
                 ok = false
             }
@@ -806,17 +790,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         
         dataArray = data.sortedArray(using: sortDescriptors as! [NSSortDescriptor]) as NSArray
         
-        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
         
-    
-        if self.dataArray != []{
-        appDelegate.dataArray = self.dataArray
-        }else{
-
-            self.dataArray = appDelegate.dataArray
-        }
-        
-       print("AAAAAAAAAAAAAAAAAA")
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
             
@@ -824,7 +798,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
              self.refresh_Chack = false
             self.tableView.reloadData()
             SVProgressHUD.dismiss()
-        
+        print(self.dataArray.count)
     }
    
     }
@@ -833,7 +807,7 @@ class APP_News_ViewController:UIViewController,UITableViewDataSource,UITableView
         if error == nil {
             print("ダウンロードが完了しました")
         } else {
-            convery_count -= 1
+//            convery_count -= 1
             print("ダウンロードが失敗しました")
         }
         

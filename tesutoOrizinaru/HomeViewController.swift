@@ -14,8 +14,8 @@ import SVProgressHUD
 
 class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,MFMailComposeViewControllerDelegate {
     
-    var tableViewTitle = ["プロフィールを変更","お気に入り","お気に入りユーザー","SNSで勧める","問い合わせ"]
-    var tableViewTitle2 = ["アプリニュース","お勧めのサービス"]
+    var tableViewTitle = ["プロフィールを変更","お気に入り","お気に入りユーザー","SNSで勧める","お問い合わせ"]
+    var tableViewTitle2 = ["アプリニュース","オススメのサービス"]
     var sectionTitle = [""," "]
     
     var imageArray = ["Entypo_d83d(10)_32.png","linecons_e029(7)_32.png","FontAwesome_f0c0(8)_32.png","sns.png","Material Icons_e0be(0)_32.png"
@@ -297,7 +297,7 @@ break
                 break
                 
             case 1:
-                let url = URL(string:"https://peraichi.com/landing_pages/view/emeg8game")
+                let url = URL(string:"https://gamesapp10.wixsite.com/app10")
                 if( UIApplication.shared.canOpenURL(url!) ) {
                     UIApplication.shared.open(url!)
                 }
