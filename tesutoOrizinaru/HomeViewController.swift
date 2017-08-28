@@ -14,7 +14,7 @@ import SVProgressHUD
 
 class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,MFMailComposeViewControllerDelegate {
     
-    var tableViewTitle = ["プロフィールを変更","お気に入り","お気に入りユーザー","SNSで勧める","お問い合わせ"]
+    var tableViewTitle = ["プロフィールを変更","お気に入り","お気に入りの投稿","SNSで勧める","お問い合わせ"]
     var tableViewTitle2 = ["アプリニュース","オススメのサービス"]
     var sectionTitle = [""," "]
     
@@ -177,19 +177,14 @@ class HomeViewController: UIViewController,UITableViewDelegate,UITableViewDataSo
                 
                 break
             case 2:
-                if UserDefaults.standard.object(forKey: "check") == nil{
-                    let support = self.storyboard?.instantiateViewController(withIdentifier: "support")
-                    self.navigationController?.pushViewController(support!, animated: true)
-                    let check = "check"
-                    UserDefaults.standard.set(check, forKey: "check")
-
-                }else{
-
                 
-                let favoriteUserViewController = self.storyboard?.instantiateViewController(withIdentifier: "favoriteuser") as! FavoriteUserViewController
-                present(favoriteUserViewController, animated: true, completion: nil)
-                }
-                    break
+                self.tabBarController?.tabBar.isHidden = true
+                
+                let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+                appDelegate.navicheck = true
+                
+                performSegue(withIdentifier:"BulletinBoard",sender:nil)
+                break
             case 3:
                 let alertController = UIAlertController(title: "紹介方法を選択してください", message: "", preferredStyle: .actionSheet)
                 
@@ -420,6 +415,12 @@ break
         changeprofileviewcontroller.name = userName.text!
         changeprofileviewcontroller.img = userImage
     
+        }else if segue.identifier == "BulletinBoard"{
+                
+                let bulletinboardViewController:BulletinBoardViewController = segue.destination as! BulletinBoardViewController
+                bulletinboardViewController.segmentCount = 100
+            
+            
         }
        
     }

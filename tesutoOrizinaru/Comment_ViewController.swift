@@ -385,6 +385,7 @@ class Comment_ViewController: UIViewController,UITableViewDelegate,UITableViewDa
 //
 
             cell.okButton.isHidden = true
+           
             //            //ユーザーのお気に入り登録
 //            cell.okButton.addTarget(self, action:#selector(okAction2(sender:event:)), for: UIControlEvents.touchUpInside)
             

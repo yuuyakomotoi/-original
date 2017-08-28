@@ -41,7 +41,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     
     var totalBox = NSMutableArray()
     
-    var elements = NSMutableDictionary()
+    var elements:NSMutableDictionary? = NSMutableDictionary()
     
     var element = String() //　タイトルが入ったり、リンクが入ったりする
     
@@ -346,14 +346,20 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         
         if (( (dataArray[indexPath.row] as AnyObject).value(forKey: "title") ) != nil) {
         titleLabel.text = (dataArray[indexPath.row] as AnyObject).value(forKey: "title") as? String
+        }else{
+            
         }
         
         if (( (dataArray[indexPath.row] as AnyObject).value(forKey: "link_Name") ) != nil) {
         linkLabel.text = (dataArray[indexPath.row] as AnyObject).value(forKey: "link_Name") as? String
+        }else{
+            
         }
        
         if (( (dataArray[indexPath.row] as AnyObject).value(forKey: "pubDate") ) != nil) {
         dateLabel.text = (dataArray[indexPath.row] as AnyObject).value(forKey: "pubDate") as? String
+        }else{
+            
         }
         
         if (( (dataArray[indexPath.row] as AnyObject).value(forKey: "image") ) != nil) {
@@ -717,7 +723,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 print("title---------->\(titleString)")
                
                 if(convery_count != 0){
-                elements.setObject(titleString, forKey: "title" as NSCopying)
+                elements?.setObject(titleString, forKey: "title" as NSCopying)
                 }else{
                    //\nが入る
                     o_TitleArray.append(titleString as String)
@@ -727,17 +733,17 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 
                 if (convery_count == 2){
                     link_Name = "白猫テニス徹底攻略ガイド"
-                elements.setObject(link_Name, forKey: "link_Name" as NSCopying)
+                elements?.setObject(link_Name, forKey: "link_Name" as NSCopying)
                 }else if (convery_count == 1){
                     link_Name = "白猫テニスまとめ速報"
-                elements.setObject(link_Name, forKey: "link_Name" as NSCopying)
+                elements?.setObject(link_Name, forKey: "link_Name" as NSCopying)
                 }
                 
             }
             if linkString != "" {
                 //elementsにキー値を付与しながらtitleString(linkStrung)をセットする
                    if(convery_count != 0){
-                elements.setObject(linkString, forKey: "link" as NSCopying)
+                elements?.setObject(linkString, forKey: "link" as NSCopying)
                 }
                 }
             if dateString != ""{
@@ -1195,7 +1201,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                 //                //文字列から日付を取得
                 //               let dateFromString = formatter.date(from: "2005/12/12 9:24:21")! //"Dec 12, 2005, 9:24 AM"
                 
-                elements.setObject(date_Set, forKey: "pubDate" as NSCopying)
+                elements?.setObject(date_Set, forKey: "pubDate" as NSCopying)
                 print("date_Set------------->\(date_Set)")
                 
                 }
@@ -1233,7 +1239,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                     
 //                    print("image---------->\(result3)")
 
-                    elements.setObject(result3, forKey: "image" as NSCopying)
+                    elements?.setObject(result3, forKey: "image" as NSCopying)
                 }else if(convery_count == 2){
                     
                     var result:String = ""
@@ -1264,7 +1270,7 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
                     
                     
                     
-                    elements.setObject(result7, forKey: "image" as NSCopying)
+                    elements?.setObject(result7, forKey: "image" as NSCopying)
                 
                 
                 }
@@ -1304,7 +1310,10 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
 //                if (check(elements: elements)) {
 
                 if (convery_count != 0){
-                totalBox.add(elements)
+                
+                    if elements != nil{
+                totalBox.add(elements!)
+                    }
                 }else{
                 
                
@@ -1706,7 +1715,7 @@ extension Date {
             } else {
                 return "1 分前"
             }
-        } else if (components.second! >= 3) {
+        } else if (components.second! >= 5) {
             return "\(components.second!) 秒前"
         } else {
             return "今"

@@ -24,23 +24,28 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     
     var favorite_Post_Arayy:[String] = []
     
+    
     var items = [BBS_PostData1]()
+    
+    //リロード2回目以降
+    var next_items = [BBS_PostData1]()
+    var next_check = false
+    
     
     
     
 
     var bulletinBoard_Image_Button = UIBarButtonItem()
     
+    var check = false
     
     let refreshControl = UIRefreshControl()
     
     var segmentCount = 0
     
-    var timer:Timer!
+    var timer:Timer? = Timer()
     
     var image_Select = false
-    
-    var check:Bool = false
     
     var refreshCheck = false
     
@@ -59,6 +64,11 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     var post_Check = false
     
     var auto_Reload_Check = false
+    
+    
+    
+    
+    @IBOutlet var comment_View: UIView!
     
     
     @IBOutlet var profileImageView: UIImageView!
@@ -125,94 +135,56 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         //
         //        reloadButton.clipsToBounds = true
         
-        refreshControl.attributedTitle = NSAttributedString(string: "引っ張って更新")
+        if(segmentCount != 100){
+        //NSAttributedStringは引っ張る時の文字
+            
+          
+            refreshControl.attributedTitle = NSAttributedString(string: "")
         refreshControl.addTarget(self, action:#selector(refresh), for:UIControlEvents.valueChanged)
         tableView.addSubview(refreshControl)
-    }
-    
-    
-    
-    
-    
-    func refresh(){
-        
-        refreshCheck = true
-        auto_Reload_Check = false
-        
-        switch segmentCount {
-        case 0:
-           if (check == false){
-//            items = [BBS_PostData1]()
-           
-            reloadButton.isEnabled = false
-            
-                check = true
-                loadAllData(segmentCount:0)
-            
-                    tableView.reloadData()
-               refreshControl.endRefreshing()
-            
-            
-            
-            }
-            SVProgressHUD.dismiss()
-            break
-        case 1:
-            if (check == false){
-//            items = [BBS_PostData1]()
-          
-            reloadButton.isEnabled = false
-            
-                check = true
-                loadAllData(segmentCount:1)
-              
-                    tableView.reloadData()
-                refreshControl.endRefreshing()
-            }
-            SVProgressHUD.dismiss()
-            break
-        case 2:
-           if (check == false){
-//            items = [BBS_PostData1]()
-            
-            reloadButton.isEnabled = false
-            
-                check = true
-                loadAllData(segmentCount:2)
-            
-                    tableView.reloadData()
-                refreshControl.endRefreshing()
-                            }
-            SVProgressHUD.dismiss()
-            break
-        case 3:
-            if (check == false){
-//            items = [BBS_PostData1]()
-            
-            reloadButton.isEnabled = false
-            
-                check = true
-                loadAllData(segmentCount:3)
-                
-                    tableView.reloadData()
-                
-                    refreshControl.endRefreshing()
-            }
-            SVProgressHUD.dismiss()
-            break
-        default:
-            break
         }
-        refreshControl.endRefreshing()
-        
     }
+    
+    
+    
+    
+    
+   
+    func refresh(){
+       
+        if(items != next_items){
+            items = [BBS_PostData1]()
+            items = next_items
+            refreshControl.endRefreshing()
+            tableView.reloadData()
+        }else{
+            refreshControl.endRefreshing()
+            tableView.reloadData()
+        }
+        
+     
+    }
+    
+    
+    
+    
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         
         
+        if(segmentCount == 100){
+            comment_View.isHidden = true
+       
+        }else{
+            comment_View.isHidden = false
+        }
         
+        if  (UserDefaults.standard.object(forKey: "favorite_Post_Arayy")) != nil{
+            favorite_Post_Arayy = UserDefaults.standard.object(forKey: "favorite_Post_Arayy") as! [String]
+        }
         
 //        let appDelegate2:AppDelegate = UIApplication.shared.delegate as! AppDelegate
 //        if appDelegate2.navicheck == true{
@@ -235,6 +207,9 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         case 3:
             self.title = "チーム募集"
         contributionLabel.placeholder = "チーム募集に投稿"
+        case 100:
+           auto_Reload_Check = false
+            self.title = "お気に入りの投稿"
         default:
             break
         }
@@ -247,9 +222,6 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         
         
         
-        next_100_check = false
-        
-        
         let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
         self.post_Check = appDelegate.post_Check
         
@@ -260,18 +232,14 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             
             let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.post_Check = self.post_Check
+       
+            next_check = false
+        
         }else{
             let table_point = tableView.contentOffset
             self.tableView.setContentOffset(CGPoint(x: table_point.x, y: table_point.y ), animated: false)
 
         }
-        
-        
-        auto_Reload_Check = false
-        
-        //        if count == 150{
-        //            count -= 100
-        //        }
         
     
         if UserDefaults.standard.object(forKey: "profileImage") != nil{
@@ -311,6 +279,11 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        if(segmentCount == 100){
+            tableView.frame.size.height = self.view.bounds.height - 65
+        }else{
+            comment_View.isHidden = false
+        }
         
         
        self.navigationController!.interactivePopGestureRecognizer!.isEnabled = false
@@ -341,7 +314,16 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             let table_point = tableView.contentOffset
             self.tableView.setContentOffset(CGPoint(x: table_point.x, y: table_point.y ), animated: false)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.loadAllData(segmentCount: self.segmentCount)
+                if(self.segmentCount == 100){
+                    if(self.favorite_Post_Arayy != []){
+                        self.loadAllData(segmentCount: self.segmentCount)
+                        
+                    }
+                }else{
+                    self.loadAllData(segmentCount: self.segmentCount)
+                   
+                    }
+                
                 
             }
         }
@@ -429,9 +411,9 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss" //フォーマット合わせる
             if(formatter.date(from:dict.date!) != nil){
-            print("ここ")
-            print("\(dict.date)")
-            print(formatter.date(from:dict.date!))
+//            print("ここ")
+//            print("\(dict.date)")
+//            print(formatter.date(from:dict.date!))
             
             let posTimeText:String = formatter.date(from:dict.date!)!.timeAgoSinceDate(numericDates: true)
             
@@ -461,13 +443,17 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             
             //セルのコメント数
             cell.cell_Reply_Count.text = "\(dict.comment_num)"
-            
+        
+        
             //ユーザーのNG登録
-            cell.ngButton.addTarget(self, action:#selector(ngAction(sender:event:)), for: UIControlEvents.touchUpInside)
-            
-            
+        if(segmentCount != 100){
+        cell.ngButton.addTarget(self, action:#selector(ngAction(sender:event:)), for: UIControlEvents.touchUpInside)
+        }else{
+            cell.ngButton.isHidden = true
+        }
+        
             //ユーザーのお気に入り登録
-            cell.okButton.addTarget(self, action:#selector(okAction(sender:event:)), for: UIControlEvents.touchUpInside)
+            cell.okButton.addTarget(self, action:#selector(favoriteAction(sender:event:)), for: UIControlEvents.touchUpInside)
             
             
             if (cell.postedImageView.image) == nil{
@@ -657,8 +643,9 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         if ( segmentCount == 0 ) {
-            SVProgressHUD.show()
+           
 //            segmentButton.isEnabled = false
+            SVProgressHUD.show()
             self.tableView.isUserInteractionEnabled = false
             self.comment_BlurView.isHidden = false
             //タッチ無効
@@ -667,29 +654,22 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             firebase.queryLimited(toLast: UInt(Int(count))).observe(.value) { (snapshot,error) in
                 
                 
-                if self.auto_Reload_Check == true{
-                    SVProgressHUD.dismiss()
-//                    self.segmentButton.isEnabled = true
-                    self.tableView.isUserInteractionEnabled = true
-                    self.comment_BlurView.isHidden = true
-                     self.refreshControl.endRefreshing()
-                    return
-                }
-                
-                
-                self.auto_Reload_Check = true
-                
                
                 if self.segmentCount != 0{
-                    SVProgressHUD.dismiss()
-//                    self.segmentButton.isEnabled = true
-                    self.tableView.isUserInteractionEnabled = true
-                    self.comment_BlurView.isHidden = true
-                     self.refreshControl.endRefreshing()
-                    return
+                 return
                 }
                 
+                
+                
+                if (self.next_check == false){
                 self.items = [BBS_PostData1]()
+                self.next_items = [BBS_PostData1]()
+                }else{
+                 self.next_items = [BBS_PostData1]()
+                }
+                
+                
+               
                 
                 
                 
@@ -716,26 +696,32 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     }
                     
                     if ( !ng_flg ) {  //次回質問
-                        self.items.append(postData)
-                    }
+                        if (self.next_check == false){
+                            self.items.append(postData)
+                        self.next_items.append(postData)
+                        }else{
+                            self.next_items.append(postData)
+                        }
+
+                        }
                 }
+                
                 
                 
                 if self.check_Count > 26 && self.count == 50{
                     
                         self.count = 100
                     
-                    if (self.check == false){
-                        self.check = true
-                     self.auto_Reload_Check = false
+                    
+                     
                         self.check_Count = 0
                         self.check_Count2 = 0
                         self.totalCount = 0
-                         self.refreshControl.endRefreshing()
+                        
                         self.loadAllData(segmentCount:segmentCount)
                         
                         return
-                    }
+                    
                 
                     }
                 
@@ -752,23 +738,28 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     }
                     
                     
-                    self.auto_Reload_Check = false
-                        if (self.check == false){
-                            self.check = true
                             self.check_Count = 0
                             self.check_Count2 = 0
                             self.totalCount = 0
-                             self.refreshControl.endRefreshing()
+                          
                             self.loadAllData(segmentCount:segmentCount)
                             
                             print("リターン------")
                             return
                             
-                        }
+                    
                         }
                 
+                if (self.next_check == false){
+                    self.items.reverse()
+               self.next_items.reverse()
+                }else{
+                    
+                    self.next_items.reverse()
+                }
                 
-                self.items.reverse()
+            
+            
 //                let CGPoint2 = self.tableView.contentOffset
 //                
 //                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
@@ -781,9 +772,16 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 
                 //タイマー広告
                 print(self.count)
-                self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
+                
+                
+                if self.timer == nil{
+                    if(self.check == false){
+                    self.check = true
+                        self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
+                    }
+                    }
+                }
         }
         else if ( segmentCount == 1 ) {
             SVProgressHUD.show()
@@ -795,29 +793,19 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             firebase.queryLimited(toLast: UInt(Int(count2))).observe(.value) { (snapshot,error) in
                 
                 
-                if self.auto_Reload_Check == true{
-                    SVProgressHUD.dismiss()
-//                    self.segmentButton.isEnabled = true
-                    self.tableView.isUserInteractionEnabled = true
-                    self.comment_BlurView.isHidden = true
-                     self.refreshControl.endRefreshing()
-                    return
-                }
-                
-                
-                self.auto_Reload_Check = true
-                
-                
                 if self.segmentCount != 1{
-                    SVProgressHUD.dismiss()
-//                    self.segmentButton.isEnabled = true
-                    self.tableView.isUserInteractionEnabled = true
-                    self.comment_BlurView.isHidden = true
-                     self.refreshControl.endRefreshing()
                     return
                 }
                 
-                self.items = [BBS_PostData1]()
+                
+                
+                if (self.next_check == false){
+                    self.items = [BBS_PostData1]()
+                    self.next_items = [BBS_PostData1]()
+                }else{
+                    self.next_items = [BBS_PostData1]()
+                }
+
                 
                 for item in(snapshot.children){
                     let child = item as! FIRDataSnapshot
@@ -842,7 +830,13 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     }
                     
                     if ( !ng_flg ) {  //次回質問
-                        self.items.append(postData)
+                        if (self.next_check == false){
+                            self.items.append(postData)
+                            self.next_items.append(postData)
+                        }else{
+                            self.next_items.append(postData)
+                        }
+                        
                     }
                 }
                 
@@ -851,8 +845,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     
                     self.count2 = 100
                     
-                    if (self.check == false){
-                        self.check = true
+                    
                         self.auto_Reload_Check = false
                         self.check_Count = 0
                         self.check_Count2 = 0
@@ -861,7 +854,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         self.loadAllData(segmentCount:segmentCount)
                         
                         return
-                    }
+                    
                     
                 }
                 
@@ -879,8 +872,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     
                     
                     self.auto_Reload_Check = false
-                    if (self.check == false){
-                        self.check = true
+                    
                         self.check_Count = 0
                         self.check_Count2 = 0
                         self.totalCount = 0
@@ -890,24 +882,43 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         print("リターン------")
                         return
                         
-                    }
+                    
+                }
+                if (self.next_check == false){
+                    self.items.reverse()
+                    self.next_items.reverse()
+                }else{
+                    
+                    self.next_items.reverse()
                 }
                 
-                self.items.reverse()
-//                let CGPoint2 = self.tableView.contentOffset
-//                
-//                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-//                if (self.refreshCheck == false){
-//                    self.tableView.contentOffset.y = (self.tableView.contentInset.top )
-//                }
-//                self.tableView.reloadData()
                 
                 
-                print(self.count2)
-                self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                //                let CGPoint2 = self.tableView.contentOffset
+                //
+                //                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+                //
+                //                if (self.refreshCheck == false){
+                //                self.tableView.contentOffset.y = (self.tableView.contentInset.top )
+                //                }
+                //                self.tableView.reloadData()
+                
+                
+                //タイマー広告
+               
+            
+                
+                
+                if self.timer == nil{
+                    if(self.check == false){
+                        self.check = true
+                        self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
+                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    }
+                }
             }
-        }else if ( segmentCount == 2 ) {
+        }
+else if ( segmentCount == 2 ) {
             SVProgressHUD.show()
 //            segmentButton.isEnabled = false
             self.tableView.isUserInteractionEnabled = false //タッチ無効
@@ -917,29 +928,18 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             firebase.queryLimited(toLast: UInt(Int(count3))).observe(.value) { (snapshot,error) in
                 
                 
-                if self.auto_Reload_Check == true{
-                    SVProgressHUD.dismiss()
-//                    self.segmentButton.isEnabled = true
-                    self.tableView.isUserInteractionEnabled = true
-                    self.comment_BlurView.isHidden = true
-                     self.refreshControl.endRefreshing()
-                    return
-                }
-                
-                
-                self.auto_Reload_Check = true
-                
-                
                 if self.segmentCount != 2{
-                    SVProgressHUD.dismiss()
-//                    self.segmentButton.isEnabled = true
-                    self.tableView.isUserInteractionEnabled = true
-                    self.comment_BlurView.isHidden = true
-                     self.refreshControl.endRefreshing()
                     return
                 }
                 
-                self.items = [BBS_PostData1]()
+                
+                
+                if (self.next_check == false){
+                    self.items = [BBS_PostData1]()
+                    self.next_items = [BBS_PostData1]()
+                }else{
+                    self.next_items = [BBS_PostData1]()
+                }
                 
                 for item in(snapshot.children){
                     let child = item as! FIRDataSnapshot
@@ -964,7 +964,13 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     }
                     
                     if ( !ng_flg ) {  //次回質問
-                        self.items.append(postData)
+                        if (self.next_check == false){
+                            self.items.append(postData)
+                            self.next_items.append(postData)
+                        }else{
+                            self.next_items.append(postData)
+                        }
+                        
                     }
                 }
                 
@@ -973,9 +979,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     
                     self.count3 = 100
                     
-                    if (self.check == false){
-                        self.check = true
-                        self.auto_Reload_Check = false
+                                            self.auto_Reload_Check = false
                         self.check_Count = 0
                         self.check_Count2 = 0
                         self.totalCount = 0
@@ -983,7 +987,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         self.loadAllData(segmentCount:segmentCount)
                         
                         return
-                    }
+                    
                     
                 }
                 
@@ -1001,8 +1005,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     
                     
                     self.auto_Reload_Check = false
-                    if (self.check == false){
-                        self.check = true
+                    
                         self.check_Count = 0
                         self.check_Count2 = 0
                         self.totalCount = 0
@@ -1012,23 +1015,43 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         print("リターン------")
                         return
                         
-                    }
+                    
                 }
                 
-                self.items.reverse()
-//                let CGPoint2 = self.tableView.contentOffset
-//                
-//                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-//                if (self.refreshCheck == false){
-//                    self.tableView.contentOffset.y = (self.tableView.contentInset.top )
-//                }
-//                self.tableView.reloadData()
+                if (self.next_check == false){
+                    self.items.reverse()
+                    self.next_items.reverse()
+                }else{
+                    
+                    self.next_items.reverse()
+                }
                 
-                print(self.count3)
-                self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                
+                
+                //                let CGPoint2 = self.tableView.contentOffset
+                //
+                //                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+                //
+                //                if (self.refreshCheck == false){
+                //                self.tableView.contentOffset.y = (self.tableView.contentInset.top )
+                //                }
+                //                self.tableView.reloadData()
+                
+                
+                //タイマー広告
+             
+                
+                
+                if self.timer == nil{
+                    if(self.check == false){
+                        self.check = true
+                        self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
+                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    }
+                }
             }
-        }else if ( segmentCount == 3 ) {
+        }
+else if ( segmentCount == 3 ) {
             SVProgressHUD.show()
 //            segmentButton.isEnabled = false
             self.tableView.isUserInteractionEnabled = false //タッチ無効
@@ -1040,29 +1063,18 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             firebase.queryLimited(toLast: UInt(Int(count4))).observe(.value) { (snapshot,error) in
                 
                 
-                if self.auto_Reload_Check == true{
-                    SVProgressHUD.dismiss()
-//                    self.segmentButton.isEnabled = true
-                    self.tableView.isUserInteractionEnabled = true
-                    self.comment_BlurView.isHidden = true
-                     self.refreshControl.endRefreshing()
-                    return
-                }
-                
-                
-                self.auto_Reload_Check = true
-                
-                
                 if self.segmentCount != 3{
-                    SVProgressHUD.dismiss()
-//                    self.segmentButton.isEnabled = true
-                    self.tableView.isUserInteractionEnabled = true
-                    self.comment_BlurView.isHidden = true
-                     self.refreshControl.endRefreshing()
                     return
                 }
                 
-                self.items = [BBS_PostData1]()
+                
+                
+                if (self.next_check == false){
+                    self.items = [BBS_PostData1]()
+                    self.next_items = [BBS_PostData1]()
+                }else{
+                    self.next_items = [BBS_PostData1]()
+                }
                 
                 
                 for item in(snapshot.children){
@@ -1088,17 +1100,22 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     }
                     
                     if ( !ng_flg ) {  //次回質問
-                        self.items.append(postData)
+                        if (self.next_check == false){
+                            self.items.append(postData)
+                            self.next_items.append(postData)
+                        }else{
+                            self.next_items.append(postData)
+                        }
+                        
                     }
                 }
-                
+
                 
                 if self.check_Count > 26 && self.count4 == 50{
                     
                     self.count4 = 100
                     
-                    if (self.check == false){
-                        self.check = true
+                   
                         self.auto_Reload_Check = false
                         self.check_Count = 0
                         self.check_Count2 = 0
@@ -1107,7 +1124,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         self.loadAllData(segmentCount:segmentCount)
                         
                         return
-                    }
+                    
                     
                 }
                 
@@ -1124,10 +1141,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     }
                     
                     
-                    self.auto_Reload_Check = false
-                    if (self.check == false){
-                        self.check = true
-                        self.check_Count = 0
+                                            self.check_Count = 0
                         self.check_Count2 = 0
                         self.totalCount = 0
                         self.refreshControl.endRefreshing()
@@ -1136,24 +1150,132 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                         print("リターン------")
                         return
                         
-                    }
+                    
                 }
                 
                 
-                self.items.reverse()
-//                let CGPoint2 = self.tableView.contentOffset
-//                
-//                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-//                if (self.refreshCheck == false){
-//                    self.tableView.contentOffset.y = (self.tableView.contentInset.top )
-//                }
-//                self.tableView.reloadData()
+                if (self.next_check == false){
+                    self.items.reverse()
+                    self.next_items.reverse()
+                }else{
+                    
+                    self.next_items.reverse()
+                }
                 
-                print(self.count4)
-                self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                
+                
+                //                let CGPoint2 = self.tableView.contentOffset
+                //
+                //                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+                //
+                //                if (self.refreshCheck == false){
+                //                self.tableView.contentOffset.y = (self.tableView.contentInset.top )
+                //                }
+                //                self.tableView.reloadData()
+                
+                
+                //タイマー広告
+                
+                
+                if self.timer == nil{
+                    if(self.check == false){
+                        self.check = true
+                        self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
+                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    }
+                }
             }
         }
+else if ( segmentCount == 100 ) {
+            SVProgressHUD.show()
+            //            segmentButton.isEnabled = false
+            self.tableView.isUserInteractionEnabled = false //タッチ無効
+            self.comment_BlurView.isHidden = false
+            
+            var count = 0
+            
+            for i in favorite_Post_Arayy{
+            
+            
+                let firebase = FIRDatabase.database().reference().child(Const.PostPath1).child("\(i)")
+
+            
+            firebase.observe(.value) { (snapshot,error) in
+                
+                if self.segmentCount != 100{
+                    return
+                }
+                
+                
+                
+//                var remove_index:Int = 0
+//                
+//                for i in 0..<self.favorite_Post_Arayy.count{
+//                    if(self.favorite_Post_Arayy[i] == nil){
+//                        remove_index = i
+//                    }
+//                }
+//                
+//                self.favorite_Post_Arayy.remove(at: remove_index)
+//                
+//                }
+//            
+                
+                count += 1
+                
+                if(count == 1){
+                    
+                    
+                    if self.auto_Reload_Check == true{
+                        SVProgressHUD.dismiss()
+                        self.tableView.isUserInteractionEnabled = true
+                        self.comment_BlurView.isHidden = true
+                        self.refreshControl.endRefreshing()
+                        return
+                    }
+                    
+                    
+                    self.auto_Reload_Check = true
+                    
+                    
+                    if self.segmentCount != 100{
+                        SVProgressHUD.dismiss()
+                        //                    self.segmentButton.isEnabled = true
+                        self.tableView.isUserInteractionEnabled = true
+                        self.comment_BlurView.isHidden = true
+                        self.refreshControl.endRefreshing()
+                        return
+                    }
+                    
+                    self.items = [BBS_PostData1]()
+                    
+                }
+                
+                let postData:BBS_PostData1? = BBS_PostData1(snapshot: snapshot, myId: "")
+                
+                
+                //                print(postData.date!)
+                
+                
+                self.items.append(postData!)
+                
+                
+                
+                
+                if(count == self.favorite_Post_Arayy.count){
+                    
+                    self.items.reverse()
+                    self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.time), userInfo: nil, repeats: false)
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    
+                }
+                
+                
+                
+                }
+            }
+        }
+
         
     }
     
@@ -1261,19 +1383,18 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             }
             
             
-            self.auto_Reload_Check = false
-            if (self.check == false){
-                self.check = true
+            
+            
                 self.check_Count = 0
                 self.check_Count2 = 0
                 self.totalCount = 0
-                 self.refreshControl.endRefreshing()
+                
                 self.loadAllData(segmentCount:segmentCount)
                 
                 print("リターン------")
                 return
                 
-            }
+            
         }
         }else if (segmentCount == 1){
             if self.check_Count + self.check_Count2 != self.totalCount{
@@ -1287,19 +1408,17 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 }
                 
                 
-                self.auto_Reload_Check = false
-                if (self.check == false){
-                    self.check = true
+                
                     self.check_Count = 0
                     self.check_Count2 = 0
                     self.totalCount = 0
-                     self.refreshControl.endRefreshing()
+                
                     self.loadAllData(segmentCount:segmentCount)
                     
                     print("リターン------")
                     return
                     
-                }
+                
             }
 
         }else if (segmentCount == 2){
@@ -1314,19 +1433,17 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 }
                 
                 
-                self.auto_Reload_Check = false
-                if (self.check == false){
-                    self.check = true
+                
                     self.check_Count = 0
                     self.check_Count2 = 0
                     self.totalCount = 0
-                    self.refreshControl.endRefreshing()
+                
                     self.loadAllData(segmentCount:segmentCount)
                     
                     print("リターン------")
                     return
                     
-                }
+                
             }
         }else if (segmentCount == 3){
             if self.check_Count + self.check_Count2 != self.totalCount{
@@ -1340,9 +1457,6 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                 }
                 
                 
-                self.auto_Reload_Check = false
-                if (self.check == false){
-                    self.check = true
                     self.check_Count = 0
                     self.check_Count2 = 0
                     self.totalCount = 0
@@ -1352,7 +1466,7 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
                     print("リターン------")
                     return
                     
-                }
+                
             }
         }
 //        self.segmentButton.isEnabled = true
@@ -1362,35 +1476,31 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         
         
         SVProgressHUD.dismiss()
-        self.timer.invalidate()
-        check = false
+        
+        
+        
         self.tableView.isUserInteractionEnabled = true
         if (reloadButton.isEnabled == false){
-            
             reloadButton.isEnabled = true
        reloadButton.alpha = 1.0
         }
         
         
-        
-        
         print("bbbbbbbbbbbbb")
         print(auto_Reload_Check)
-        print(check)
-        refreshControl.endRefreshing()
+      
+       
         
+        if(next_check == false){
         tableView.reloadData()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) {
-            let CGPoint2 = self.tableView.contentOffset
-            self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-            
-            if (self.refreshCheck == false){
-                self.tableView.contentOffset.y = (self.tableView.contentInset.top )
-                self.refreshCheck = true
-            }
-
         }
-   
+        
+        next_check = true
+        
+        timer?.invalidate()
+        timer = Timer()
+        check = false
+        
     }
     
     
@@ -1487,89 +1597,98 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     }
     @IBAction func reloadButton(_ sender: Any) {
         
-        auto_Reload_Check = false
+//        auto_Reload_Check = false
         
-        switch segmentCount {
-        case 0:
+//        switch segmentCount {
+//        case 0:
 //            tableView.contentOffset.y = (self.tableView.contentInset.top )
 //            items = [BBS_PostData1]()
-           
-            reloadButton.isEnabled = false
-            if (check == false){
-                check = true
-                
-                //ポイントを求めてからトップへ
-                let CGPoint2 = self.tableView.contentOffset
-                
-                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-                tableView.contentOffset.y = (self.tableView.contentInset.top )
-                loadAllData(segmentCount:0)
-                
-//                tableView.reloadData()
-                
-                
-            }
-            break
-        case 1:
+        
+        reloadButton.isEnabled = false
+            SVProgressHUD.show()
             
-//            tableView.contentOffset.y = (self.tableView.contentInset.top )
-//            items = [BBS_PostData1]()
-           
-            reloadButton.isEnabled = false
-            if (check == false){
-                check = true
-                let CGPoint2 = self.tableView.contentOffset
-                
-                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-               tableView.contentOffset.y = (self.tableView.contentInset.top )
-                loadAllData(segmentCount:1)
-//                  tableView.reloadData()
-               
-                
-                
-            }
-            break
-        case 2:
+            let CGPoint2 = self.tableView.contentOffset
             
-//            tableView.contentOffset.y = (self.tableView.contentInset.top )
-//            items = [BBS_PostData1]()
-           
-            reloadButton.isEnabled = false
-            if (check == false){
-                check = true
-                let CGPoint2 = self.tableView.contentOffset
-                
-                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-                tableView.contentOffset.y = (self.tableView.contentInset.top )
-                loadAllData(segmentCount:2)
-//                tableView.reloadData()
+            self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+            tableView.contentOffset.y = (self.tableView.contentInset.top )
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            if(self.items != self.next_items){
+                self.items = [BBS_PostData1]()
+                self.items = self.next_items
+              
+                self.tableView.reloadData()
+            
+            }else{
+                self.tableView.reloadData()
+            }
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            SVProgressHUD.dismiss()
+            self.reloadButton.isEnabled = true
+            }
+//            
+//            break
+//        case 1:
+//            
+////            tableView.contentOffset.y = (self.tableView.contentInset.top )
+////            items = [BBS_PostData1]()
+//           
+//            reloadButton.isEnabled = false
+////            if (check == false){
+////                check = true
+//                let CGPoint2 = self.tableView.contentOffset
 //                
-            }
-            
-            break
-        case 3:
-            
-//            tableView.contentOffset.y = (self.tableView.contentInset.top )
-//            items = [BBS_PostData1]()
-            
-            reloadButton.isEnabled = false
-            if (check == false){
-                check = true
-                let CGPoint2 = self.tableView.contentOffset
-                
-                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
-               tableView.contentOffset.y = (self.tableView.contentInset.top )
-                loadAllData(segmentCount:3)
-               
-//            tableView.reloadData()
-               
-                
-            }
-            
-            break
-        default:
-            break
-        }
+//                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+//               tableView.contentOffset.y = (self.tableView.contentInset.top )
+//                loadAllData(segmentCount:1)
+////                  tableView.reloadData()
+//               
+//                
+//                
+////            }
+//            break
+//        case 2:
+//            
+////            tableView.contentOffset.y = (self.tableView.contentInset.top )
+////            items = [BBS_PostData1]()
+//           
+//            reloadButton.isEnabled = false
+////            if (check == false){
+////                check = true
+//                let CGPoint2 = self.tableView.contentOffset
+//                
+//                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+//                tableView.contentOffset.y = (self.tableView.contentInset.top )
+//                loadAllData(segmentCount:2)
+////                tableView.reloadData()
+////                
+////            }
+//            
+//            break
+//        case 3:
+//            
+////            tableView.contentOffset.y = (self.tableView.contentInset.top )
+////            items = [BBS_PostData1]()
+//            
+//            reloadButton.isEnabled = false
+////            if (check == false){
+////                check = true
+//                let CGPoint2 = self.tableView.contentOffset
+//                
+//                self.tableView.setContentOffset(CGPoint(x: CGPoint2.x, y: CGPoint2.y ), animated: false)
+//               tableView.contentOffset.y = (self.tableView.contentInset.top )
+//                loadAllData(segmentCount:3)
+//               
+////            tableView.reloadData()
+//               
+//                
+////            }
+//            
+//            break
+//        default:
+//            break
+//        }
         
     }
     
@@ -1664,74 +1783,75 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
     }
     
     
-    func okAlert(okUser:String){
-        
-        
-        
-        let alertViewControler = UIAlertController(title:"このユーザーをお気に\n入り登録しますか？", message: "お気に入り登録をすることで「ホーム」→「お気に入りユーザー」より登録したユーザーの書き込みのみが表示可能となります", preferredStyle:.alert)
-        
-        let okAction = UIAlertAction(title: "お気に入りに登録する", style: .default, handler: {
-            (action:UIAlertAction!) -> Void in
-            self.addokAction(okUser: okUser)
-        })
-        
-        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
-        
-        alertViewControler.addAction(okAction)
-        alertViewControler.addAction(cancelAction)
-        
-        present(alertViewControler, animated: true, completion: nil)
-        
-    }
-    
-    
-    func okAction(sender: UIButton, event:UIEvent){
-        
-        
-        let touch = event.allTouches?.first
-        let point = touch!.location(in: tableView)
-        let indexPath = tableView.indexPathForRow(at: point)
-        
-        let okUser = items[(indexPath?.row)!].userId
-        
-        print("okUser ------------->  \(okUser)")
-        
-        if  (UserDefaults.standard.object(forKey: "ok_UserArayy")) != nil{
-            let userArayy:[String] = UserDefaults.standard.object(forKey: "ok_UserArayy") as! [String]
-            for i in userArayy{
-                if i == okUser{
-                    SVProgressHUD.showError(withStatus: "このユーザーはお気に入りに登録済みです")
-                    return
-                    
-                }
-            }
-        }
-        
-        okAlert(okUser:okUser)
-        
-        
-        
-        print("okUser  --> \(okUser)")
-    }
-    
-    func addokAction(okUser:String){
-        
-        
-        ok_UserArayy.append(okUser)
-        UserDefaults.standard.set(ok_UserArayy, forKey: "ok_UserArayy")
-        
-        SVProgressHUD.showSuccess(withStatus: "お気に入りに\n登録しました")
-        
-        
-        print("ok_UserArayy  --> \(ok_UserArayy)")
-        
-    }
+//    func okAlert(okUser:String){
+//        
+//        
+//        
+//        let alertViewControler = UIAlertController(title:"このユーザーをお気に\n入り登録しますか？", message: "お気に入り登録をすることで「ホーム」→「お気に入りユーザー」より登録したユーザーの書き込みのみが表示可能となります", preferredStyle:.alert)
+//        
+//        let okAction = UIAlertAction(title: "お気に入りに登録する", style: .default, handler: {
+//            (action:UIAlertAction!) -> Void in
+//            self.addokAction(okUser: okUser)
+//        })
+//        
+//        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
+//        
+//        alertViewControler.addAction(okAction)
+//        alertViewControler.addAction(cancelAction)
+//        
+//        present(alertViewControler, animated: true, completion: nil)
+//        
+//    }
+//    
+//    
+//    func okAction(sender: UIButton, event:UIEvent){
+//        
+//        
+//        let touch = event.allTouches?.first
+//        let point = touch!.location(in: tableView)
+//        let indexPath = tableView.indexPathForRow(at: point)
+//        
+//        let okUser = items[(indexPath?.row)!].userId
+//        
+//        print("okUser ------------->  \(okUser)")
+//        
+//        if  (UserDefaults.standard.object(forKey: "ok_UserArayy")) != nil{
+//            let userArayy:[String] = UserDefaults.standard.object(forKey: "ok_UserArayy") as! [String]
+//            for i in userArayy{
+//                if i == okUser{
+//                    SVProgressHUD.showError(withStatus: "このユーザーはお気に入りに登録済みです")
+//                    return
+//                    
+//                }
+//            }
+//        }
+//        
+//        okAlert(okUser:okUser)
+//        
+//        
+//        
+//        print("okUser  --> \(okUser)")
+//    }
+//    
+//    func addokAction(okUser:String){
+//        
+//        
+//        ok_UserArayy.append(okUser)
+//        UserDefaults.standard.set(ok_UserArayy, forKey: "ok_UserArayy")
+//        
+//        SVProgressHUD.showSuccess(withStatus: "お気に入りに\n登録しました")
+//        
+//        
+//        print("ok_UserArayy  --> \(ok_UserArayy)")
+//        
+//    }
     
     //お気に入りの投稿
     
     func favoriteAlert(favorite_Post:String){
         
         
+        if(segmentCount != 100){
         
         let alertViewControler = UIAlertController(title:"この投稿をお気に入り登録しますか？", message: "お気に入り登録をすることで「ホーム」→「お気に入りの投稿」より登録した書き込みが表示可能となります", preferredStyle:.alert)
         
@@ -1739,13 +1859,34 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             (action:UIAlertAction!) -> Void in
             self.addfavoriteAction(favorite_Post:favorite_Post)
         })
+         
+            let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
+            
+            alertViewControler.addAction(okAction)
+            alertViewControler.addAction(cancelAction)
+            
+            present(alertViewControler, animated: true, completion: nil)
         
-        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
+        }else{
+            let alertViewControler = UIAlertController(title: "この投稿をお気に入り\nから削除しますか？", message: "", preferredStyle:.actionSheet)
+            let okAction = UIAlertAction(title: "削除", style: .default, handler:{
+                (action:UIAlertAction!) -> Void in
+                self.addfavoriteAction(favorite_Post:favorite_Post)
+            })
+            
+            let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
+            
+            alertViewControler.addAction(okAction)
+            alertViewControler.addAction(cancelAction)
+            
+            present(alertViewControler, animated: true, completion: nil)
+        }
         
-        alertViewControler.addAction(okAction)
-        alertViewControler.addAction(cancelAction)
         
-        present(alertViewControler, animated: true, completion: nil)
+        
+        
+        
+        
         
     }
     
@@ -1762,8 +1903,17 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
         let favorite_Post = items[(indexPath?.row)!].id
         
         
+        if(segmentCount != 100){
+        
         if  (UserDefaults.standard.object(forKey: "favorite_Post_Arayy")) != nil{
             let favorite_Post_Arayy2 = UserDefaults.standard.object(forKey: "favorite_Post_Arayy") as! [String]
+            
+           
+            if favorite_Post_Arayy2.count > 9{
+                    SVProgressHUD.showError(withStatus: "登録数は10件以上")
+        return
+            }
+                
             
             var favoritecheck = false
             
@@ -1779,28 +1929,67 @@ class BulletinBoardViewController: UIViewController,UITableViewDelegate,UITableV
             }
             else {
                 print("favorite_Post  --> \(favorite_Post)")
-
-                favoriteAlert(favorite_Post:favorite_Post)
             }
             
-        
         }
+        }else{
+            
+        }
+        
+        
+        favoriteAlert(favorite_Post:favorite_Post)
+        
     }
     
     
     func addfavoriteAction(favorite_Post:String){
         
-        
+        if ( segmentCount != 100){
         favorite_Post_Arayy.append(favorite_Post)
         UserDefaults.standard.set(favorite_Post_Arayy, forKey: "favorite_Post_Arayy")
-        
-        //入らない
+        print(favorite_Post_Arayy)
+     
         
         SVProgressHUD.showSuccess(withStatus: "お気に入りに\n登録しました")
-        
+        }else{
+            if (favorite_Post_Arayy != []){
+              
+                var remove_index1:Int = 0
+                
+                for i in 0..<favorite_Post_Arayy.count{
+                    if(favorite_Post_Arayy[i] == favorite_Post){
+                remove_index1 = i
+                    }
+                }
+                
+                favorite_Post_Arayy.remove(at: remove_index1)
+                UserDefaults.standard.set(favorite_Post_Arayy, forKey: "favorite_Post_Arayy")
+            
+                if(favorite_Post_Arayy != []){
+                auto_Reload_Check = false
+              next_check = false
+                loadAllData(segmentCount:segmentCount)
+            tableView.reloadData()
+                }else{
+                    SVProgressHUD.show()
+                    
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.items = [BBS_PostData1]()
+                    self.tableView.reloadData()
+                    SVProgressHUD.dismiss()
+                    
+                    }
+                    }
+            
+            
+            }else{
+                
+            }
+        }
         
         
     }
+
     
     
     func change_BulletinBoard_Image() {

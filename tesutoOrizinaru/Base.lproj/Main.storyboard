@@ -385,7 +385,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BgI-JQ-PVD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3165" y="2011"/>
+            <point key="canvasLocation" x="-2199" y="2157"/>
         </scene>
         <!--掲示板-->
         <scene sceneID="1oj-Ug-a50">
@@ -505,7 +505,7 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="296" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="awU-QL-gz9">
-                                <rect key="frame" x="20" y="64" width="335" height="497"/>
+                                <rect key="frame" x="20" y="64" width="335" height="505"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </tableView>
                         </subviews>
@@ -523,7 +523,7 @@
                             <constraint firstItem="2PU-eo-hy9" firstAttribute="top" secondItem="xby-ti-ELB" secondAttribute="bottom" id="PeU-O7-8g6"/>
                             <constraint firstItem="2PU-eo-hy9" firstAttribute="top" secondItem="xby-ti-ELB" secondAttribute="bottom" id="SFB-70-AAM"/>
                             <constraint firstItem="awU-QL-gz9" firstAttribute="top" secondItem="iCl-5a-tS1" secondAttribute="bottom" id="TN3-pC-I23"/>
-                            <constraint firstItem="2PU-eo-hy9" firstAttribute="top" secondItem="awU-QL-gz9" secondAttribute="bottom" constant="57" id="X0u-lG-REk"/>
+                            <constraint firstItem="2PU-eo-hy9" firstAttribute="top" secondItem="awU-QL-gz9" secondAttribute="bottom" constant="49" id="X0u-lG-REk"/>
                             <constraint firstAttribute="trailingMargin" secondItem="awU-QL-gz9" secondAttribute="trailing" constant="4" id="edh-YO-4ad"/>
                             <constraint firstAttribute="trailing" secondItem="xby-ti-ELB" secondAttribute="trailing" id="hQr-Jc-RlS"/>
                             <constraint firstItem="xby-ti-ELB" firstAttribute="leading" secondItem="xPW-db-Ldv" secondAttribute="leading" id="lyk-v2-mb9"/>
@@ -536,6 +536,7 @@
                     <connections>
                         <outlet property="bulletinBoard_Image" destination="xby-ti-ELB" id="WTI-c3-ciW"/>
                         <outlet property="comment_BlurView" destination="aDk-IL-Z3V" id="zyF-ZD-fys"/>
+                        <outlet property="comment_View" destination="ieL-wV-Xm5" id="zkp-yp-Hia"/>
                         <outlet property="contributionLabel" destination="MZB-nl-NUX" id="gjR-Ni-ND9"/>
                         <outlet property="profileImageView" destination="TRY-jD-VF4" id="HIi-cP-b3l"/>
                         <outlet property="reloadButton" destination="BUD-RV-Xad" id="jvq-rq-HiI"/>
@@ -928,6 +929,7 @@
                         <segue destination="P8n-nP-i5G" kind="show" identifier="next" id="sw2-sr-IwT"/>
                         <segue destination="RAf-H7-9bI" kind="show" identifier="favorite" id="LIg-Nq-8HB"/>
                         <segue destination="bBB-oY-QY0" kind="show" identifier="app_News" id="ERM-jU-Zml"/>
+                        <segue destination="tPY-af-5PQ" kind="show" identifier="BulletinBoard" id="MPX-yg-q37"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="71s-qi-ddG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1521,7 +1523,7 @@
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                             </imageView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="296" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nhF-ha-90e">
-                                <rect key="frame" x="20" y="64" width="335" height="497"/>
+                                <rect key="frame" x="20" y="64" width="335" height="505"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7nZ-VI-1Nq">
@@ -1631,7 +1633,7 @@
                             <constraint firstAttribute="trailingMargin" secondItem="nhF-ha-90e" secondAttribute="trailing" constant="4" id="lB9-Rx-8Vj"/>
                             <constraint firstItem="nhF-ha-90e" firstAttribute="top" secondItem="aYM-Vy-W3Y" secondAttribute="bottom" id="uOb-zv-oj4"/>
                             <constraint firstAttribute="trailing" secondItem="7nZ-VI-1Nq" secondAttribute="trailing" id="x0t-Lc-LuS"/>
-                            <constraint firstItem="d7s-c1-7hQ" firstAttribute="top" secondItem="nhF-ha-90e" secondAttribute="bottom" constant="57" id="z3c-it-yv0"/>
+                            <constraint firstItem="d7s-c1-7hQ" firstAttribute="top" secondItem="nhF-ha-90e" secondAttribute="bottom" constant="49" id="z3c-it-yv0"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="掲示板" image="linea_7c(2)_32.png" id="lks-Eg-Bad"/>
@@ -2205,6 +2207,7 @@
         <image name="themify_f09a(3)_32.png" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="MPX-yg-q37"/>
         <segue reference="TDA-Qb-8Cf"/>
     </inferredMetricsTieBreakers>
 </document>
